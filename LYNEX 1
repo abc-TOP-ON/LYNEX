@@ -4,7 +4,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LynexFinalMenu"
+ScreenGui.Name = "LynexTabsMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
@@ -103,11 +103,11 @@ TextGradient.Parent = Title
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Position = UDim2.new(1, -40, 0, 10) -- وضعه في أعلى اليمين بدقة
+CloseButton.Position = UDim2.new(1, -40, 0, 10)
 CloseButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
 CloseButton.BorderSizePixel = 0
 CloseButton.Text = "X"
-CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50) -- لون أحمر ناصع للزر
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
 CloseButton.TextSize = 16
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Parent = InsideFrame
@@ -116,27 +116,65 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
--- برمجة وظيفة الإغلاق عند الضغط على الزر (تدمير الواجهة)
 CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- تأثير بصري خفيف للزر عند اللمس (تغيير لون النص)
-CloseButton.MouseEnter:Connect(function()
-	CloseButton.TextColor3 = Color3.fromRGB(255, 150, 150)
-end)
-CloseButton.MouseLeave:Connect(function()
-	CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-end)
+-- 8. إضافة الأزرار الجديدة تحت الخط الفاصل (Tabs)
+-- زر Settings
+local SettingsButton = Instance.new("TextButton")
+SettingsButton.Name = "SettingsButton"
+SettingsButton.Size = UDim2.new(0, 155, 0, 35) -- حجم مخصص للموبايل ليجاور الزر الآخر
+SettingsButton.Position = UDim2.new(0, 15, 0, 65) -- أسفل الخط بـ 13 بكسل
+SettingsButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+SettingsButton.BorderSizePixel = 0
+SettingsButton.Text = "Settings"
+SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingsButton.TextSize = 15
+SettingsButton.Font = Enum.Font.GothamSemibold
+SettingsButton.Parent = InsideFrame
 
--- 8. تشغيل حركة الدوران اللانهائية بنعومة تامة للإطار وللاسم معاً
+local SettingsCorner = Instance.new("UICorner")
+SettingsCorner.CornerRadius = UDim.new(0, 8)
+SettingsCorner.Parent = SettingsButton
+
+-- زر Player بجانب زر Settings
+local PlayerButton = Instance.new("TextButton")
+PlayerButton.Name = "PlayerButton"
+PlayerButton.Size = UDim2.new(0, 155, 0, 35)
+PlayerButton.Position = UDim2.new(0, 185, 0, 65) -- بجانب زر الإعدادات مع مسافة فاصلة دقيقة
+PlayerButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+PlayerButton.BorderSizePixel = 0
+PlayerButton.Text = "Player"
+PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerButton.TextSize = 15
+PlayerButton.Font = Enum.Font.GothamSemibold
+PlayerButton.Parent = InsideFrame
+
+local PlayerCorner = Instance.new("UICorner")
+PlayerCorner.CornerRadius = UDim.new(0, 8)
+PlayerCorner.Parent = PlayerButton
+
+-- تأثيرات تفاعلية بسيطة عند الضغط على الأزرار (تغيير لون مؤقت)
+local function addClickEffect(button)
+	button.MouseButton1Down:Connect(function()
+		button.BackgroundColor3 = Color3.fromRGB(40, 20, 20) -- يميل للأحمر الداكن عند الضغط
+	end)
+	button.MouseButton1Up:Connect(function()
+		button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+	end)
+end
+addClickEffect(SettingsButton)
+addClickEffect(PlayerButton)
+
+-- 9. تشغيل حركة الدوران اللانهائية بنعومة تامة للإطار وللاسم معاً
 local RotateTween = TweenService:Create(BorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 RotateTween:Play()
 
 local TextTween = TweenService:Create(TextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 TextTween:Play()
 
--- 9. نظام سحب متطور وسلس للغاية يعتمد على تتبع اللمس الفوري للموبايل
+-- 10. نظام سحب وتحريك الواجهة باللمس المخصص للهواتف ذكي وسلس
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
