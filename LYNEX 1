@@ -116,6 +116,75 @@ local function createRedTextGradient(parentFrame)
 	return Gradient
 end
 
+-- دالة لإنشاء تدرج ذهبي
+local function createGoldGradient(parentFrame)
+	local Gradient = Instance.new("UIGradient")
+	Gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 200, 50)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 150, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 200, 50)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 215, 0))
+	})
+	Gradient.Parent = parentFrame
+	return Gradient
+end
+
+-- ========== نظام عرض الرسائل ==========
+local function showNotification(message, isSuccess)
+	-- إطار الرسالة
+	local notifFrame = Instance.new("Frame")
+	notifFrame.Size = UDim2.new(0, 300, 0, 40)
+	notifFrame.Position = UDim2.new(0.5, -150, 0.5, -20)
+	notifFrame.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(200, 0, 0)
+	notifFrame.BackgroundTransparency = 0.9
+	notifFrame.BorderSizePixel = 0
+	notifFrame.Parent = MainFrame
+	
+	local notifCorner = Instance.new("UICorner")
+	notifCorner.CornerRadius = UDim.new(0, 8)
+	notifCorner.Parent = notifFrame
+	
+	-- Border للرسالة
+	local notifBorder = Instance.new("Frame")
+	notifBorder.Size = UDim2.new(1, 0, 1, 0)
+	notifBorder.Position = UDim2.new(0, 0, 0, 0)
+	notifBorder.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+	notifBorder.BackgroundTransparency = 0.5
+	notifBorder.BorderSizePixel = 0
+	notifBorder.Parent = notifFrame
+	local notifBorderCorner = Instance.new("UICorner")
+	notifBorderCorner.CornerRadius = UDim.new(0, 8)
+	notifBorderCorner.Parent = notifBorder
+	
+	-- النص
+	local notifLabel = Instance.new("TextLabel")
+	notifLabel.Size = UDim2.new(1, 0, 1, 0)
+	notifLabel.BackgroundTransparency = 1
+	notifLabel.Text = message
+	notifLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	notifLabel.TextSize = 14
+	notifLabel.Font = Enum.Font.GothamBold
+	notifLabel.TextXAlignment = Enum.TextXAlignment.Center
+	notifLabel.Parent = notifFrame
+	
+	-- تأثير دخول وخروج
+	notifFrame.BackgroundTransparency = 1
+	local tweenIn = TweenService:Create(notifFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		BackgroundTransparency = 0.85
+	})
+	tweenIn:Play()
+	
+	-- اختفاء بعد 3 ثواني
+	task.wait(3)
+	local tweenOut = TweenService:Create(notifFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		BackgroundTransparency = 1
+	})
+	tweenOut:Play()
+	task.wait(0.3)
+	notifFrame:Destroy()
+end
+
 -- 8. اسم السكربت الاحترافي LYNEX
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
@@ -309,16 +378,14 @@ local buttonsData = {
 }
 
 -- ========== دالة لإنشاء الأزرار ==========
-local allButtons = {}
-local allExecButtons = {}
-local allBorderFrames = {}
+local buttonFrames = {}
 
 local function createBigButton(parent, data, index)
 	local yPos = data.y
 	
 	-- الإطار الخارجي الأحمر
 	local BorderFrame = Instance.new("Frame")
-	BorderFrame.Size = UDim2.new(0, 350, 0, 118)
+	BorderFrame.Size = UDim2.new(0, 350, 0, 130)  -- زودت الارتفاع عشان يتسع للـ AUTO
 	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
 	BorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	BorderFrame.BackgroundTransparency = 0.3
@@ -373,6 +440,29 @@ local function createBigButton(parent, data, index)
 	ExecCorner.Parent = ExecuteButton
 	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
+	-- زر AUTO باللون الذهبي (تحت EXECUTE)
+	local AutoButton = Instance.new("TextButton")
+	AutoButton.Size = UDim2.new(0, 80, 0, 22)
+	AutoButton.Position = UDim2.new(1, -90, 0, 42)
+	AutoButton.BackgroundColor3 = Color3.fromRGB(30, 25, 10)
+	AutoButton.BorderSizePixel = 0
+	AutoButton.Text = "AUTO"
+	AutoButton.TextColor3 = Color3.fromRGB(255, 215, 0)
+	AutoButton.TextSize = 10
+	AutoButton.Font = Enum.Font.GothamBold
+	AutoButton.Parent = ButtonFrame
+	local AutoCorner = Instance.new("UICorner")
+	AutoCorner.CornerRadius = UDim.new(0, 5)
+	AutoCorner.Parent = AutoButton
+	local AutoGrad = createGoldGradient(AutoButton)
+	
+	-- تأثير الدوران للـ AUTO
+	local function animateAuto()
+		local tween = TweenService:Create(AutoGrad, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateAuto()
+	
 	-- الوصف
 	local DescLabel = Instance.new("TextLabel")
 	DescLabel.Size = UDim2.new(1, -20, 0, 20)
@@ -385,18 +475,6 @@ local function createBigButton(parent, data, index)
 	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
 	DescLabel.Parent = ButtonFrame
 	
-	-- AUTO
-	local AutoLabel = Instance.new("TextLabel")
-	AutoLabel.Size = UDim2.new(1, -20, 0, 20)
-	AutoLabel.Position = UDim2.new(0, 10, 0, 68)
-	AutoLabel.BackgroundTransparency = 1
-	AutoLabel.Text = "AUTO"
-	AutoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-	AutoLabel.TextSize = 10
-	AutoLabel.Font = Enum.Font.GothamBold
-	AutoLabel.TextXAlignment = Enum.TextXAlignment.Left
-	AutoLabel.Parent = ButtonFrame
-	
 	-- تأثير الدوران للإطار
 	local function animateBorder()
 		local tween = TweenService:Create(BorderGradientBtn, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -406,27 +484,47 @@ local function createBigButton(parent, data, index)
 	
 	-- أكشن عند الضغط على Execute
 	ExecuteButton.MouseButton1Click:Connect(function()
-		print("Executing: " .. data.title)
-		-- تشغيل السكربت
 		local success, err = pcall(function()
-			loadstring(data.script)()
+			local scriptFunc = loadstring(data.script)
+			if scriptFunc then
+				scriptFunc()
+				showNotification("✅ Script executed successfully!", true)
+			else
+				error("Failed to load script")
+			end
 		end)
+		
 		if not success then
+			showNotification("❌ Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
 	
-	return BorderFrame, ExecuteButton, BorderGradientBtn, TitleLabel, DescLabel, AutoLabel
+	-- أكشن عند الضغط على AUTO (نفس الـ Execute لكن بدون رسالة)
+	AutoButton.MouseButton1Click:Connect(function()
+		local success, err = pcall(function()
+			local scriptFunc = loadstring(data.script)
+			if scriptFunc then
+				scriptFunc()
+				showNotification("✅ Script executed successfully (AUTO)!", true)
+			else
+				error("Failed to load script")
+			end
+		end)
+		
+		if not success then
+			showNotification("❌ Error: " .. tostring(err), false)
+			warn("Error executing script: " .. tostring(err))
+		end
+	end)
+	
+	return BorderFrame, ExecuteButton, AutoButton, BorderGradientBtn, TitleLabel, DescLabel
 end
 
 -- ========== إنشاء الأزرار العشرة ==========
-local buttonFrames = {}
-
 for i, data in ipairs(buttonsData) do
-	local border, exec, grad, title, desc, auto = createBigButton(Container, data, i)
+	local border, exec, auto, grad, title, desc = createBigButton(Container, data, i)
 	table.insert(buttonFrames, border)
-	table.insert(allExecButtons, exec)
-	allButtons[data.title] = border
 end
 
 -- ========== نظام البحث ==========
