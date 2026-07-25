@@ -9,7 +9,7 @@ ScreenGui.Name = "LynexProSearchMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
--- حماية السكربت والتأكد من توافقه مع محاقن الهواتف
+-- حماية السكربت
 if syn and syn.protect_gui then 
 	syn.protect_gui(ScreenGui) 
 	ScreenGui.Parent = CoreGui
@@ -19,11 +19,11 @@ else
 	ScreenGui.Parent = CoreGui 
 end
 
--- 1. الظل الخارجي المضيء (Glow Effect)
+-- 1. الظل الخارجي المضيء
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 368, 0, 480)
-GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -240)
+GlowFrame.Size = UDim2.new(0, 380, 0, 530)
+GlowFrame.Position = UDim2.new(0.5, -190, 0.5, -265)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
@@ -33,11 +33,11 @@ local GlowCorner = Instance.new("UICorner")
 GlowCorner.CornerRadius = UDim.new(0, 18)
 GlowCorner.Parent = GlowFrame
 
--- 2. الإطار الرئيسي (MainFrame)
+-- 2. الإطار الرئيسي
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 360, 0, 470)
-MainFrame.Position = UDim2.new(0.5, -180, 0.5, -235)
+MainFrame.Size = UDim2.new(0, 370, 0, 520)
+MainFrame.Position = UDim2.new(0.5, -185, 0.5, -260)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -47,7 +47,7 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
 MainCorner.Parent = MainFrame
 
--- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Laser Border)
+-- 3. تأثير الإطار الأحمر النيون
 local BorderGradient = Instance.new("UIGradient")
 BorderGradient.Color = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
@@ -59,7 +59,7 @@ BorderGradient.Color = ColorSequence.new({
 })
 BorderGradient.Parent = MainFrame
 
--- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الملكي
+-- 4. الواجهة الداخلية
 local InsideFrame = Instance.new("Frame")
 InsideFrame.Size = UDim2.new(1, -6, 1, -6)
 InsideFrame.Position = UDim2.new(0, 3, 0, 3)
@@ -71,7 +71,7 @@ local InsideCorner = Instance.new("UICorner")
 InsideCorner.CornerRadius = UDim.new(0, 14)
 InsideCorner.Parent = InsideFrame
 
--- 5. خط حماية علوي رفيع (Divider Line)
+-- خط فاصل
 local Line = Instance.new("Frame")
 Line.Size = UDim2.new(1, -30, 0, 2)
 Line.Position = UDim2.new(0, 15, 0, 52)
@@ -79,7 +79,7 @@ Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
 Line.Parent = InsideFrame
 
--- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك للنصوص والإطارات
+-- دالة التدرج الأحمر
 local function createRedTextGradient(parentFrame)
 	local Gradient = Instance.new("UIGradient")
 	Gradient.Color = ColorSequence.new({
@@ -93,7 +93,7 @@ local function createRedTextGradient(parentFrame)
 	return Gradient
 end
 
--- 6. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
+-- 5. العنوان
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
@@ -106,7 +106,7 @@ Title.Parent = InsideFrame
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 7. إضافة زر الإغلاق الصغير (Close Button X)
+-- 6. زر الإغلاق
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -127,57 +127,11 @@ CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- 8. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
-local SettingsButton = Instance.new("TextButton")
-SettingsButton.Size = UDim2.new(0, 102, 0, 35)
-SettingsButton.Position = UDim2.new(0, 15, 0, 65)
-SettingsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-SettingsButton.BorderSizePixel = 0
-SettingsButton.Text = "Settings"
-SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SettingsButton.TextSize = 14
-SettingsButton.Font = Enum.Font.GothamBold
-SettingsButton.Parent = InsideFrame
-local SettingsCorner = Instance.new("UICorner")
-SettingsCorner.CornerRadius = UDim.new(0, 8)
-SettingsCorner.Parent = SettingsButton
-createRedTextGradient(SettingsButton)
-
-local PlayerButton = Instance.new("TextButton")
-PlayerButton.Size = UDim2.new(0, 102, 0, 35)
-PlayerButton.Position = UDim2.new(0, 129, 0, 65)
-PlayerButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-PlayerButton.BorderSizePixel = 0
-PlayerButton.Text = "Player"
-PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-PlayerButton.TextSize = 14
-PlayerButton.Font = Enum.Font.GothamBold
-PlayerButton.Parent = InsideFrame
-local PlayerCorner = Instance.new("UICorner")
-PlayerCorner.CornerRadius = UDim.new(0, 8)
-PlayerCorner.Parent = PlayerButton
-createRedTextGradient(PlayerButton)
-
-local NewsButton = Instance.new("TextButton")
-NewsButton.Size = UDim2.new(0, 102, 0, 35)
-NewsButton.Position = UDim2.new(0, 243, 0, 65)
-NewsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-NewsButton.BorderSizePixel = 0
-NewsButton.Text = "News"
-NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-NewsButton.TextSize = 14
-NewsButton.Font = Enum.Font.GothamBold
-NewsButton.Parent = InsideFrame
-local NewsCorner = Instance.new("UICorner")
-NewsCorner.CornerRadius = UDim.new(0, 8)
-NewsCorner.Parent = NewsButton
-createRedTextGradient(NewsButton)
-
--- 9. إطار البحث الخارجي (الذي سيحمل تأثير الأطراف الحمراء المتحركة)
+-- 7. البحث
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
-SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32)
-SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 115)
+SearchBorderFrame.Size = UDim2.new(0, 290, 0, 32)
+SearchBorderFrame.Position = UDim2.new(0.5, -145, 0, 60)
 SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SearchBorderFrame.BorderSizePixel = 0
 SearchBorderFrame.Parent = InsideFrame
@@ -188,7 +142,6 @@ SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
--- خانة البحث الداخلية
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Size = UDim2.new(1, -4, 1, -4)
@@ -196,7 +149,7 @@ SearchBar.Position = UDim2.new(0, 2, 0, 2)
 SearchBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
 SearchBar.BorderSizePixel = 0
 SearchBar.ClearTextOnFocus = false
-SearchBar.PlaceholderText = "Search..."
+SearchBar.PlaceholderText = "Search scripts..."
 SearchBar.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 SearchBar.Text = ""
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -212,142 +165,188 @@ SearchCorner.Parent = SearchBar
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
 -- =============================================
--- 🔥 NEW: أزرار التفعيل تحت البحث (المطلوبة)
+-- 🔥 قائمة الأزرار تحت البحث (مثل الصورة)
 -- =============================================
 
--- 10. زر Execute (تشغيل السكربت)
-local ExecuteButton = Instance.new("TextButton")
-ExecuteButton.Name = "ExecuteButton"
-ExecuteButton.Size = UDim2.new(0, 120, 0, 38)
-ExecuteButton.Position = UDim2.new(0.5, -130, 0, 160) -- تحت البحث مباشرة
-ExecuteButton.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-ExecuteButton.BorderSizePixel = 0
-ExecuteButton.Text = "EXECUTE"
-ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ExecuteButton.TextSize = 16
-ExecuteButton.Font = Enum.Font.GothamBold
-ExecuteButton.Parent = InsideFrame
-
-local ExecuteCorner = Instance.new("UICorner")
-ExecuteCorner.CornerRadius = UDim.new(0, 10)
-ExecuteCorner.Parent = ExecuteButton
-
--- تدرج أحمر لزر التنفيذ
-local ExecuteGradient = createRedTextGradient(ExecuteButton)
-
--- 11. زر Status (حالة السكربت)
-local StatusButton = Instance.new("TextButton")
-StatusButton.Name = "StatusButton"
-StatusButton.Size = UDim2.new(0, 120, 0, 38)
-StatusButton.Position = UDim2.new(0.5, 10, 0, 160)
-StatusButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StatusButton.BorderSizePixel = 0
-StatusButton.Text = "⚡ IDLE"
-StatusButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-StatusButton.TextSize = 13
-StatusButton.Font = Enum.Font.GothamBold
-StatusButton.Parent = InsideFrame
-
-local StatusCorner = Instance.new("UICorner")
-StatusCorner.CornerRadius = UDim.new(0, 10)
-StatusCorner.Parent = StatusButton
-
--- متغير لحالة السكربت
-local scriptStatus = "IDLE" -- IDLE, LOADING, SUCCESS, ERROR
-
--- دالة تحديث حالة الزر
-local function updateStatus(status, message)
-	scriptStatus = status
-	if status == "IDLE" then
-		StatusButton.Text = "⚡ IDLE"
-		StatusButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-		StatusButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-	elseif status == "LOADING" then
-		StatusButton.Text = "⏳ LOADING..."
-		StatusButton.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
-		StatusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	elseif status == "SUCCESS" then
-		StatusButton.Text = "✅ " .. (message or "SUCCESS")
-		StatusButton.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
-		StatusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		-- إعادة تعيين تلقائياً بعد 3 ثواني
-		task.wait(3)
-		if scriptStatus == "SUCCESS" then
-			updateStatus("IDLE")
-		end
-	elseif status == "ERROR" then
-		StatusButton.Text = "❌ " .. (message or "ERROR")
-		StatusButton.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-		StatusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-		-- إعادة تعيين تلقائياً بعد 3 ثواني
-		task.wait(3)
-		if scriptStatus == "ERROR" then
-			updateStatus("IDLE")
-		end
-	end
-end
-
--- وظيفة تحميل وتنفيذ السكربت من الرابط
-local function loadAndExecuteScript()
-	if scriptStatus == "LOADING" then
-		return -- منع التحميل المتكرر
+-- دالة إنشاء زر سكربت (لكل سكربت)
+local function createScriptButton(parent, yPos, scriptName, description, scriptUrl, autoExecute)
+	local buttonContainer = Instance.new("Frame")
+	buttonContainer.Size = UDim2.new(1, -20, 0, 70)
+	buttonContainer.Position = UDim2.new(0, 10, 0, yPos)
+	buttonContainer.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+	buttonContainer.BorderSizePixel = 0
+	buttonContainer.Parent = parent
+	
+	local containerCorner = Instance.new("UICorner")
+	containerCorner.CornerRadius = UDim.new(0, 10)
+	containerCorner.Parent = buttonContainer
+	
+	-- اسم السكربت (بالأعلى)
+	local nameLabel = Instance.new("TextLabel")
+	nameLabel.Size = UDim2.new(0.7, 0, 0, 22)
+	nameLabel.Position = UDim2.new(0, 10, 0, 5)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Text = scriptName
+	nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	nameLabel.TextSize = 14
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+	nameLabel.Parent = buttonContainer
+	
+	-- الوصف (بالأسفل)
+	local descLabel = Instance.new("TextLabel")
+	descLabel.Size = UDim2.new(0.7, 0, 0, 20)
+	descLabel.Position = UDim2.new(0, 10, 0, 28)
+	descLabel.BackgroundTransparency = 1
+	descLabel.Text = description
+	descLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+	descLabel.TextSize = 12
+	descLabel.Font = Enum.Font.Gotham
+	descLabel.TextXAlignment = Enum.TextXAlignment.Left
+	descLabel.Parent = buttonContainer
+	
+	-- زر EXECUTE
+	local execBtn = Instance.new("TextButton")
+	execBtn.Size = UDim2.new(0, 75, 0, 30)
+	execBtn.Position = UDim2.new(1, -85, 0, 20)
+	execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+	execBtn.BorderSizePixel = 0
+	execBtn.Text = "EXECUTE"
+	execBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	execBtn.TextSize = 12
+	execBtn.Font = Enum.Font.GothamBold
+	execBtn.Parent = buttonContainer
+	
+	local execCorner = Instance.new("UICorner")
+	execCorner.CornerRadius = UDim.new(0, 6)
+	execCorner.Parent = execBtn
+	
+	-- تدرج أحمر لزر التنفيذ
+	createRedTextGradient(execBtn)
+	
+	-- زر AUTO (إذا كان autoExecute = true)
+	if autoExecute then
+		local autoBtn = Instance.new("TextButton")
+		autoBtn.Size = UDim2.new(0, 45, 0, 20)
+		autoBtn.Position = UDim2.new(1, -85, 0, 52)
+		autoBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		autoBtn.BorderSizePixel = 0
+		autoBtn.Text = "AUTO"
+		autoBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+		autoBtn.TextSize = 10
+		autoBtn.Font = Enum.Font.GothamBold
+		autoBtn.Parent = buttonContainer
+		
+		local autoCorner = Instance.new("UICorner")
+		autoCorner.CornerRadius = UDim.new(0, 4)
+		autoCorner.Parent = autoBtn
 	end
 	
-	updateStatus("LOADING")
-	
-	local success, result = pcall(function()
-		local scriptUrl = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201"
-		local scriptContent = game:HttpGet(scriptUrl)
-		return scriptContent
-	end)
-	
-	if success and result then
-		local loadSuccess, execError = pcall(function()
-			local func = loadstring(result)
-			if func then
-				func()
-				return true
-			else
-				return false, "Invalid script format"
-			end
+	-- دالة تنفيذ السكربت
+	local function executeScript()
+		execBtn.Text = "⏳"
+		execBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
+		
+		local success, result = pcall(function()
+			return game:HttpGet(scriptUrl)
 		end)
 		
-		if loadSuccess then
-			updateStatus("SUCCESS", "EXECUTED")
+		if success and result then
+			local loadSuccess, execError = pcall(function()
+				local func = loadstring(result)
+				if func then
+					func()
+					return true
+				else
+					return false
+				end
+			end)
+			
+			if loadSuccess then
+				execBtn.Text = "✅"
+				execBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
+				task.wait(1.5)
+			else
+				execBtn.Text = "❌"
+				execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+				task.wait(1.5)
+			end
 		else
-			updateStatus("ERROR", "INVALID SCRIPT")
+			execBtn.Text = "❌"
+			execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+			task.wait(1.5)
 		end
-	else
-		updateStatus("ERROR", "NETWORK FAIL")
+		
+		execBtn.Text = "EXECUTE"
+		execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 	end
+	
+	execBtn.MouseButton1Click:Connect(executeScript)
+	execBtn.TouchTap:Connect(executeScript)
+	
+	return buttonContainer
 end
 
--- ربط زر التنفيذ
-ExecuteButton.MouseButton1Click:Connect(function()
-	loadAndExecuteScript()
-end)
+-- قائمة السكربتات (أضف سكربتاتك هنا)
+local scripts = {
+	{
+		name = "★★★ LOR LORLN SPAM CMD",
+		desc = "HD Admin | CMD Bar | Full Control",
+		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201",
+		auto = false
+	},
+	{
+		name = "★★ LOR LORLN ANTI SPAM",
+		desc = "Anti Spam Protection System",
+		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%202",
+		auto = false
+	},
+	{
+		name = "★ LOR LORLN SPEED",
+		desc = "Speed hack for all games",
+		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%203",
+		auto = false
+	}
+}
 
--- أيضاً دعم اللمس للهواتف
-ExecuteButton.TouchTap:Connect(function()
-	loadAndExecuteScript()
-end)
+-- إنشاء الأزرار في القائمة
+local scrollContainer = Instance.new("ScrollingFrame")
+scrollContainer.Size = UDim2.new(1, 0, 0, 320)
+scrollContainer.Position = UDim2.new(0, 0, 0, 105)
+scrollContainer.BackgroundTransparency = 1
+scrollContainer.BorderSizePixel = 0
+scrollContainer.ScrollBarThickness = 4
+scrollContainer.ScrollBarImageColor3 = Color3.fromRGB(180, 0, 0)
+scrollContainer.Parent = InsideFrame
 
--- البحث يشتغل كـ placeholder، إضافة وظيفة Enter للبحث
+-- حاوية داخلية للازرار
+local buttonHolder = Instance.new("Frame")
+buttonHolder.Size = UDim2.new(1, 0, 0, #scripts * 80 + 20)
+buttonHolder.Position = UDim2.new(0, 0, 0, 0)
+buttonHolder.BackgroundTransparency = 1
+buttonHolder.Parent = scrollContainer
+
+scrollContainer.CanvasSize = UDim2.new(0, 0, 0, #scripts * 80 + 20)
+
+-- إنشاء كل زر
+for i, scriptData in ipairs(scripts) do
+	local yPos = (i - 1) * 80 + 5
+	createScriptButton(buttonHolder, yPos, scriptData.name, scriptData.desc, scriptData.url, scriptData.auto)
+end
+
+-- =============================================
+-- نهاية قائمة الأزرار
+-- =============================================
+
+-- وظيفة البحث (فلترة الأزرار)
 SearchBar.FocusLost:Connect(function(enterPressed)
 	if enterPressed then
-		local searchText = SearchBar.Text
-		if searchText ~= "" then
-			-- هنا تقدر تضيف وظيفة البحث إذا حبيت
-			print("Searching for: " .. searchText)
-		end
+		local searchText = SearchBar.Text:lower()
+		-- هنا تقدر تضيف فلترة حسب النص
 	end
 end)
 
--- =============================================
--- نهاية الإضافات الجديدة
--- =============================================
-
--- 12. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
+-- نظام الدوران
 local function animate(targetGradient, speed)
 	if targetGradient then
 		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -357,14 +356,10 @@ end
 
 animate(BorderGradient, 2)
 animate(TitleGradient, 1.5)
-animate(SettingsButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
-animate(ExecuteGradient, 1.5)
 
--- 13. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
+-- نظام السحب
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -372,7 +367,7 @@ local function update(input)
 	local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	
 	MainFrame.Position = targetPos
-	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
+	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 5, targetPos.Y.Scale, targetPos.Y.Offset - 5)
 end
 
 MainFrame.InputBegan:Connect(function(input)
@@ -394,5 +389,4 @@ UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then update(input) end
 end)
 
--- حماية إضافية للسكربت من الكسر
 print("LYNEX UI Loaded Successfully!")
