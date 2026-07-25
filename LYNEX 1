@@ -328,12 +328,12 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- ===== إضافة ملصق اللعبة الحالية =====
+-- ===== Current Game Label =====
 local CurrentGameLabel = Instance.new("TextLabel")
 CurrentGameLabel.Size = UDim2.new(1, 0, 0, 20)
 CurrentGameLabel.Position = UDim2.new(0, 0, 0, 55)
 CurrentGameLabel.BackgroundTransparency = 1
-CurrentGameLabel.Text = "🎮 السكربت المناسب للعبة الحالية يظهر في الأعلى"
+CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
 CurrentGameLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
 CurrentGameLabel.TextSize = 11
 CurrentGameLabel.Font = Enum.Font.GothamBold
@@ -461,7 +461,7 @@ local buttonsData = {
 		title = "★★★ LOR LORLN SPAM CMD", 
 		desc = "HD Admin | CMD Bar | Full Control", 
 		y = 165,
-		game = "admin",  -- اسم اللعبة المرتبطة
+		game = "admin",
 		keywords = {"spam", "cmd", "admin", "command"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -506,19 +506,19 @@ local buttonsData = {
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "★★★ بلاكس فروت (Blox Fruits)", 
-		desc = "سكربت بلوكس فروت كامل", 
+		title = "★★★ BLOX FRUITS", 
+		desc = "Blox Fruits full script", 
 		y = 933,
-		game = "blox fruits",  -- <-- هذا سكربت بلوكس فروت
-		keywords = {"blox", "fruits", "fruit", "بلاكس"},
+		game = "blox fruits",
+		keywords = {"blox", "fruits", "fruit"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "★★★ 99 ليلة (99 Night)", 
-		desc = "سكربت 99 ليلة كامل", 
+		title = "★★★ 99 NIGHT", 
+		desc = "99 Night full script", 
 		y = 1061,
-		game = "99 ليلة",  -- <-- هذا سكربت 99 ليلة
-		keywords = {"99", "ليلة", "night", "تسعة"},
+		game = "99 ليلة",
+		keywords = {"99", "night", "nine"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
@@ -547,7 +547,7 @@ local function reorderByGame()
     end)
     
     if not success then
-        return -- إذا فشل جلب اسم اللعبة، نخرج
+        return
     end
     
     local currentGame = gameInfo.Name
@@ -573,11 +573,11 @@ local function reorderByGame()
         end
         
         -- تحديث النص في الأعلى
-        CurrentGameLabel.Text = "🎯 تم إظهار سكربت: " .. matchedData.title .. " (للعبة: " .. currentGame .. ")"
+        CurrentGameLabel.Text = "🎯 Showing script: " .. matchedData.title .. " (for: " .. currentGame .. ")"
         
-        showSideNotification("🎯 تم إظهار سكربت: " .. matchedData.title, true)
+        showSideNotification("🎯 Showing: " .. matchedData.title, true)
     else
-        CurrentGameLabel.Text = "🎮 السكربت المناسب للعبة الحالية يظهر في الأعلى"
+        CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
     end
 end
 
@@ -585,7 +585,7 @@ end
 local buttonFrames = {}
 
 local function createBigButton(parent, data, index)
-	local yPos = data.y  -- استخدام الـ y من البيانات
+	local yPos = data.y
 	
 	local BorderFrame = Instance.new("Frame")
 	BorderFrame.Size = UDim2.new(0, 350, 0, 130)
@@ -683,14 +683,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("Script executed successfully!", true)
+				showSideNotification("✅ Script executed successfully!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("Error: " .. tostring(err), false)
+			showSideNotification("❌ Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
@@ -700,14 +700,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("Script executed successfully (AUTO)!", true)
+				showSideNotification("✅ Script executed successfully (AUTO)!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("Error: " .. tostring(err), false)
+			showSideNotification("❌ Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
