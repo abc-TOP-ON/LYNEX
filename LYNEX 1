@@ -4,7 +4,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LynexTabsMenu"
+ScreenGui.Name = "LynexThreeTabsMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
@@ -120,17 +120,17 @@ CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- 8. إضافة الأزرار الجديدة تحت الخط الفاصل (Tabs)
+-- 8. إضافة الأزرار الثلاثة مصطفة بشكل مثالي للموبايل (الحجم: 102 بكسل لكل زر)
 -- زر Settings
 local SettingsButton = Instance.new("TextButton")
 SettingsButton.Name = "SettingsButton"
-SettingsButton.Size = UDim2.new(0, 155, 0, 35) -- حجم مخصص للموبايل ليجاور الزر الآخر
-SettingsButton.Position = UDim2.new(0, 15, 0, 65) -- أسفل الخط بـ 13 بكسل
+SettingsButton.Size = UDim2.new(0, 102, 0, 35)
+SettingsButton.Position = UDim2.new(0, 15, 0, 65)
 SettingsButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
 SettingsButton.BorderSizePixel = 0
 SettingsButton.Text = "Settings"
 SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SettingsButton.TextSize = 15
+SettingsButton.TextSize = 14
 SettingsButton.Font = Enum.Font.GothamSemibold
 SettingsButton.Parent = InsideFrame
 
@@ -138,16 +138,16 @@ local SettingsCorner = Instance.new("UICorner")
 SettingsCorner.CornerRadius = UDim.new(0, 8)
 SettingsCorner.Parent = SettingsButton
 
--- زر Player بجانب زر Settings
+-- زر Player في المنتصف
 local PlayerButton = Instance.new("TextButton")
 PlayerButton.Name = "PlayerButton"
-PlayerButton.Size = UDim2.new(0, 155, 0, 35)
-PlayerButton.Position = UDim2.new(0, 185, 0, 65) -- بجانب زر الإعدادات مع مسافة فاصلة دقيقة
+PlayerButton.Size = UDim2.new(0, 102, 0, 35)
+PlayerButton.Position = UDim2.new(0, 129, 0, 65) -- حساب المسافة بدقة
 PlayerButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
 PlayerButton.BorderSizePixel = 0
 PlayerButton.Text = "Player"
 PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-PlayerButton.TextSize = 15
+PlayerButton.TextSize = 14
 PlayerButton.Font = Enum.Font.GothamSemibold
 PlayerButton.Parent = InsideFrame
 
@@ -155,10 +155,27 @@ local PlayerCorner = Instance.new("UICorner")
 PlayerCorner.CornerRadius = UDim.new(0, 8)
 PlayerCorner.Parent = PlayerButton
 
--- تأثيرات تفاعلية بسيطة عند الضغط على الأزرار (تغيير لون مؤقت)
+-- زر News الجديد على اليمين
+local NewsButton = Instance.new("TextButton")
+NewsButton.Name = "NewsButton"
+NewsButton.Size = UDim2.new(0, 102, 0, 35)
+NewsButton.Position = UDim2.new(0, 243, 0, 65) -- المسافة الثالثة لتعبئة السطر بالتساوي
+NewsButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+NewsButton.BorderSizePixel = 0
+NewsButton.Text = "News"
+NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+NewsButton.TextSize = 14
+NewsButton.Font = Enum.Font.GothamSemibold
+NewsButton.Parent = InsideFrame
+
+local NewsCorner = Instance.new("UICorner")
+NewsCorner.CornerRadius = UDim.new(0, 8)
+NewsCorner.Parent = NewsButton
+
+-- تأثيرات تفاعلية بسيطة للأزرار عند الضغط
 local function addClickEffect(button)
 	button.MouseButton1Down:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(40, 20, 20) -- يميل للأحمر الداكن عند الضغط
+		button.BackgroundColor3 = Color3.fromRGB(40, 20, 20)
 	end)
 	button.MouseButton1Up:Connect(function()
 		button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
@@ -166,15 +183,16 @@ local function addClickEffect(button)
 end
 addClickEffect(SettingsButton)
 addClickEffect(PlayerButton)
+addClickEffect(NewsButton)
 
--- 9. تشغيل حركة الدوران اللانهائية بنعومة تامة للإطار وللاسم معاً
+-- 9. تشغيل حركة الدوران اللانهائية
 local RotateTween = TweenService:Create(BorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 RotateTween:Play()
 
 local TextTween = TweenService:Create(TextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 TextTween:Play()
 
--- 10. نظام سحب وتحريك الواجهة باللمس المخصص للهواتف ذكي وسلس
+-- 10. نظام سحب وتحريك الواجهة باللمس للموبايل
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
