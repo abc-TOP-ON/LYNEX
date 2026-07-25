@@ -4,7 +4,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LynexThreeTabsMenu"
+ScreenGui.Name = "LynexGlowTabsMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
@@ -78,7 +78,21 @@ Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
 Line.Parent = InsideFrame
 
--- 6. اسم السكربت الاحترافي LYNEX مع تدرج لوني متحرك خاص به
+-- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك للنصوص
+local function createRedTextGradient(parentFrame)
+	local Gradient = Instance.new("UIGradient")
+	Gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 90, 90)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(130, 0, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 90, 90)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	Gradient.Parent = parentFrame
+	return Gradient
+end
+
+-- 6. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
@@ -89,15 +103,7 @@ Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
 Title.Parent = InsideFrame
 
-local TextGradient = Instance.new("UIGradient")
-TextGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-	ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 0, 0)),
-	ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-})
-TextGradient.Parent = Title
+local TitleGradient = createRedTextGradient(Title)
 
 -- 7. إضافة زر الإغلاق الصغير (Close Button X)
 local CloseButton = Instance.new("TextButton")
@@ -120,79 +126,77 @@ CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- 8. إضافة الأزرار الثلاثة مصطفة بشكل مثالي للموبايل (الحجم: 102 بكسل لكل زر)
+-- 8. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
 -- زر Settings
 local SettingsButton = Instance.new("TextButton")
 SettingsButton.Name = "SettingsButton"
 SettingsButton.Size = UDim2.new(0, 102, 0, 35)
 SettingsButton.Position = UDim2.new(0, 15, 0, 65)
-SettingsButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+SettingsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 SettingsButton.BorderSizePixel = 0
 SettingsButton.Text = "Settings"
 SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 SettingsButton.TextSize = 14
-SettingsButton.Font = Enum.Font.GothamSemibold
+SettingsButton.Font = Enum.Font.GothamBold
 SettingsButton.Parent = InsideFrame
 
 local SettingsCorner = Instance.new("UICorner")
 SettingsCorner.CornerRadius = UDim.new(0, 8)
 SettingsCorner.Parent = SettingsButton
 
+local SettingsGradient = createRedTextGradient(SettingsButton)
+
 -- زر Player في المنتصف
 local PlayerButton = Instance.new("TextButton")
 PlayerButton.Name = "PlayerButton"
 PlayerButton.Size = UDim2.new(0, 102, 0, 35)
-PlayerButton.Position = UDim2.new(0, 129, 0, 65) -- حساب المسافة بدقة
-PlayerButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+PlayerButton.Position = UDim2.new(0, 129, 0, 65)
+PlayerButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 PlayerButton.BorderSizePixel = 0
 PlayerButton.Text = "Player"
 PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayerButton.TextSize = 14
-PlayerButton.Font = Enum.Font.GothamSemibold
+PlayerButton.Font = Enum.Font.GothamBold
 PlayerButton.Parent = InsideFrame
 
 local PlayerCorner = Instance.new("UICorner")
 PlayerCorner.CornerRadius = UDim.new(0, 8)
 PlayerCorner.Parent = PlayerButton
 
+local PlayerGradient = createRedTextGradient(PlayerButton)
+
 -- زر News الجديد على اليمين
 local NewsButton = Instance.new("TextButton")
 NewsButton.Name = "NewsButton"
 NewsButton.Size = UDim2.new(0, 102, 0, 35)
-NewsButton.Position = UDim2.new(0, 243, 0, 65) -- المسافة الثالثة لتعبئة السطر بالتساوي
-NewsButton.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+NewsButton.Position = UDim2.new(0, 243, 0, 65)
+NewsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 NewsButton.BorderSizePixel = 0
 NewsButton.Text = "News"
 NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 NewsButton.TextSize = 14
-NewsButton.Font = Enum.Font.GothamSemibold
+NewsButton.Font = Enum.Font.GothamBold
 NewsButton.Parent = InsideFrame
 
 local NewsCorner = Instance.new("UICorner")
 NewsCorner.CornerRadius = UDim.new(0, 8)
 NewsCorner.Parent = NewsButton
 
--- تأثيرات تفاعلية بسيطة للأزرار عند الضغط
-local function addClickEffect(button)
-	button.MouseButton1Down:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(40, 20, 20)
-	end)
-	button.MouseButton1Up:Connect(function()
-		button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-	end)
+local NewsGradient = createRedTextGradient(NewsButton)
+
+-- 9. نظام تشغيل حركة الدوران اللانهائية لجميع العناصر المتوهجة بنعومة تامة
+local function animate(targetGradient, speed)
+	local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	Tween:Play()
 end
-addClickEffect(SettingsButton)
-addClickEffect(PlayerButton)
-addClickEffect(NewsButton)
 
--- 9. تشغيل حركة الدوران اللانهائية
-local RotateTween = TweenService:Create(BorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-RotateTween:Play()
+animate(BorderGradient, 2)     -- دوران الإطار الخارجي (ثانيتين)
+animate(TitleGradient, 1.5)     -- دوران توهج كلمة LYNEX (ثانية ونصف)
+animate(SettingsButton:FindFirstChildOfClass("UIGradient"), 1.8) -- دوران توهج نص Settings
+animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)   -- دوران توهج نص Player
+animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)     -- دوران توهج نص News
 
-local TextTween = TweenService:Create(TextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-TextTween:Play()
-
--- 10. نظام سحب وتحريك الواجهة باللمس للموبايل
+-- 10. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
