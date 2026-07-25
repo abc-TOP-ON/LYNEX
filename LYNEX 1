@@ -1261,7 +1261,7 @@ local function createSettingsWindow()
 	return SettingsFrame
 end
 
--- ========== نافذة Player (مصغرة) ==========
+-- ========== نافذة Player (مصغرة مع إصلاح ON/OFF) ==========
 local function createPlayerWindow()
 	local PlayerFrame = Instance.new("Frame")
 	PlayerFrame.Size = UDim2.new(0, 280, 0, 380)
@@ -1365,10 +1365,10 @@ local function createPlayerWindow()
 	PlayerScroll.ZIndex = 12
 	PlayerScroll.ScrollBarThickness = 3
 	PlayerScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
-	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
+	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 750)
 	
 	local PlayerContainer = Instance.new("Frame")
-	PlayerContainer.Size = UDim2.new(1, 0, 0, 700)
+	PlayerContainer.Size = UDim2.new(1, 0, 0, 750)
 	PlayerContainer.BackgroundTransparency = 1
 	PlayerContainer.Parent = PlayerScroll
 	PlayerContainer.ZIndex = 12
@@ -1398,7 +1398,7 @@ local function createPlayerWindow()
 	SpeedBox.Position = UDim2.new(0, 10, 0, pY)
 	SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	SpeedBox.BorderSizePixel = 0
-	SpeedBox.Text = "16"
+	SpeedBox.Text = tostring(playerSettings.speed)
 	SpeedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 	SpeedBox.TextSize = 11
 	SpeedBox.Font = Enum.Font.GothamBold
@@ -1425,7 +1425,9 @@ local function createPlayerWindow()
 	SpeedBtnCorner.Parent = SpeedBtn
 	
 	SpeedBtn.MouseButton1Click:Connect(function()
-		setSpeed(tonumber(SpeedBox.Text) or 16)
+		local val = tonumber(SpeedBox.Text) or 16
+		setSpeed(val)
+		showSideNotification("⚡ Speed: " .. val, true)
 	end)
 	
 	pY = pY + 28
@@ -1453,7 +1455,7 @@ local function createPlayerWindow()
 	JumpBox.Position = UDim2.new(0, 10, 0, pY)
 	JumpBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	JumpBox.BorderSizePixel = 0
-	JumpBox.Text = "50"
+	JumpBox.Text = tostring(playerSettings.jumpPower)
 	JumpBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 	JumpBox.TextSize = 11
 	JumpBox.Font = Enum.Font.GothamBold
@@ -1480,7 +1482,9 @@ local function createPlayerWindow()
 	JumpBtnCorner.Parent = JumpBtn
 	
 	JumpBtn.MouseButton1Click:Connect(function()
-		setJumpPower(tonumber(JumpBox.Text) or 50)
+		local val = tonumber(JumpBox.Text) or 50
+		setJumpPower(val)
+		showSideNotification("🦘 Jump: " .. val, true)
 	end)
 	
 	pY = pY + 28
@@ -1533,10 +1537,12 @@ local function createPlayerWindow()
 		toggleNoclip()
 		if playerSettings.noclip then
 			NoclipBtn.Text = "🟢 ON"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			NoclipBtn.Text = "🔴 OFF"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			NoclipBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
@@ -1579,10 +1585,12 @@ local function createPlayerWindow()
 		toggleSpin()
 		if playerSettings.spin then
 			SpinBtn.Text = "🟢 ON"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			SpinBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			SpinBtn.Text = "🔴 OFF"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			SpinBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
@@ -1625,10 +1633,12 @@ local function createPlayerWindow()
 		toggleFly()
 		if playerSettings.fly then
 			FlyBtn.Text = "🟢 ON"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			FlyBtn.Text = "🔴 OFF"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			FlyBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
@@ -1671,10 +1681,12 @@ local function createPlayerWindow()
 		toggleInfiniteJump()
 		if playerSettings.infiniteJump then
 			InfJumpBtn.Text = "🟢 ON"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			InfJumpBtn.Text = "🔴 OFF"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
@@ -1717,10 +1729,12 @@ local function createPlayerWindow()
 		toggleLowGravity()
 		if playerSettings.lowGravity then
 			LowGravBtn.Text = "🟢 ON"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			LowGravBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			LowGravBtn.Text = "🔴 OFF"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			LowGravBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
@@ -1763,10 +1777,12 @@ local function createPlayerWindow()
 		toggleFOV120()
 		if playerSettings.fov120 then
 			FOVBtn.Text = "🟢 ON"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
+			FOVBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+			FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		else
 			FOVBtn.Text = "🔴 OFF"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+			FOVBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+			FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 		end
 	end)
 	
