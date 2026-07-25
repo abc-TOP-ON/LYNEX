@@ -2,10 +2,9 @@
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local Players = game:GetService("Players")
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DeltaV10PremiumMenu"
+ScreenGui.Name = "LynexFinalMenu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
@@ -19,13 +18,13 @@ else
 	ScreenGui.Parent = CoreGui 
 end
 
--- 1. الظل الخارجي المضيء (Glow Effect) ليعطي الواجهة عمقاً خرافياً
+-- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 368, 0, 428) -- أكبر بقليل ليشكل خلفية مضيئة
+GlowFrame.Size = UDim2.new(0, 368, 0, 428)
 GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -214)
-GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- توهج أحمر
-GlowFrame.BackgroundTransparency = 0.6 -- شفافية ناعمة للهواتف
+GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
 GlowFrame.Parent = ScreenGui
 
@@ -33,7 +32,7 @@ local GlowCorner = Instance.new("UICorner")
 GlowCorner.CornerRadius = UDim.new(0, 18)
 GlowCorner.Parent = GlowFrame
 
--- 2. الإطار الرئيسي (MainFrame) - متناسق وثابت
+-- 2. الإطار الرئيسي (MainFrame)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 360, 0, 420)
@@ -47,23 +46,23 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
 MainCorner.Parent = MainFrame
 
--- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Premium Laser Gradient)
-local UIGradient = Instance.new("UIGradient")
-UIGradient.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),       -- أحمر ليزر ناصع
-	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(120, 0, 0)),     -- أحmer داكن
-	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),    -- أسود مدمج
-	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),    -- أسود مدمج
-	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(120, 0, 0)),     -- أحمر داكن
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))        -- أحمر ليزر متصل
+-- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Laser Border)
+local BorderGradient = Instance.new("UIGradient")
+BorderGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
 })
-UIGradient.Parent = MainFrame
+BorderGradient.Parent = MainFrame
 
--- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الفاخر جداً
+-- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الملكي
 local InsideFrame = Instance.new("Frame")
-InsideFrame.Size = UDim2.new(1, -6, 1, -6) -- سمك الإطار الدوار بدقة 3 بكسل
+InsideFrame.Size = UDim2.new(1, -6, 1, -6)
 InsideFrame.Position = UDim2.new(0, 3, 0, 3)
-InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12) -- أسود داكن ملكي فخم ومريح للعين
+InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 InsideFrame.BorderSizePixel = 0
 InsideFrame.Parent = MainFrame
 
@@ -71,7 +70,7 @@ local InsideCorner = Instance.new("UICorner")
 InsideCorner.CornerRadius = UDim.new(0, 14)
 InsideCorner.Parent = InsideFrame
 
--- 5. خط حماية علوي رفيع يفصل العنوان عن المحتوى (Top Divider Line)
+-- 5. خط حماية علوي رفيع (Divider Line)
 local Line = Instance.new("Frame")
 Line.Size = UDim2.new(1, -30, 0, 2)
 Line.Position = UDim2.new(0, 15, 0, 52)
@@ -79,29 +78,71 @@ Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
 Line.Parent = InsideFrame
 
--- 6. عنوان الواجهة بتصميم خط عصري ومميز
+-- 6. اسم السكربت الاحترافي LYNEX مع تدرج لوني متحرك خاص به
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
-Title.Text = "DELTA V10 PREMIUM"
+Title.Text = "LYNEX"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 19
+Title.TextSize = 26
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
 Title.Parent = InsideFrame
 
--- 7. تشغيل حركة الدوران اللانهائية بنعومة تامة (Linear Smooth Tween)
-local RotateTween = TweenService:Create(UIGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+local TextGradient = Instance.new("UIGradient")
+TextGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120, 0, 0)),
+	ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+})
+TextGradient.Parent = Title
+
+-- 7. إضافة زر الإغلاق الصغير (Close Button X)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -40, 0, 10) -- وضعه في أعلى اليمين بدقة
+CloseButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
+CloseButton.BorderSizePixel = 0
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50) -- لون أحمر ناصع للزر
+CloseButton.TextSize = 16
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Parent = InsideFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseButton
+
+-- برمجة وظيفة الإغلاق عند الضغط على الزر (تدمير الواجهة)
+CloseButton.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+-- تأثير بصري خفيف للزر عند اللمس (تغيير لون النص)
+CloseButton.MouseEnter:Connect(function()
+	CloseButton.TextColor3 = Color3.fromRGB(255, 150, 150)
+end)
+CloseButton.MouseLeave:Connect(function()
+	CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+end)
+
+-- 8. تشغيل حركة الدوران اللانهائية بنعومة تامة للإطار وللاسم معاً
+local RotateTween = TweenService:Create(BorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 RotateTween:Play()
 
--- 8. نظام سحب متطور وسلس للغاية يعتمد على تتبع اللمس الفوري للموبايل
+local TextTween = TweenService:Create(TextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+TextTween:Play()
+
+-- 9. نظام سحب متطور وسلس للغاية يعتمد على تتبع اللمس الفوري للموبايل
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
 	local delta = input.Position - dragStart
 	local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	
-	-- تحريك الواجهة والظل معاً في نفس اللحظة لمنع التفكك
 	MainFrame.Position = targetPos
 	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
 end
