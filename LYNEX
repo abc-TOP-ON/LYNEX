@@ -85,7 +85,7 @@ ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
 ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)
 
--- 6. الحاوية الداخلية للأزرار
+-- 6. الحاوية الداخلية للأزرار (المحتوى)
 local Container = Instance.new("Frame")
 Container.Size = UDim2.new(1, 0, 0, 1550)
 Container.Position = UDim2.new(0, 0, 0, 0)
@@ -130,9 +130,8 @@ local function createGoldGradient(parentFrame)
 	return Gradient
 end
 
--- ========== نظام الإشعارات الجانبية مع إطار أحمر متحرك وخلفية سوداء ==========
+-- ========== نظام الإشعارات الجانبية ==========
 local function showSideNotification(message, isSuccess)
-	-- الإطار الخارجي الأحمر المتحرك
 	local notifBorder = Instance.new("Frame")
 	notifBorder.Size = UDim2.new(0, 300, 0, 54)
 	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
@@ -145,10 +144,8 @@ local function showSideNotification(message, isSuccess)
 	notifBorderCorner.CornerRadius = UDim.new(0, 12)
 	notifBorderCorner.Parent = notifBorder
 	
-	-- تدرج أحمر متحرك للإطار الخارجي
 	local notifBorderGradient = createRedTextGradient(notifBorder)
 	
-	-- الإطار الداخلي (الأسود)
 	local notifFrame = Instance.new("Frame")
 	notifFrame.Size = UDim2.new(1, -4, 1, -4)
 	notifFrame.Position = UDim2.new(0, 2, 0, 2)
@@ -161,7 +158,6 @@ local function showSideNotification(message, isSuccess)
 	notifFrameCorner.CornerRadius = UDim.new(0, 10)
 	notifFrameCorner.Parent = notifFrame
 	
-	-- Border داخلي (لون النجاح/الخطأ)
 	local innerBorder = Instance.new("Frame")
 	innerBorder.Size = UDim2.new(1, 0, 1, 0)
 	innerBorder.Position = UDim2.new(0, 0, 0, 0)
@@ -173,7 +169,6 @@ local function showSideNotification(message, isSuccess)
 	innerCorner.CornerRadius = UDim.new(0, 10)
 	innerCorner.Parent = innerBorder
 	
-	-- أيقونة النجاح/الخطأ
 	local iconLabel = Instance.new("TextLabel")
 	iconLabel.Size = UDim2.new(0, 30, 1, 0)
 	iconLabel.Position = UDim2.new(0, 10, 0, 0)
@@ -185,7 +180,6 @@ local function showSideNotification(message, isSuccess)
 	iconLabel.TextXAlignment = Enum.TextXAlignment.Center
 	iconLabel.Parent = notifFrame
 	
-	-- النص
 	local notifLabel = Instance.new("TextLabel")
 	notifLabel.Size = UDim2.new(1, -50, 1, 0)
 	notifLabel.Position = UDim2.new(0, 45, 0, 0)
@@ -198,21 +192,18 @@ local function showSideNotification(message, isSuccess)
 	notifLabel.TextWrapped = true
 	notifLabel.Parent = notifFrame
 	
-	-- تأثير الدوران للإطار الخارجي
 	local function animateNotifBorder()
 		local tween = TweenService:Create(notifBorderGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 		tween:Play()
 	end
 	animateNotifBorder()
 	
-	-- تأثير الدخول (من اليمين)
 	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
 	local tweenIn = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Position = UDim2.new(1, -320, 0.5, -27)
 	})
 	tweenIn:Play()
 	
-	-- تأثير الخروج بعد 3 ثواني
 	task.wait(3)
 	local tweenOut = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
 		Position = UDim2.new(1, 0, 0.5, -27)
@@ -235,7 +226,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 9. زر الإغلاق
+-- 9. زر الإغلاق (X) - يخفي المحتوى فقط (يخرج من السكربت)
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -253,7 +244,89 @@ CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
 CloseButton.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+	-- إخفاء المحتوى (الخروج من السكربت)
+	Container.Visible = false
+	LYNEXLabel.Text = "🔓 ENTER"
+	LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	isInside = false
+	showSideNotification("🔒 Exited LYNEX Script!", true)
+end)
+
+-- ========== زر LYNEX (دخول/خروج من السكربت) ==========
+local LYNEXButton = Instance.new("TextButton")
+LYNEXButton.Name = "LYNEXButton"
+LYNEXButton.Size = UDim2.new(0, 80, 0, 30)
+LYNEXButton.Position = UDim2.new(0.5, -40, 0, 5)
+LYNEXButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+LYNEXButton.BackgroundTransparency = 0.3
+LYNEXButton.BorderSizePixel = 0
+LYNEXButton.Text = ""
+LYNEXButton.Parent = InsideFrame
+
+local LYNEXCorner = Instance.new("UICorner")
+LYNEXCorner.CornerRadius = UDim.new(0, 10)
+LYNEXCorner.Parent = LYNEXButton
+
+-- تدرج أحمر متحرك للزر
+local LYNEXGradient = createRedTextGradient(LYNEXButton)
+
+-- الإطار الداخلي الأسود
+local LYNEXInner = Instance.new("Frame")
+LYNEXInner.Size = UDim2.new(1, -4, 1, -4)
+LYNEXInner.Position = UDim2.new(0, 2, 0, 2)
+LYNEXInner.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+LYNEXInner.BorderSizePixel = 0
+LYNEXInner.Parent = LYNEXButton
+
+local LYNEXInnerCorner = Instance.new("UICorner")
+LYNEXInnerCorner.CornerRadius = UDim.new(0, 8)
+LYNEXInnerCorner.Parent = LYNEXInner
+
+-- نص LYNEX داخل الزر
+local LYNEXLabel = Instance.new("TextLabel")
+LYNEXLabel.Size = UDim2.new(1, 0, 1, 0)
+LYNEXLabel.Position = UDim2.new(0, 0, 0, 0)
+LYNEXLabel.BackgroundTransparency = 1
+LYNEXLabel.Text = "🔓 ENTER"
+LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+LYNEXLabel.TextSize = 13
+LYNEXLabel.Font = Enum.Font.GothamBold
+LYNEXLabel.TextXAlignment = Enum.TextXAlignment.Center
+LYNEXLabel.Parent = LYNEXInner
+
+-- تدرج أحمر متحرك للنص
+local LYNEXTextGradient = createRedTextGradient(LYNEXLabel)
+
+-- تأثير الدوران للزر
+local function animateLYNEX()
+	local tween1 = TweenService:Create(LYNEXGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	tween1:Play()
+	
+	local tween2 = TweenService:Create(LYNEXTextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	tween2:Play()
+end
+animateLYNEX()
+
+-- متغير لحالة الدخول/الخروج
+local isInside = false
+
+-- الوظيفة: عند الضغط على زر LYNEX
+LYNEXButton.MouseButton1Click:Connect(function()
+	isInside = not isInside
+	
+	if isInside then
+		-- دخول إلى السكربت (إظهار المحتوى)
+		Container.Visible = true
+		LYNEXLabel.Text = "🔒 EXIT"
+		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+		showSideNotification("🔓 Entered LYNEX Script!", true)
+	else
+		-- خروج من السكربت (إخفاء المحتوى)
+		Container.Visible = false
+		LYNEXLabel.Text = "🔓 ENTER"
+		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		showSideNotification("🔒 Exited LYNEX Script!", true)
+	end
 end)
 
 -- 10. الأزرار العلوية
@@ -420,7 +493,6 @@ local buttonFrames = {}
 local function createBigButton(parent, data, index)
 	local yPos = data.y
 	
-	-- الإطار الخارجي الأحمر
 	local BorderFrame = Instance.new("Frame")
 	BorderFrame.Size = UDim2.new(0, 350, 0, 130)
 	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
@@ -436,7 +508,6 @@ local function createBigButton(parent, data, index)
 	
 	local BorderGradientBtn = createRedTextGradient(BorderFrame)
 	
-	-- الزر الداخلي
 	local ButtonFrame = Instance.new("Frame")
 	ButtonFrame.Size = UDim2.new(1, -4, 1, -4)
 	ButtonFrame.Position = UDim2.new(0, 2, 0, 2)
@@ -448,7 +519,6 @@ local function createBigButton(parent, data, index)
 	ButtonCorner.CornerRadius = UDim.new(0, 10)
 	ButtonCorner.Parent = ButtonFrame
 	
-	-- العنوان
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Size = UDim2.new(1, -20, 0, 30)
 	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
@@ -461,7 +531,6 @@ local function createBigButton(parent, data, index)
 	TitleLabel.Parent = ButtonFrame
 	local TitleGradBtn = createRedTextGradient(TitleLabel)
 	
-	-- زر EXECUTE
 	local ExecuteButton = Instance.new("TextButton")
 	ExecuteButton.Size = UDim2.new(0, 80, 0, 28)
 	ExecuteButton.Position = UDim2.new(1, -90, 0, 10)
@@ -477,7 +546,6 @@ local function createBigButton(parent, data, index)
 	ExecCorner.Parent = ExecuteButton
 	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
-	-- زر AUTO باللون الذهبي
 	local AutoButton = Instance.new("TextButton")
 	AutoButton.Size = UDim2.new(0, 80, 0, 22)
 	AutoButton.Position = UDim2.new(1, -90, 0, 42)
@@ -493,14 +561,12 @@ local function createBigButton(parent, data, index)
 	AutoCorner.Parent = AutoButton
 	local AutoGrad = createGoldGradient(AutoButton)
 	
-	-- تأثير الدوران للـ AUTO
 	local function animateAuto()
 		local tween = TweenService:Create(AutoGrad, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 		tween:Play()
 	end
 	animateAuto()
 	
-	-- الوصف
 	local DescLabel = Instance.new("TextLabel")
 	DescLabel.Size = UDim2.new(1, -20, 0, 20)
 	DescLabel.Position = UDim2.new(0, 10, 0, 42)
@@ -512,14 +578,12 @@ local function createBigButton(parent, data, index)
 	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
 	DescLabel.Parent = ButtonFrame
 	
-	-- تأثير الدوران للإطار
 	local function animateBorder()
 		local tween = TweenService:Create(BorderGradientBtn, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 		tween:Play()
 	end
 	animateBorder()
 	
-	-- أكشن عند الضغط على Execute
 	ExecuteButton.MouseButton1Click:Connect(function()
 		local success, err = pcall(function()
 			local scriptFunc = loadstring(data.script)
@@ -537,7 +601,6 @@ local function createBigButton(parent, data, index)
 		end
 	end)
 	
-	-- أكشن عند الضغط على AUTO
 	AutoButton.MouseButton1Click:Connect(function()
 		local success, err = pcall(function()
 			local scriptFunc = loadstring(data.script)
@@ -616,9 +679,7 @@ local function update(input)
 	
 	MainFrame.Position = targetPos
 	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
-end
-
-MainFrame.InputBegan:Connect(function(input)
+endMainFrame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
@@ -639,3 +700,6 @@ end)
 
 -- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
+
+-- ========== بداية السكربت: المحتوى مخفي ==========
+Container.Visible = false
