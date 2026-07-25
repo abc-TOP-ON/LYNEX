@@ -114,7 +114,7 @@ end
 
 -- 3. اختراق الجدران (Noclip)
 local noclipConnection
-local function toggleNoclip()
+local function toggleNoclip(btn)
 	playerSettings.noclip = not playerSettings.noclip
 	
 	if playerSettings.noclip then
@@ -130,6 +130,10 @@ local function toggleNoclip()
 			end
 		end)
 		showSideNotification("🚪 Noclip: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if noclipConnection then
 			noclipConnection:Disconnect()
@@ -143,12 +147,16 @@ local function toggleNoclip()
 			end
 		end
 		showSideNotification("🚪 Noclip: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 4. الدوران (Spin)
 local spinConnection
-local function toggleSpin()
+local function toggleSpin(btn)
 	playerSettings.spin = not playerSettings.spin
 	
 	if playerSettings.spin then
@@ -159,18 +167,26 @@ local function toggleSpin()
 			end
 		end)
 		showSideNotification("🔄 Spin: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if spinConnection then
 			spinConnection:Disconnect()
 			spinConnection = nil
 		end
 		showSideNotification("🔄 Spin: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 5. الطيران (Fly)
 local flyConnection, flyBodyVelocity, flyGyro
-local function toggleFly()
+local function toggleFly(btn)
 	playerSettings.fly = not playerSettings.fly
 	
 	if playerSettings.fly then
@@ -206,17 +222,25 @@ local function toggleFly()
 		end)
 		
 		showSideNotification("✈️ Fly: ON (WASD + Space/Shift)", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if flyConnection then flyConnection:Disconnect() flyConnection = nil end
 		if flyBodyVelocity then flyBodyVelocity:Destroy() flyBodyVelocity = nil end
 		if flyGyro then flyGyro:Destroy() flyGyro = nil end
 		showSideNotification("✈️ Fly: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 6. قفز لا نهائي (Infinite Jump)
 local infiniteJumpConnection
-local function toggleInfiniteJump()
+local function toggleInfiniteJump(btn)
 	playerSettings.infiniteJump = not playerSettings.infiniteJump
 	
 	if playerSettings.infiniteJump then
@@ -227,38 +251,62 @@ local function toggleInfiniteJump()
 			end
 		end)
 		showSideNotification("♾️ Infinite Jump: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if infiniteJumpConnection then
 			infiniteJumpConnection:Disconnect()
 			infiniteJumpConnection = nil
 		end
 		showSideNotification("♾️ Infinite Jump: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 7. انخفاض الجاذبية (Low Gravity)
-local function toggleLowGravity()
+local function toggleLowGravity(btn)
 	playerSettings.lowGravity = not playerSettings.lowGravity
 	
 	if playerSettings.lowGravity then
 		Workspace.Gravity = 50
 		showSideNotification("🌕 Low Gravity: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		Workspace.Gravity = 196.2
 		showSideNotification("🌕 Low Gravity: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 8. زاوية الرؤية 120 (FOV 120)
-local function toggleFOV120()
+local function toggleFOV120(btn)
 	playerSettings.fov120 = not playerSettings.fov120
 	
 	if playerSettings.fov120 then
 		Camera.FieldOfView = 120
 		showSideNotification("👁️ FOV 120: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		Camera.FieldOfView = 70
 		showSideNotification("👁️ FOV 120: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
@@ -1261,7 +1309,7 @@ local function createSettingsWindow()
 	return SettingsFrame
 end
 
--- ========== نافذة Player (مصغرة مع إصلاح ON/OFF) ==========
+-- ========== نافذة Player (مصغرة مع إصلاح نهائي) ==========
 local function createPlayerWindow()
 	local PlayerFrame = Instance.new("Frame")
 	PlayerFrame.Size = UDim2.new(0, 280, 0, 380)
@@ -1521,7 +1569,7 @@ local function createPlayerWindow()
 	local NoclipBtn = Instance.new("TextButton")
 	NoclipBtn.Size = UDim2.new(0, 100, 0, 24)
 	NoclipBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	NoclipBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	NoclipBtn.BorderSizePixel = 0
 	NoclipBtn.Text = "🔴 OFF"
 	NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1534,16 +1582,7 @@ local function createPlayerWindow()
 	NoclipCorner.Parent = NoclipBtn
 	
 	NoclipBtn.MouseButton1Click:Connect(function()
-		toggleNoclip()
-		if playerSettings.noclip then
-			NoclipBtn.Text = "🟢 ON"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			NoclipBtn.Text = "🔴 OFF"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleNoclip(NoclipBtn)
 	end)
 	
 	pY = pY + 30
@@ -1569,7 +1608,7 @@ local function createPlayerWindow()
 	local SpinBtn = Instance.new("TextButton")
 	SpinBtn.Size = UDim2.new(0, 100, 0, 24)
 	SpinBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	SpinBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	SpinBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	SpinBtn.BorderSizePixel = 0
 	SpinBtn.Text = "🔴 OFF"
 	SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1582,16 +1621,7 @@ local function createPlayerWindow()
 	SpinCorner.Parent = SpinBtn
 	
 	SpinBtn.MouseButton1Click:Connect(function()
-		toggleSpin()
-		if playerSettings.spin then
-			SpinBtn.Text = "🟢 ON"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			SpinBtn.Text = "🔴 OFF"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleSpin(SpinBtn)
 	end)
 	
 	pY = pY + 30
@@ -1617,7 +1647,7 @@ local function createPlayerWindow()
 	local FlyBtn = Instance.new("TextButton")
 	FlyBtn.Size = UDim2.new(0, 100, 0, 24)
 	FlyBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	FlyBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	FlyBtn.BorderSizePixel = 0
 	FlyBtn.Text = "🔴 OFF"
 	FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1630,16 +1660,7 @@ local function createPlayerWindow()
 	FlyCorner.Parent = FlyBtn
 	
 	FlyBtn.MouseButton1Click:Connect(function()
-		toggleFly()
-		if playerSettings.fly then
-			FlyBtn.Text = "🟢 ON"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			FlyBtn.Text = "🔴 OFF"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleFly(FlyBtn)
 	end)
 	
 	pY = pY + 30
@@ -1665,7 +1686,7 @@ local function createPlayerWindow()
 	local InfJumpBtn = Instance.new("TextButton")
 	InfJumpBtn.Size = UDim2.new(0, 100, 0, 24)
 	InfJumpBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	InfJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	InfJumpBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	InfJumpBtn.BorderSizePixel = 0
 	InfJumpBtn.Text = "🔴 OFF"
 	InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1678,16 +1699,7 @@ local function createPlayerWindow()
 	InfCorner.Parent = InfJumpBtn
 	
 	InfJumpBtn.MouseButton1Click:Connect(function()
-		toggleInfiniteJump()
-		if playerSettings.infiniteJump then
-			InfJumpBtn.Text = "🟢 ON"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			InfJumpBtn.Text = "🔴 OFF"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleInfiniteJump(InfJumpBtn)
 	end)
 	
 	pY = pY + 30
@@ -1713,7 +1725,7 @@ local function createPlayerWindow()
 	local LowGravBtn = Instance.new("TextButton")
 	LowGravBtn.Size = UDim2.new(0, 100, 0, 24)
 	LowGravBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	LowGravBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	LowGravBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	LowGravBtn.BorderSizePixel = 0
 	LowGravBtn.Text = "🔴 OFF"
 	LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1726,16 +1738,7 @@ local function createPlayerWindow()
 	LowGravCorner.Parent = LowGravBtn
 	
 	LowGravBtn.MouseButton1Click:Connect(function()
-		toggleLowGravity()
-		if playerSettings.lowGravity then
-			LowGravBtn.Text = "🟢 ON"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			LowGravBtn.Text = "🔴 OFF"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleLowGravity(LowGravBtn)
 	end)
 	
 	pY = pY + 30
@@ -1761,7 +1764,7 @@ local function createPlayerWindow()
 	local FOVBtn = Instance.new("TextButton")
 	FOVBtn.Size = UDim2.new(0, 100, 0, 24)
 	FOVBtn.Position = UDim2.new(0.5, -50, 0, pY)
-	FOVBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	FOVBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
 	FOVBtn.BorderSizePixel = 0
 	FOVBtn.Text = "🔴 OFF"
 	FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -1774,16 +1777,7 @@ local function createPlayerWindow()
 	FOVCorner.Parent = FOVBtn
 	
 	FOVBtn.MouseButton1Click:Connect(function()
-		toggleFOV120()
-		if playerSettings.fov120 then
-			FOVBtn.Text = "🟢 ON"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
-			FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		else
-			FOVBtn.Text = "🔴 OFF"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-			FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		end
+		toggleFOV120(FOVBtn)
 	end)
 	
 	pY = pY + 30
