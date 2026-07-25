@@ -1,1 +1,126 @@
+-- تحسين الأداء ومنع التقطيع على الهواتف
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
 
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DeltaV10PremiumMenu"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+
+-- حماية السكربت والتأكد من توافقه مع محاقن الهواتف
+if syn and syn.protect_gui then 
+	syn.protect_gui(ScreenGui) 
+	ScreenGui.Parent = CoreGui
+elseif getgui then 
+	ScreenGui.Parent = getgui()
+else 
+	ScreenGui.Parent = CoreGui 
+end
+
+-- 1. الظل الخارجي المضيء (Glow Effect) ليعطي الواجهة عمقاً خرافياً
+local GlowFrame = Instance.new("Frame")
+GlowFrame.Name = "GlowFrame"
+GlowFrame.Size = UDim2.new(0, 368, 0, 428) -- أكبر بقليل ليشكل خلفية مضيئة
+GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -214)
+GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- توهج أحمر
+GlowFrame.BackgroundTransparency = 0.6 -- شفافية ناعمة للهواتف
+GlowFrame.BorderSizePixel = 0
+GlowFrame.Parent = ScreenGui
+
+local GlowCorner = Instance.new("UICorner")
+GlowCorner.CornerRadius = UDim.new(0, 18)
+GlowCorner.Parent = GlowFrame
+
+-- 2. الإطار الرئيسي (MainFrame) - متناسق وثابت
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 360, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -180, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 16)
+MainCorner.Parent = MainFrame
+
+-- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Premium Laser Gradient)
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),       -- أحمر ليزر ناصع
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(120, 0, 0)),     -- أحmer داكن
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),    -- أسود مدمج
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),    -- أسود مدمج
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(120, 0, 0)),     -- أحمر داكن
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))        -- أحمر ليزر متصل
+})
+UIGradient.Parent = MainFrame
+
+-- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الفاخر جداً
+local InsideFrame = Instance.new("Frame")
+InsideFrame.Size = UDim2.new(1, -6, 1, -6) -- سمك الإطار الدوار بدقة 3 بكسل
+InsideFrame.Position = UDim2.new(0, 3, 0, 3)
+InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12) -- أسود داكن ملكي فخم ومريح للعين
+InsideFrame.BorderSizePixel = 0
+InsideFrame.Parent = MainFrame
+
+local InsideCorner = Instance.new("UICorner")
+InsideCorner.CornerRadius = UDim.new(0, 14)
+InsideCorner.Parent = InsideFrame
+
+-- 5. خط حماية علوي رفيع يفصل العنوان عن المحتوى (Top Divider Line)
+local Line = Instance.new("Frame")
+Line.Size = UDim2.new(1, -30, 0, 2)
+Line.Position = UDim2.new(0, 15, 0, 52)
+Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Line.BorderSizePixel = 0
+Line.Parent = InsideFrame
+
+-- 6. عنوان الواجهة بتصميم خط عصري ومميز
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.Text = "DELTA V10 PREMIUM"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 19
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Center
+Title.Parent = InsideFrame
+
+-- 7. تشغيل حركة الدوران اللانهائية بنعومة تامة (Linear Smooth Tween)
+local RotateTween = TweenService:Create(UIGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+RotateTween:Play()
+
+-- 8. نظام سحب متطور وسلس للغاية يعتمد على تتبع اللمس الفوري للموبايل
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	
+	-- تحريك الواجهة والظل معاً في نفس اللحظة لمنع التفكك
+	MainFrame.Position = targetPos
+	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then update(input) end
+end)
