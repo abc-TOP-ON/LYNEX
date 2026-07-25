@@ -22,7 +22,7 @@ end
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Name = "ToggleButton"
 ToggleButton.Size = UDim2.new(0, 120, 0, 45)
-ToggleButton.Position = UDim2.new(1, -140, 0.5, -22)  -- على الجانب الأيمن
+ToggleButton.Position = UDim2.new(1, -140, 0.5, -22)
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ToggleButton.BackgroundTransparency = 0.3
 ToggleButton.BorderSizePixel = 0
@@ -111,9 +111,7 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then
 		local delta = input.Position - dragStart
-		-- الحفاظ على الموضع على الجانب الأيمن مع إمكانية السحب لأعلى/أسفل
 		local newXOffset = startPos.X.Offset + delta.X
-		-- نحدد أن الزر يبقى على الجانب الأيمن مع إمكانية تغيير ارتفاعه
 		ToggleButton.Position = UDim2.new(1, math.min(-70, math.max(-250, newXOffset)), startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	end
 end)
@@ -330,7 +328,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 9. زر الإغلاق (X)
+-- 9. زر الإغلاق (X) - يخفي الواجهة بدل حذفها
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -347,8 +345,18 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
+-- تعديل وظيفة زر الإغلاق
 CloseButton.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+	-- إخفاء الواجهة بدل حذفها
+	MainFrame.Visible = false
+	GlowFrame.Visible = false
+	
+	-- تحديث زر الدخول/الخروج
+	isScriptVisible = false
+	ToggleLabel.Text = "🔓 ENTER"
+	ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	
+	showSideNotification("🔒 Exited LYNEX Script!", true)
 end)
 
 -- 10. الأزرار العلوية
