@@ -85,7 +85,7 @@ ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
 ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)
 
--- 6. الحاوية الداخلية للأزرار (بتتحرك مع السكرول)
+-- 6. الحاوية الداخلية للأزرار
 local Container = Instance.new("Frame")
 Container.Size = UDim2.new(1, 0, 0, 1550)
 Container.Position = UDim2.new(0, 0, 0, 0)
@@ -130,32 +130,48 @@ local function createGoldGradient(parentFrame)
 	return Gradient
 end
 
--- ========== نظام الإشعارات الجانبية ==========
+-- ========== نظام الإشعارات الجانبية مع إطار أحمر متحرك وخلفية سوداء ==========
 local function showSideNotification(message, isSuccess)
-	-- الإطار الرئيسي للرسالة (جانب يمين الشاشة)
-	local notifFrame = Instance.new("Frame")
-	notifFrame.Size = UDim2.new(0, 280, 0, 50)
-	notifFrame.Position = UDim2.new(1, -300, 0.5, -25)  -- على يمين الشاشة
-	notifFrame.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 120, 0) or Color3.fromRGB(180, 0, 0)
-	notifFrame.BackgroundTransparency = 0.85
-	notifFrame.BorderSizePixel = 0
-	notifFrame.Parent = ScreenGui
-	
-	local notifCorner = Instance.new("UICorner")
-	notifCorner.CornerRadius = UDim.new(0, 10)
-	notifCorner.Parent = notifFrame
-	
-	-- Border للرسالة
+	-- الإطار الخارجي الأحمر المتحرك
 	local notifBorder = Instance.new("Frame")
-	notifBorder.Size = UDim2.new(1, 0, 1, 0)
-	notifBorder.Position = UDim2.new(0, 0, 0, 0)
-	notifBorder.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-	notifBorder.BackgroundTransparency = 0.4
+	notifBorder.Size = UDim2.new(0, 300, 0, 54)
+	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
+	notifBorder.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	notifBorder.BackgroundTransparency = 0.3
 	notifBorder.BorderSizePixel = 0
-	notifBorder.Parent = notifFrame
+	notifBorder.Parent = ScreenGui
+	
 	local notifBorderCorner = Instance.new("UICorner")
-	notifBorderCorner.CornerRadius = UDim.new(0, 10)
+	notifBorderCorner.CornerRadius = UDim.new(0, 12)
 	notifBorderCorner.Parent = notifBorder
+	
+	-- تدرج أحمر متحرك للإطار الخارجي
+	local notifBorderGradient = createRedTextGradient(notifBorder)
+	
+	-- الإطار الداخلي (الأسود)
+	local notifFrame = Instance.new("Frame")
+	notifFrame.Size = UDim2.new(1, -4, 1, -4)
+	notifFrame.Position = UDim2.new(0, 2, 0, 2)
+	notifFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+	notifFrame.BackgroundTransparency = 1
+	notifFrame.BorderSizePixel = 0
+	notifFrame.Parent = notifBorder
+	
+	local notifFrameCorner = Instance.new("UICorner")
+	notifFrameCorner.CornerRadius = UDim.new(0, 10)
+	notifFrameCorner.Parent = notifFrame
+	
+	-- Border داخلي (لون النجاح/الخطأ)
+	local innerBorder = Instance.new("Frame")
+	innerBorder.Size = UDim2.new(1, 0, 1, 0)
+	innerBorder.Position = UDim2.new(0, 0, 0, 0)
+	innerBorder.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+	innerBorder.BackgroundTransparency = 0.5
+	innerBorder.BorderSizePixel = 0
+	innerBorder.Parent = notifFrame
+	local innerCorner = Instance.new("UICorner")
+	innerCorner.CornerRadius = UDim.new(0, 10)
+	innerCorner.Parent = innerBorder
 	
 	-- أيقونة النجاح/الخطأ
 	local iconLabel = Instance.new("TextLabel")
@@ -182,21 +198,28 @@ local function showSideNotification(message, isSuccess)
 	notifLabel.TextWrapped = true
 	notifLabel.Parent = notifFrame
 	
+	-- تأثير الدوران للإطار الخارجي
+	local function animateNotifBorder()
+		local tween = TweenService:Create(notifBorderGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateNotifBorder()
+	
 	-- تأثير الدخول (من اليمين)
-	notifFrame.Position = UDim2.new(1, 0, 0.5, -25)
-	local tweenIn = TweenService:Create(notifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Position = UDim2.new(1, -300, 0.5, -25)
+	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
+	local tweenIn = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Position = UDim2.new(1, -320, 0.5, -27)
 	})
 	tweenIn:Play()
 	
 	-- تأثير الخروج بعد 3 ثواني
 	task.wait(3)
-	local tweenOut = TweenService:Create(notifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-		Position = UDim2.new(1, 0, 0.5, -25)
+	local tweenOut = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		Position = UDim2.new(1, 0, 0.5, -27)
 	})
 	tweenOut:Play()
 	task.wait(0.4)
-	notifFrame:Destroy()
+	notifBorder:Destroy()
 end
 
 -- 8. اسم السكربت الاحترافي LYNEX
@@ -317,7 +340,7 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== بيانات الأزرار العشرة مع روابط السكربتات ==========
+-- ========== بيانات الأزرار العشرة ==========
 local buttonsData = {
 	{
 		title = "★★★ LOR LORLN SPAM CMD", 
@@ -454,7 +477,7 @@ local function createBigButton(parent, data, index)
 	ExecCorner.Parent = ExecuteButton
 	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
-	-- زر AUTO باللون الذهبي (تحت EXECUTE)
+	-- زر AUTO باللون الذهبي
 	local AutoButton = Instance.new("TextButton")
 	AutoButton.Size = UDim2.new(0, 80, 0, 22)
 	AutoButton.Position = UDim2.new(1, -90, 0, 42)
@@ -502,14 +525,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("✅ Script executed successfully!", true)
+				showSideNotification("Script executed successfully!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("❌ Error: " .. tostring(err), false)
+			showSideNotification("Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
@@ -520,14 +543,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("✅ Script executed successfully (AUTO)!", true)
+				showSideNotification("Script executed successfully (AUTO)!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("❌ Error: " .. tostring(err), false)
+			showSideNotification("Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
@@ -549,15 +572,12 @@ SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
 		local frame = buttonFrames[i]
 		if frame then
 			local found = false
-			-- البحث في العنوان
 			if string.find(string.lower(data.title), searchText) then
 				found = true
 			end
-			-- البحث في الوصف
 			if not found and string.find(string.lower(data.desc), searchText) then
 				found = true
 			end
-			-- البحث في الكلمات المفتاحية
 			if not found then
 				for _, keyword in ipairs(data.keywords) do
 					if string.find(searchText, keyword) or string.find(keyword, searchText) then
@@ -566,7 +586,6 @@ SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
 					end
 				end
 			end
-			-- إظهار أو إخفاء الزر
 			frame.Visible = found or searchText == ""
 		end
 	end
