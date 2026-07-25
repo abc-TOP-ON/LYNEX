@@ -1,1 +1,227 @@
-# LYNEX
+-- تحسين الأداء ومنع التقطيع على الهواتف
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "LynexGlowTabsMenu"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+
+-- حماية السكربت والتأكد من توافقه مع محاقن الهواتف
+if syn and syn.protect_gui then 
+	syn.protect_gui(ScreenGui) 
+	ScreenGui.Parent = CoreGui
+elseif getgui then 
+	ScreenGui.Parent = getgui()
+else 
+	ScreenGui.Parent = CoreGui 
+end
+
+-- 1. الظل الخارجي المضيء (Glow Effect)
+local GlowFrame = Instance.new("Frame")
+GlowFrame.Name = "GlowFrame"
+GlowFrame.Size = UDim2.new(0, 368, 0, 428)
+GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -214)
+GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+GlowFrame.BackgroundTransparency = 0.65
+GlowFrame.BorderSizePixel = 0
+GlowFrame.Parent = ScreenGui
+
+local GlowCorner = Instance.new("UICorner")
+GlowCorner.CornerRadius = UDim.new(0, 18)
+GlowCorner.Parent = GlowFrame
+
+-- 2. الإطار الرئيسي (MainFrame)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 360, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -180, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 16)
+MainCorner.Parent = MainFrame
+
+-- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Laser Border)
+local BorderGradient = Instance.new("UIGradient")
+BorderGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+})
+BorderGradient.Parent = MainFrame
+
+-- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الملكي
+local InsideFrame = Instance.new("Frame")
+InsideFrame.Size = UDim2.new(1, -6, 1, -6)
+InsideFrame.Position = UDim2.new(0, 3, 0, 3)
+InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+InsideFrame.BorderSizePixel = 0
+InsideFrame.Parent = MainFrame
+
+local InsideCorner = Instance.new("UICorner")
+InsideCorner.CornerRadius = UDim.new(0, 14)
+InsideCorner.Parent = InsideFrame
+
+-- 5. خط حماية علوي رفيع (Divider Line)
+local Line = Instance.new("Frame")
+Line.Size = UDim2.new(1, -30, 0, 2)
+Line.Position = UDim2.new(0, 15, 0, 52)
+Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Line.BorderSizePixel = 0
+Line.Parent = InsideFrame
+
+-- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك للنصوص
+local function createRedTextGradient(parentFrame)
+	local Gradient = Instance.new("UIGradient")
+	Gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 90, 90)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(130, 0, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 90, 90)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	Gradient.Parent = parentFrame
+	return Gradient
+end
+
+-- 6. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.Text = "LYNEX"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 26
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Center
+Title.Parent = InsideFrame
+
+local TitleGradient = createRedTextGradient(Title)
+
+-- 7. إضافة زر الإغلاق الصغير (Close Button X)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -40, 0, 10)
+CloseButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
+CloseButton.BorderSizePixel = 0
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.TextSize = 16
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Parent = InsideFrame
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 8)
+CloseCorner.Parent = CloseButton
+
+CloseButton.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)
+
+-- 8. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
+-- زر Settings
+local SettingsButton = Instance.new("TextButton")
+SettingsButton.Name = "SettingsButton"
+SettingsButton.Size = UDim2.new(0, 102, 0, 35)
+SettingsButton.Position = UDim2.new(0, 15, 0, 65)
+SettingsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SettingsButton.BorderSizePixel = 0
+SettingsButton.Text = "Settings"
+SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingsButton.TextSize = 14
+SettingsButton.Font = Enum.Font.GothamBold
+SettingsButton.Parent = InsideFrame
+
+local SettingsCorner = Instance.new("UICorner")
+SettingsCorner.CornerRadius = UDim.new(0, 8)
+SettingsCorner.Parent = SettingsButton
+
+local SettingsGradient = createRedTextGradient(SettingsButton)
+
+-- زر Player في المنتصف
+local PlayerButton = Instance.new("TextButton")
+PlayerButton.Name = "PlayerButton"
+PlayerButton.Size = UDim2.new(0, 102, 0, 35)
+PlayerButton.Position = UDim2.new(0, 129, 0, 65)
+PlayerButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+PlayerButton.BorderSizePixel = 0
+PlayerButton.Text = "Player"
+PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayerButton.TextSize = 14
+PlayerButton.Font = Enum.Font.GothamBold
+PlayerButton.Parent = InsideFrame
+
+local PlayerCorner = Instance.new("UICorner")
+PlayerCorner.CornerRadius = UDim.new(0, 8)
+PlayerCorner.Parent = PlayerButton
+
+local PlayerGradient = createRedTextGradient(PlayerButton)
+
+-- زر News الجديد على اليمين
+local NewsButton = Instance.new("TextButton")
+NewsButton.Name = "NewsButton"
+NewsButton.Size = UDim2.new(0, 102, 0, 35)
+NewsButton.Position = UDim2.new(0, 243, 0, 65)
+NewsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+NewsButton.BorderSizePixel = 0
+NewsButton.Text = "News"
+NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+NewsButton.TextSize = 14
+NewsButton.Font = Enum.Font.GothamBold
+NewsButton.Parent = InsideFrame
+
+local NewsCorner = Instance.new("UICorner")
+NewsCorner.CornerRadius = UDim.new(0, 8)
+NewsCorner.Parent = NewsButton
+
+local NewsGradient = createRedTextGradient(NewsButton)
+
+-- 9. نظام تشغيل حركة الدوران اللانهائية لجميع العناصر المتوهجة بنعومة تامة
+local function animate(targetGradient, speed)
+	local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	Tween:Play()
+end
+
+animate(BorderGradient, 2)     -- دوران الإطار الخارجي (ثانيتين)
+animate(TitleGradient, 1.5)     -- دوران توهج كلمة LYNEX (ثانية ونصف)
+animate(SettingsButton:FindFirstChildOfClass("UIGradient"), 1.8) -- دوران توهج نص Settings
+animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)   -- دوران توهج نص Player
+animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)     -- دوران توهج نص News
+
+-- 10. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	
+	MainFrame.Position = targetPos
+	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then update(input) end
+end)
