@@ -235,7 +235,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 9. زر الإغلاق
+-- 9. زر الإغلاق (X)
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -255,6 +255,95 @@ CloseCorner.Parent = CloseButton
 CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
+
+-- ========== زر التصغير (Minimize) - مربع ==========
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(1, -80, 0, 10)  -- جنب زر الإغلاق
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
+MinimizeButton.BorderSizePixel = 0
+MinimizeButton.Text = "─"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 215, 0)
+MinimizeButton.TextSize = 20
+MinimizeButton.Font = Enum.Font.GothamBold
+MinimizeButton.Parent = Container
+
+local MinimizeCorner = Instance.new("UICorner")
+MinimizeCorner.CornerRadius = UDim.new(0, 8)
+MinimizeCorner.Parent = MinimizeButton
+
+-- تدرج ذهبي لزر التصغير
+local MinimizeGrad = createGoldGradient(MinimizeButton)
+
+-- تأثير الدوران لزر التصغير
+local function animateMinimize()
+	local tween = TweenService:Create(MinimizeGrad, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	tween:Play()
+end
+animateMinimize()
+
+-- متغير لحالة التصغير
+local isMinimized = false
+local originalSize = MainFrame.Size
+local originalGlowSize = GlowFrame.Size
+local originalPos = MainFrame.Position
+local originalGlowPos = GlowFrame.Position
+
+-- دالة التصغير
+local function toggleMinimize()
+	isMinimized = not isMinimized
+	
+	if isMinimized then
+		-- تصغير الواجهة
+		local targetSize = UDim2.new(0, 60, 0, 60)
+		local targetGlowSize = UDim2.new(0, 68, 0, 68)
+		local targetPos = UDim2.new(0.5, -30, 0.5, -30)
+		local targetGlowPos = UDim2.new(0.5, -34, 0.5, -34)
+		
+		local tween1 = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = targetSize,
+			Position = targetPos
+		})
+		tween1:Play()
+		
+		local tween2 = TweenService:Create(GlowFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = targetGlowSize,
+			Position = targetGlowPos
+		})
+		tween2:Play()
+		
+		-- إخفاء المحتوى الداخلي
+		InsideFrame.Visible = false
+		
+		-- تغيير شكل الزر
+		MinimizeButton.Text = "□"
+		MinimizeButton.TextColor3 = Color3.fromRGB(0, 255, 0)
+		
+	else
+		-- تكبير الواجهة (رجوع للحجم الطبيعي)
+		local tween1 = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = originalSize,
+			Position = originalPos
+		})
+		tween1:Play()
+		
+		local tween2 = TweenService:Create(GlowFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Size = originalGlowSize,
+			Position = originalGlowPos
+		})
+		tween2:Play()
+		
+		-- إظهار المحتوى الداخلي
+		InsideFrame.Visible = true
+		
+		-- تغيير شكل الزر
+		MinimizeButton.Text = "─"
+		MinimizeButton.TextColor3 = Color3.fromRGB(255, 215, 0)
+	end
+end
+
+MinimizeButton.MouseButton1Click:Connect(toggleMinimize)
 
 -- 10. الأزرار العلوية
 local SettingsButton = Instance.new("TextButton")
@@ -616,6 +705,12 @@ local function update(input)
 	
 	MainFrame.Position = targetPos
 	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
+	
+	-- تحديث المتغيرات الأصلية عند السحب
+	if not isMinimized then
+		originalPos = targetPos
+		originalGlowPos = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
+	end
 end
 
 MainFrame.InputBegan:Connect(function(input)
