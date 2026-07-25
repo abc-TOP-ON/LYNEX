@@ -21,8 +21,8 @@ end
 -- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 368, 0, 428)
-GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -214)
+GlowFrame.Size = UDim2.new(0, 388, 0, 550)
+GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -275)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
@@ -35,12 +35,13 @@ GlowCorner.Parent = GlowFrame
 -- 2. الإطار الرئيسي (MainFrame)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 360, 0, 420)
-MainFrame.Position = UDim2.new(0.5, -180, 0.5, -210)
+MainFrame.Size = UDim2.new(0, 380, 0, 542)
+MainFrame.Position = UDim2.new(0.5, -190, 0.5, -271)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
+MainFrame.ClipsDescendants = true  -- مهم عشان يخفي الأزرار اللي خارج الإطار
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
@@ -65,18 +66,41 @@ InsideFrame.Position = UDim2.new(0, 3, 0, 3)
 InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 InsideFrame.BorderSizePixel = 0
 InsideFrame.Parent = MainFrame
+InsideFrame.ClipsDescendants = true  -- مهم عشان يخفي الأزرار اللي خارج الإطار
 
 local InsideCorner = Instance.new("UICorner")
 InsideCorner.CornerRadius = UDim.new(0, 14)
 InsideCorner.Parent = InsideFrame
 
--- 5. خط حماية علوي رفيع (Divider Line)
+-- 5. الإطار الداخلي القابل للتمرير (ScrollFrame)
+local ScrollFrame = Instance.new("ScrollingFrame")
+ScrollFrame.Size = UDim2.new(1, 0, 1, 0)
+ScrollFrame.Position = UDim2.new(0, 0, 0, 0)
+ScrollFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.BorderSizePixel = 0
+ScrollFrame.Parent = InsideFrame
+ScrollFrame.ScrollBarThickness = 6
+ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
+ScrollFrame.ScrollBarImageTransparency = 0.3
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)  -- حجم كبير عشان يتسع لكل الأزرار
+
+-- 6. الحاوية الداخلية للأزرار (بتتحرك مع السكرول)
+local Container = Instance.new("Frame")
+Container.Size = UDim2.new(1, 0, 0, 1550)
+Container.Position = UDim2.new(0, 0, 0, 0)
+Container.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+Container.BackgroundTransparency = 1
+Container.BorderSizePixel = 0
+Container.Parent = ScrollFrame
+
+-- 7. خط حماية علوي رفيع (Divider Line) - داخل الـ Container
 local Line = Instance.new("Frame")
 Line.Size = UDim2.new(1, -30, 0, 2)
 Line.Position = UDim2.new(0, 15, 0, 52)
 Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
-Line.Parent = InsideFrame
+Line.Parent = Container
 
 -- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك للنصوص والإطارات
 local function createRedTextGradient(parentFrame)
@@ -92,7 +116,7 @@ local function createRedTextGradient(parentFrame)
 	return Gradient
 end
 
--- 6. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
+-- 8. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
@@ -101,11 +125,11 @@ Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 26
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
-Title.Parent = InsideFrame
+Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 7. إضافة زر الإغلاق الصغير (Close Button X)
+-- 9. إضافة زر الإغلاق الصغير (Close Button X)
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -116,7 +140,7 @@ CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
 CloseButton.TextSize = 16
 CloseButton.Font = Enum.Font.GothamBold
-CloseButton.Parent = InsideFrame
+CloseButton.Parent = Container
 
 local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
@@ -126,7 +150,7 @@ CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- 8. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
+-- 10. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
 local SettingsButton = Instance.new("TextButton")
 SettingsButton.Size = UDim2.new(0, 102, 0, 35)
 SettingsButton.Position = UDim2.new(0, 15, 0, 65)
@@ -136,7 +160,7 @@ SettingsButton.Text = "Settings"
 SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 SettingsButton.TextSize = 14
 SettingsButton.Font = Enum.Font.GothamBold
-SettingsButton.Parent = InsideFrame
+SettingsButton.Parent = Container
 local SettingsCorner = Instance.new("UICorner")
 SettingsCorner.CornerRadius = UDim.new(0, 8)
 SettingsCorner.Parent = SettingsButton
@@ -151,7 +175,7 @@ PlayerButton.Text = "Player"
 PlayerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayerButton.TextSize = 14
 PlayerButton.Font = Enum.Font.GothamBold
-PlayerButton.Parent = InsideFrame
+PlayerButton.Parent = Container
 local PlayerCorner = Instance.new("UICorner")
 PlayerCorner.CornerRadius = UDim.new(0, 8)
 PlayerCorner.Parent = PlayerButton
@@ -166,65 +190,188 @@ NewsButton.Text = "News"
 NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 NewsButton.TextSize = 14
 NewsButton.Font = Enum.Font.GothamBold
-NewsButton.Parent = InsideFrame
+NewsButton.Parent = Container
 local NewsCorner = Instance.new("UICorner")
 NewsCorner.CornerRadius = UDim.new(0, 8)
 NewsCorner.Parent = NewsButton
 createRedTextGradient(NewsButton)
 
--- 9. إطار البحث الخارجي (الذي سيحمل تأثير الأطراف الحمراء المتحركة)
+-- 11. إطار البحث الخارجي (الذي سيحمل تأثير الأطراف الحمراء المتحركة)
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
-SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32) -- حجم أصغر وأكثر تناسقاً وأناقة
-SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 115) -- التمركز في المنتصف تماماً أسفل الأزرار
-SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- سيتم تلوينه بالـ Gradient للأطراف
+SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32)
+SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 115)
+SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SearchBorderFrame.BorderSizePixel = 0
-SearchBorderFrame.Parent = InsideFrame
+SearchBorderFrame.Parent = Container
 
 local SearchBorderCorner = Instance.new("UICorner")
 SearchBorderCorner.CornerRadius = UDim.new(0, 8)
 SearchBorderCorner.Parent = SearchBorderFrame
 
-local SearchBorderGradient = createRedTextGradient(SearchBorderFrame) -- تأثير الدوران لأطراف البحث
+local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
 -- خانة البحث الداخلية (التي يكتب بداخلها المستخدم)
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
-SearchBar.Size = UDim2.new(1, -4, 1, -4) -- سمك إطار البحث 2 بكسل ليظهر بوضوح
+SearchBar.Size = UDim2.new(1, -4, 1, -4)
 SearchBar.Position = UDim2.new(0, 2, 0, 2)
-SearchBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16) -- أسود داكن بداخل البحث
+SearchBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
 SearchBar.BorderSizePixel = 0
 SearchBar.ClearTextOnFocus = false
-SearchBar.PlaceholderText = "Search..." -- نص ترحيبي في المنتصف
+SearchBar.PlaceholderText = "Search..."
 SearchBar.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 SearchBar.Text = ""
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
 SearchBar.TextSize = 13
 SearchBar.Font = Enum.Font.GothamBold
-SearchBar.TextXAlignment = Enum.TextXAlignment.Center -- جعل الكلام المكتوب بالمنتصف تماماً
+SearchBar.TextXAlignment = Enum.TextXAlignment.Center
 SearchBar.Parent = SearchBorderFrame
 
 local SearchCorner = Instance.new("UICorner")
 SearchCorner.CornerRadius = UDim.new(0, 7)
 SearchCorner.Parent = SearchBar
 
-local SearchTextGradient = createRedTextGradient(SearchBar) -- جعل الكلام المكتوب بالداخل أحمر متحرك
+local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- 10. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
-local function animate(targetGradient, speed)
-	local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	Tween:Play()
+-- ========== دالة لإنشاء الأزرار الكبيرة مع إطار أحمر متحرك ==========
+local function createBigButton(parent, title, description, yPos)
+	-- الإطار الخارجي الأحمر المتحرك (Border Frame)
+	local BorderFrame = Instance.new("Frame")
+	BorderFrame.Size = UDim2.new(0, 350, 0, 118)
+	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
+	BorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	BorderFrame.BackgroundTransparency = 0.3
+	BorderFrame.BorderSizePixel = 0
+	BorderFrame.Parent = parent
+	
+	local BorderCorner = Instance.new("UICorner")
+	BorderCorner.CornerRadius = UDim.new(0, 12)
+	BorderCorner.Parent = BorderFrame
+	
+	-- تدرج أحمر متحرك للإطار
+	local BorderGradientBtn = createRedTextGradient(BorderFrame)
+	
+	-- الزر الداخلي (الأسود)
+	local ButtonFrame = Instance.new("Frame")
+	ButtonFrame.Size = UDim2.new(1, -4, 1, -4)
+	ButtonFrame.Position = UDim2.new(0, 2, 0, 2)
+	ButtonFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	ButtonFrame.BorderSizePixel = 0
+	ButtonFrame.Parent = BorderFrame
+	
+	local ButtonCorner = Instance.new("UICorner")
+	ButtonCorner.CornerRadius = UDim.new(0, 10)
+	ButtonCorner.Parent = ButtonFrame
+	
+	-- العنوان الكبير
+	local TitleLabel = Instance.new("TextLabel")
+	TitleLabel.Size = UDim2.new(1, -20, 0, 30)
+	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.Text = title
+	TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TitleLabel.TextSize = 13
+	TitleLabel.Font = Enum.Font.GothamBold
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TitleLabel.Parent = ButtonFrame
+	local TitleGradBtn = createRedTextGradient(TitleLabel)
+	
+	-- زر EXECUTE
+	local ExecuteButton = Instance.new("TextButton")
+	ExecuteButton.Size = UDim2.new(0, 80, 0, 28)
+	ExecuteButton.Position = UDim2.new(1, -90, 0, 10)
+	ExecuteButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	ExecuteButton.BorderSizePixel = 0
+	ExecuteButton.Text = "EXECUTE"
+	ExecuteButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+	ExecuteButton.TextSize = 11
+	ExecuteButton.Font = Enum.Font.GothamBold
+	ExecuteButton.Parent = ButtonFrame
+	local ExecCorner = Instance.new("UICorner")
+	ExecCorner.CornerRadius = UDim.new(0, 6)
+	ExecCorner.Parent = ExecuteButton
+	local ExecGrad = createRedTextGradient(ExecuteButton)
+	
+	-- الوصف الصغير
+	local DescLabel = Instance.new("TextLabel")
+	DescLabel.Size = UDim2.new(1, -20, 0, 20)
+	DescLabel.Position = UDim2.new(0, 10, 0, 42)
+	DescLabel.BackgroundTransparency = 1
+	DescLabel.Text = description
+	DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+	DescLabel.TextSize = 10
+	DescLabel.Font = Enum.Font.Gotham
+	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+	DescLabel.Parent = ButtonFrame
+	
+	-- كلمة AUTO في الأسفل
+	local AutoLabel = Instance.new("TextLabel")
+	AutoLabel.Size = UDim2.new(1, -20, 0, 20)
+	AutoLabel.Position = UDim2.new(0, 10, 0, 68)
+	AutoLabel.BackgroundTransparency = 1
+	AutoLabel.Text = "AUTO"
+	AutoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+	AutoLabel.TextSize = 10
+	AutoLabel.Font = Enum.Font.GothamBold
+	AutoLabel.TextXAlignment = Enum.TextXAlignment.Left
+	AutoLabel.Parent = ButtonFrame
+	
+	-- إضافة تأثير الدوران للإطار
+	local function animateBorder()
+		local tween = TweenService:Create(BorderGradientBtn, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateBorder()
+	
+	return ButtonFrame, ExecuteButton, BorderGradientBtn
 end
 
-animate(BorderGradient, 2)            -- إطار الواجهة الخارجي
-animate(TitleGradient, 1.5)           -- اسم LYNEX
+-- ========== بيانات الأزرار العشرة ==========
+local buttonsData = {
+	{title = "★★★ LOR LORLN SPAM CMD", desc = "HD Admin | CMD Bar | Full Control", y = 165},
+	{title = "★★★ LOR LORLN ANTI SPAM", desc = "Anti Spam Protection System", y = 293},
+	{title = "★★★ LOR LORLN SPEED", desc = "Speed hack for all games", y = 421},
+	{title = "★★★ LOR LORLN FLY", desc = "Fly hack for all games", y = 549},
+	{title = "★★★ LOR LORLN TP", desc = "Teleport to any player", y = 677},
+	{title = "★★★ LOR LORLN INF", desc = "Infinite Jump / Stamina", y = 805},
+	{title = "★★★ LOR LORLN AIM", desc = "Aimbot | Silent Aim", y = 933},
+	{title = "★★★ LOR LORLN ESP", desc = "Wallhack | Player ESP", y = 1061},
+	{title = "★★★ LOR LORLN GOD", desc = "God Mode | Anti Damage", y = 1189},
+	{title = "★★★ LOR LORLN KILL", desc = "Kill all players in server", y = 1317}
+}
+
+-- ========== إنشاء الأزرار العشرة ==========
+local execButtons = {}
+
+for i, data in ipairs(buttonsData) do
+	local btn, exec, grad = createBigButton(Container, data.title, data.desc, data.y)
+	execButtons[i] = exec
+	
+	-- أكشن لكل زر (مؤقت)
+	exec.MouseButton1Click:Connect(function()
+		print(data.title .. " Activated!")
+		-- ضع كود التشغيل هنا
+	end)
+end
+
+-- 12. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
+local function animate(targetGradient, speed)
+	if targetGradient then
+		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		Tween:Play()
+	end
+end
+
+animate(BorderGradient, 2)
+animate(TitleGradient, 1.5)
 animate(SettingsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(SearchBorderGradient, 2)      -- أطراف البحث المتحركة
-animate(SearchTextGradient, 2.2)      -- النص المكتوب داخل البحث
+animate(SearchBorderGradient, 2)
+animate(SearchTextGradient, 2.2)
 
--- 11. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
+-- 13. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -253,3 +400,6 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then update(input) end
 end)
+
+-- 14. جعل السكرول يعمل باللمس بشكل أفضل
+ScrollFrame.ScrollingEnabled = true
