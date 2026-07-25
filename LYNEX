@@ -328,6 +328,18 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
+-- ===== Current Game Label =====
+local CurrentGameLabel = Instance.new("TextLabel")
+CurrentGameLabel.Size = UDim2.new(1, 0, 0, 20)
+CurrentGameLabel.Position = UDim2.new(0, 0, 0, 55)
+CurrentGameLabel.BackgroundTransparency = 1
+CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
+CurrentGameLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+CurrentGameLabel.TextSize = 11
+CurrentGameLabel.Font = Enum.Font.GothamBold
+CurrentGameLabel.TextXAlignment = Enum.TextXAlignment.Center
+CurrentGameLabel.Parent = Container
+
 -- 9. زر الإغلاق (X) - يخفي الواجهة بدل حذفها
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
@@ -362,7 +374,7 @@ end)
 -- 10. الأزرار العلوية
 local SettingsButton = Instance.new("TextButton")
 SettingsButton.Size = UDim2.new(0, 102, 0, 35)
-SettingsButton.Position = UDim2.new(0, 15, 0, 65)
+SettingsButton.Position = UDim2.new(0, 15, 0, 80)
 SettingsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 SettingsButton.BorderSizePixel = 0
 SettingsButton.Text = "Settings"
@@ -377,7 +389,7 @@ createRedTextGradient(SettingsButton)
 
 local PlayerButton = Instance.new("TextButton")
 PlayerButton.Size = UDim2.new(0, 102, 0, 35)
-PlayerButton.Position = UDim2.new(0, 129, 0, 65)
+PlayerButton.Position = UDim2.new(0, 129, 0, 80)
 PlayerButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 PlayerButton.BorderSizePixel = 0
 PlayerButton.Text = "Player"
@@ -392,7 +404,7 @@ createRedTextGradient(PlayerButton)
 
 local NewsButton = Instance.new("TextButton")
 NewsButton.Size = UDim2.new(0, 102, 0, 35)
-NewsButton.Position = UDim2.new(0, 243, 0, 65)
+NewsButton.Position = UDim2.new(0, 243, 0, 80)
 NewsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 NewsButton.BorderSizePixel = 0
 NewsButton.Text = "News"
@@ -409,7 +421,7 @@ createRedTextGradient(NewsButton)
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
 SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32)
-SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 115)
+SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 130)
 SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SearchBorderFrame.BorderSizePixel = 0
 SearchBorderFrame.Parent = Container
@@ -443,12 +455,13 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== بيانات الأزرار العشرة ==========
+-- ========== بيانات الأزرار (معدلة مع إضافة خاصية game) ==========
 local buttonsData = {
 	{
 		title = "★★★ LOR LORLN SPAM CMD", 
 		desc = "HD Admin | CMD Bar | Full Control", 
 		y = 165,
+		game = "admin",
 		keywords = {"spam", "cmd", "admin", "command"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -456,6 +469,7 @@ local buttonsData = {
 		title = "★★★ LOR LORLN ANTI SPAM", 
 		desc = "Anti Spam Protection System", 
 		y = 293,
+		game = "antispam",
 		keywords = {"anti", "spam", "protection", "antispam"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -463,6 +477,7 @@ local buttonsData = {
 		title = "★★★ LOR LORLN SPEED", 
 		desc = "Speed hack for all games", 
 		y = 421,
+		game = "speed",
 		keywords = {"speed", "fast", "run", "walkspeed"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -470,6 +485,7 @@ local buttonsData = {
 		title = "★★★ LOR LORLN FLY", 
 		desc = "Fly hack for all games", 
 		y = 549,
+		game = "fly",
 		keywords = {"fly", "flight", "fly"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -477,6 +493,7 @@ local buttonsData = {
 		title = "★★★ LOR LORLN TP", 
 		desc = "Teleport to any player", 
 		y = 677,
+		game = "teleport",
 		keywords = {"tp", "teleport", "goto", "move"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -484,27 +501,31 @@ local buttonsData = {
 		title = "★★★ LOR LORLN INF", 
 		desc = "Infinite Jump / Stamina", 
 		y = 805,
+		game = "infinite",
 		keywords = {"inf", "infinite", "jump", "stamina", "infjump"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "★★★ LOR LORLN AIM", 
-		desc = "Aimbot | Silent Aim", 
+		title = "★★★ BLOX FRUITS", 
+		desc = "Blox Fruits full script", 
 		y = 933,
-		keywords = {"aim", "aimbot", "silent", "silentaim"},
+		game = "blox fruits",
+		keywords = {"blox", "fruits", "fruit"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "★★★ LOR LORLN ESP", 
-		desc = "Wallhack | Player ESP", 
+		title = "★★★ 99 NIGHT", 
+		desc = "99 Night full script", 
 		y = 1061,
-		keywords = {"esp", "wallhack", "wall", "player", "boxesp"},
+		game = "99 ليلة",
+		keywords = {"99", "night", "nine"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN GOD", 
 		desc = "God Mode | Anti Damage", 
 		y = 1189,
+		game = "god",
 		keywords = {"god", "godmode", "anti", "damage", "health"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
@@ -512,12 +533,55 @@ local buttonsData = {
 		title = "★★★ LOR LORLN KILL", 
 		desc = "Kill all players in server", 
 		y = 1317,
+		game = "kill",
 		keywords = {"kill", "killall", "all", "players", "server"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	}
 }
 
--- ========== دالة لإنشاء الأزرار ==========
+-- ========== نظام إعادة الترتيب حسب اللعبة ==========
+local function reorderByGame()
+    -- جلب اسم اللعبة الحالية
+    local success, gameInfo = pcall(function()
+        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+    end)
+    
+    if not success then
+        return
+    end
+    
+    local currentGame = gameInfo.Name
+    local currentGameLower = string.lower(currentGame)
+    
+    -- البحث عن سكربت مطابق للعبة الحالية
+    local matchedIndex = nil
+    for i, data in ipairs(buttonsData) do
+        if data.game and string.find(currentGameLower, string.lower(data.game)) then
+            matchedIndex = i
+            break
+        end
+    end
+    
+    -- إذا وجد سكربت مناسب، حركه لأول القائمة
+    if matchedIndex and matchedIndex > 1 then
+        local matchedData = table.remove(buttonsData, matchedIndex)
+        table.insert(buttonsData, 1, matchedData)
+        
+        -- إعادة ترتيب الـ y positions
+        for i, data in ipairs(buttonsData) do
+            data.y = 165 + (i - 1) * 128
+        end
+        
+        -- تحديث النص في الأعلى
+        CurrentGameLabel.Text = "🎯 Showing script: " .. matchedData.title .. " (for: " .. currentGame .. ")"
+        
+        showSideNotification("🎯 Showing: " .. matchedData.title, true)
+    else
+        CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
+    end
+end
+
+-- ========== دالة إنشاء الأزرار ==========
 local buttonFrames = {}
 
 local function createBigButton(parent, data, index)
@@ -619,14 +683,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("Script executed successfully!", true)
+				showSideNotification("✅ Script executed successfully!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("Error: " .. tostring(err), false)
+			showSideNotification("❌ Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
@@ -636,14 +700,14 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
-				showSideNotification("Script executed successfully (AUTO)!", true)
+				showSideNotification("✅ Script executed successfully (AUTO)!", true)
 			else
 				error("Failed to load script")
 			end
 		end)
 		
 		if not success then
-			showSideNotification("Error: " .. tostring(err), false)
+			showSideNotification("❌ Error: " .. tostring(err), false)
 			warn("Error executing script: " .. tostring(err))
 		end
 	end)
@@ -717,7 +781,7 @@ MainFrame.InputBegan:Connect(function(input)
 		mainDragStart = input.Position
 		mainStartPos = MainFrame.Position
 		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then mainDragging = false end
+			if input.UserInputState == Enum.InputState.End then mainDragging = false end
 		end)
 	end
 end)
@@ -732,6 +796,12 @@ end)
 
 -- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
+
+-- ========== تنفيذ إعادة الترتيب حسب اللعبة ==========
+task.spawn(function()
+    task.wait(1.5)
+    reorderByGame()
+end)
 
 -- ========== وظيفة زر الدخول/الخروج ==========
 local isScriptVisible = false
