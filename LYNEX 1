@@ -2,6 +2,10 @@
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local Stats = game:GetService("Stats")
+local HttpService = game:GetService("HttpService")
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "LynexProSearchMenu"
@@ -17,6 +21,29 @@ elseif getgui then
 else 
 	ScreenGui.Parent = CoreGui 
 end
+
+-- ========== متغيرات الإعدادات ==========
+local settings = {
+	theme = "Red",
+	showNotifications = true,
+	notificationsPosition = "Right",
+	autoExecute = false,
+	colors = {
+		main = Color3.fromRGB(255, 0, 0),
+		secondary = Color3.fromRGB(12, 12, 12),
+		text = Color3.fromRGB(255, 255, 255),
+		glow = Color3.fromRGB(255, 0, 0)
+	}
+}
+
+-- ========== إحصائيات السكربت ==========
+local statistics = {
+	scriptsExecuted = 0,
+	lastExecuted = "None",
+	totalExecutions = 0,
+	startTime = os.time(),
+	favoriteScripts = {}
+}
 
 -- ========== زر الدخول/الخروج المنفصل على الجانب الأيمن ==========
 local ToggleButton = Instance.new("TextButton")
@@ -90,7 +117,7 @@ local function animateToggle()
 end
 animateToggle()
 
--- ========== نظام سحب الزر المنفصل (مع تعديل للجانب الأيمن) ==========
+-- ========== نظام سحب الزر المنفصل ==========
 local dragging, dragInput, dragStart, startPos
 
 ToggleButton.InputBegan:Connect(function(input)
@@ -116,9 +143,9 @@ UserInputService.InputChanged:Connect(function(input)
 	end
 end)
 
--- ========== الواجهة الرئيسية (المخفية في البداية) ==========
+-- ========== الواجهة الرئيسية ==========
 
--- 1. الظل الخارجي المضيء (Glow Effect)
+-- 1. الظل الخارجي المضيء
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
 GlowFrame.Size = UDim2.new(0, 388, 0, 550)
@@ -133,7 +160,7 @@ local GlowCorner = Instance.new("UICorner")
 GlowCorner.CornerRadius = UDim.new(0, 18)
 GlowCorner.Parent = GlowFrame
 
--- 2. الإطار الرئيسي (MainFrame)
+-- 2. الإطار الرئيسي
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 380, 0, 542)
@@ -149,7 +176,7 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
 MainCorner.Parent = MainFrame
 
--- 3. تأثير الإطار الأحمر النيون المتحرك الدوار (Laser Border)
+-- 3. تأثير الإطار الأحمر النيون المتحرك
 local BorderGradient = Instance.new("UIGradient")
 BorderGradient.Color = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
@@ -161,7 +188,7 @@ BorderGradient.Color = ColorSequence.new({
 })
 BorderGradient.Parent = MainFrame
 
--- 4. الواجهة الداخلية (InsideFrame) باللون الأسود الملكي
+-- 4. الواجهة الداخلية
 local InsideFrame = Instance.new("Frame")
 InsideFrame.Size = UDim2.new(1, -6, 1, -6)
 InsideFrame.Position = UDim2.new(0, 3, 0, 3)
@@ -174,7 +201,7 @@ local InsideCorner = Instance.new("UICorner")
 InsideCorner.CornerRadius = UDim.new(0, 14)
 InsideCorner.Parent = InsideFrame
 
--- 5. الإطار الداخلي القابل للتمرير (ScrollFrame)
+-- 5. الإطار الداخلي القابل للتمرير
 local ScrollFrame = Instance.new("ScrollingFrame")
 ScrollFrame.Size = UDim2.new(1, 0, 1, 0)
 ScrollFrame.Position = UDim2.new(0, 0, 0, 0)
@@ -185,11 +212,11 @@ ScrollFrame.Parent = InsideFrame
 ScrollFrame.ScrollBarThickness = 6
 ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
-ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 2000)
 
 -- 6. الحاوية الداخلية للأزرار
 local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, 0, 0, 1550)
+Container.Size = UDim2.new(1, 0, 0, 2000)
 Container.Position = UDim2.new(0, 0, 0, 0)
 Container.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 Container.BackgroundTransparency = 1
@@ -204,7 +231,7 @@ Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
 Line.Parent = Container
 
--- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك
+-- دوال إنشاء التدرجات
 local function createRedTextGradient(parentFrame)
 	local Gradient = Instance.new("UIGradient")
 	Gradient.Color = ColorSequence.new({
@@ -218,7 +245,6 @@ local function createRedTextGradient(parentFrame)
 	return Gradient
 end
 
--- دالة لإنشاء تدرج ذهبي
 local function createGoldGradient(parentFrame)
 	local Gradient = Instance.new("UIGradient")
 	Gradient.Color = ColorSequence.new({
@@ -234,10 +260,12 @@ end
 
 -- ========== نظام الإشعارات الجانبية ==========
 local function showSideNotification(message, isSuccess)
+	if not settings.showNotifications then return end
+	
 	local notifBorder = Instance.new("Frame")
 	notifBorder.Size = UDim2.new(0, 300, 0, 54)
 	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
-	notifBorder.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	notifBorder.BackgroundColor3 = settings.colors.main
 	notifBorder.BackgroundTransparency = 0.3
 	notifBorder.BorderSizePixel = 0
 	notifBorder.Parent = ScreenGui
@@ -315,7 +343,7 @@ local function showSideNotification(message, isSuccess)
 	notifBorder:Destroy()
 end
 
--- 8. اسم السكربت الاحترافي LYNEX
+-- 8. اسم السكربت
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
@@ -340,7 +368,7 @@ CurrentGameLabel.Font = Enum.Font.GothamBold
 CurrentGameLabel.TextXAlignment = Enum.TextXAlignment.Center
 CurrentGameLabel.Parent = Container
 
--- 9. زر الإغلاق (X) - يخفي الواجهة بدل حذفها
+-- 9. زر الإغلاق
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -357,17 +385,12 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
--- تعديل وظيفة زر الإغلاق
 CloseButton.MouseButton1Click:Connect(function()
-	-- إخفاء الواجهة بدل حذفها
 	MainFrame.Visible = false
 	GlowFrame.Visible = false
-	
-	-- تحديث زر الدخول/الخروج
 	isScriptVisible = false
 	ToggleLabel.Text = "🔓 ENTER"
 	ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	
 	showSideNotification("🔒 Exited LYNEX Script!", true)
 end)
 
@@ -432,7 +455,6 @@ SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
--- خانة البحث
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Size = UDim2.new(1, -4, 1, -4)
@@ -455,7 +477,7 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== بيانات الأزرار (معدلة مع إضافة خاصية game) ==========
+-- ========== بيانات الأزرار ==========
 local buttonsData = {
 	{
 		title = "★★★ LOR LORLN SPAM CMD", 
@@ -541,44 +563,320 @@ local buttonsData = {
 
 -- ========== نظام إعادة الترتيب حسب اللعبة ==========
 local function reorderByGame()
-    -- جلب اسم اللعبة الحالية
-    local success, gameInfo = pcall(function()
-        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
-    end)
-    
-    if not success then
-        return
-    end
-    
-    local currentGame = gameInfo.Name
-    local currentGameLower = string.lower(currentGame)
-    
-    -- البحث عن سكربت مطابق للعبة الحالية
-    local matchedIndex = nil
-    for i, data in ipairs(buttonsData) do
-        if data.game and string.find(currentGameLower, string.lower(data.game)) then
-            matchedIndex = i
-            break
-        end
-    end
-    
-    -- إذا وجد سكربت مناسب، حركه لأول القائمة
-    if matchedIndex and matchedIndex > 1 then
-        local matchedData = table.remove(buttonsData, matchedIndex)
-        table.insert(buttonsData, 1, matchedData)
-        
-        -- إعادة ترتيب الـ y positions
-        for i, data in ipairs(buttonsData) do
-            data.y = 165 + (i - 1) * 128
-        end
-        
-        -- تحديث النص في الأعلى
-        CurrentGameLabel.Text = "🎯 Showing script: " .. matchedData.title .. " (for: " .. currentGame .. ")"
-        
-        showSideNotification("🎯 Showing: " .. matchedData.title, true)
-    else
-        CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
-    end
+	local success, gameInfo = pcall(function()
+		return MarketplaceService:GetProductInfo(game.PlaceId)
+	end)
+	
+	if not success then return end
+	
+	local currentGame = gameInfo.Name
+	local currentGameLower = string.lower(currentGame)
+	
+	local matchedIndex = nil
+	for i, data in ipairs(buttonsData) do
+		if data.game and string.find(currentGameLower, string.lower(data.game)) then
+			matchedIndex = i
+			break
+		end
+	end
+	
+	if matchedIndex and matchedIndex > 1 then
+		local matchedData = table.remove(buttonsData, matchedIndex)
+		table.insert(buttonsData, 1, matchedData)
+		
+		for i, data in ipairs(buttonsData) do
+			data.y = 165 + (i - 1) * 128
+		end
+		
+		CurrentGameLabel.Text = "🎯 Showing script: " .. matchedData.title .. " (for: " .. currentGame .. ")"
+		showSideNotification("🎯 Showing: " .. matchedData.title, true)
+	else
+		CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
+	end
+end
+
+-- ========== نظام الإحصائيات ==========
+local function updateStatistics(scriptName)
+	statistics.scriptsExecuted = statistics.scriptsExecuted + 1
+	statistics.totalExecutions = statistics.totalExecutions + 1
+	statistics.lastExecuted = scriptName
+end
+
+local function getStatistics()
+	local uptime = os.time() - statistics.startTime
+	local hours = math.floor(uptime / 3600)
+	local minutes = math.floor((uptime % 3600) / 60)
+	local seconds = uptime % 60
+	
+	return {
+		scriptsExecuted = statistics.scriptsExecuted,
+		lastExecuted = statistics.lastExecuted,
+		totalExecutions = statistics.totalExecutions,
+		uptime = string.format("%02d:%02d:%02d", hours, minutes, seconds),
+		favorites = #statistics.favoriteScripts
+	}
+end
+
+-- ========== معلومات السيرفر ==========
+local function getServerInfo()
+	local players = Players
+	local stats = getStatistics()
+	local gameInfo = MarketplaceService:GetProductInfo(game.PlaceId)
+	
+	return {
+		GameName = gameInfo.Name,
+		GameId = game.PlaceId,
+		Players = #players:GetPlayers(),
+		MaxPlayers = players.MaxPlayers,
+		ServerTime = os.date("%H:%M:%S"),
+		Uptime = stats.uptime,
+		ExecutedScripts = stats.scriptsExecuted,
+		LastScript = stats.lastExecuted
+	}
+end
+
+-- ========== نافذة الإعدادات ==========
+local function createSettingsWindow()
+	-- نافذة الإعدادات
+	local SettingsFrame = Instance.new("Frame")
+	SettingsFrame.Size = UDim2.new(0, 350, 0, 400)
+	SettingsFrame.Position = UDim2.new(0.5, -175, 0.5, -200)
+	SettingsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	SettingsFrame.BorderSizePixel = 0
+	SettingsFrame.Parent = ScreenGui
+	SettingsFrame.Visible = true
+	SettingsFrame.ZIndex = 10
+	
+	local SettingsCorner = Instance.new("UICorner")
+	SettingsCorner.CornerRadius = UDim.new(0, 12)
+	SettingsCorner.Parent = SettingsFrame
+	
+	-- عنوان الإعدادات
+	local SettingsTitle = Instance.new("TextLabel")
+	SettingsTitle.Size = UDim2.new(1, 0, 0, 40)
+	SettingsTitle.BackgroundTransparency = 1
+	SettingsTitle.Text = "⚙️ SETTINGS"
+	SettingsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SettingsTitle.TextSize = 20
+	SettingsTitle.Font = Enum.Font.GothamBold
+	SettingsTitle.Parent = SettingsFrame
+	
+	-- زر إغلاق الإعدادات
+	local SettingsClose = Instance.new("TextButton")
+	SettingsClose.Size = UDim2.new(0, 30, 0, 30)
+	SettingsClose.Position = UDim2.new(1, -35, 0, 5)
+	SettingsClose.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	SettingsClose.BorderSizePixel = 0
+	SettingsClose.Text = "X"
+	SettingsClose.TextColor3 = Color3.fromRGB(255, 50, 50)
+	SettingsClose.TextSize = 16
+	SettingsClose.Font = Enum.Font.GothamBold
+	SettingsClose.Parent = SettingsFrame
+	local SettingsCloseCorner = Instance.new("UICorner")
+	SettingsCloseCorner.CornerRadius = UDim.new(0, 8)
+	SettingsCloseCorner.Parent = SettingsClose
+	
+	SettingsClose.MouseButton1Click:Connect(function()
+		SettingsFrame:Destroy()
+	end)
+	
+	-- ===== الميزة 2: تخصيص الواجهة (UI Customization) =====
+	local UICustomLabel = Instance.new("TextLabel")
+	UICustomLabel.Size = UDim2.new(1, -20, 0, 25)
+	UICustomLabel.Position = UDim2.new(0, 10, 0, 50)
+	UICustomLabel.BackgroundTransparency = 1
+	UICustomLabel.Text = "🎨 UI Customization"
+	UICustomLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+	UICustomLabel.TextSize = 14
+	UICustomLabel.Font = Enum.Font.GothamBold
+	UICustomLabel.TextXAlignment = Enum.TextXAlignment.Left
+	UICustomLabel.Parent = SettingsFrame
+	
+	-- أزرار اختيار الثيم
+	local themes = {"Red", "Blue", "Green", "Gold", "Purple"}
+	local themeColors = {
+		Red = Color3.fromRGB(255, 0, 0),
+		Blue = Color3.fromRGB(0, 100, 255),
+		Green = Color3.fromRGB(0, 255, 100),
+		Gold = Color3.fromRGB(255, 215, 0),
+		Purple = Color3.fromRGB(150, 0, 255)
+	}
+	
+	for i, theme in ipairs(themes) do
+		local themeBtn = Instance.new("TextButton")
+		themeBtn.Size = UDim2.new(0, 55, 0, 25)
+		themeBtn.Position = UDim2.new(0, 10 + (i-1) * 60, 0, 80)
+		themeBtn.BackgroundColor3 = themeColors[theme]
+		themeBtn.BorderSizePixel = 0
+		themeBtn.Text = theme
+		themeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		themeBtn.TextSize = 10
+		themeBtn.Font = Enum.Font.GothamBold
+		themeBtn.Parent = SettingsFrame
+		local themeCorner = Instance.new("UICorner")
+		themeCorner.CornerRadius = UDim.new(0, 6)
+		themeCorner.Parent = themeBtn
+		
+		themeBtn.MouseButton1Click:Connect(function()
+			settings.theme = theme
+			settings.colors.main = themeColors[theme]
+			-- تحديث الألوان في الواجهة
+			BorderGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, settings.colors.main),
+				ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(1, settings.colors.main)
+			})
+			GlowFrame.BackgroundColor3 = settings.colors.main
+			showSideNotification("🎨 Theme changed to: " .. theme, true)
+		end)
+	end
+	
+	-- ===== الميزة 5: معلومات السيرفر (Server Info) =====
+	local ServerInfoLabel = Instance.new("TextLabel")
+	ServerInfoLabel.Size = UDim2.new(1, -20, 0, 25)
+	ServerInfoLabel.Position = UDim2.new(0, 10, 0, 120)
+	ServerInfoLabel.BackgroundTransparency = 1
+	ServerInfoLabel.Text = "🖥️ Server Info"
+	ServerInfoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+	ServerInfoLabel.TextSize = 14
+	ServerInfoLabel.Font = Enum.Font.GothamBold
+	ServerInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+	ServerInfoLabel.Parent = SettingsFrame
+	
+	-- عرض معلومات السيرفر
+	local ServerInfoText = Instance.new("TextLabel")
+	ServerInfoText.Size = UDim2.new(1, -20, 0, 80)
+	ServerInfoText.Position = UDim2.new(0, 10, 0, 150)
+	ServerInfoText.BackgroundTransparency = 1
+	ServerInfoText.Text = "Loading..."
+	ServerInfoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+	ServerInfoText.TextSize = 11
+	ServerInfoText.Font = Enum.Font.Gotham
+	ServerInfoText.TextXAlignment = Enum.TextXAlignment.Left
+	ServerInfoText.TextYAlignment = Enum.TextYAlignment.Top
+	ServerInfoText.TextWrapped = true
+	ServerInfoText.Parent = SettingsFrame
+	
+	-- تحديث معلومات السيرفر كل 5 ثواني
+	local function updateServerInfo()
+		local info = getServerInfo()
+		ServerInfoText.Text = string.format(
+			"📌 Game: %s\n🆔 ID: %s\n👥 Players: %d / %d\n⏰ Server Time: %s\n⏱️ Uptime: %s\n📊 Scripts Executed: %d\n📝 Last Script: %s",
+			info.GameName,
+			info.GameId,
+			info.Players,
+			info.MaxPlayers,
+			info.ServerTime,
+			info.Uptime,
+			info.ExecutedScripts,
+			info.LastScript
+		)
+	end
+	
+	updateServerInfo()
+	
+	task.spawn(function()
+		while SettingsFrame and SettingsFrame.Parent do
+			task.wait(5)
+			updateServerInfo()
+		end
+	end)
+	
+	-- زر تحديث المعلومات
+	local RefreshButton = Instance.new("TextButton")
+	RefreshButton.Size = UDim2.new(0, 100, 0, 25)
+	RefreshButton.Position = UDim2.new(0.5, -50, 0, 235)
+	RefreshButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	RefreshButton.BorderSizePixel = 0
+	RefreshButton.Text = "🔄 Refresh"
+	RefreshButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	RefreshButton.TextSize = 12
+	RefreshButton.Font = Enum.Font.GothamBold
+	RefreshButton.Parent = SettingsFrame
+	local RefreshCorner = Instance.new("UICorner")
+	RefreshCorner.CornerRadius = UDim.new(0, 6)
+	RefreshCorner.Parent = RefreshButton
+	
+	RefreshButton.MouseButton1Click:Connect(function()
+		updateServerInfo()
+		showSideNotification("✅ Server info refreshed!", true)
+	end)
+	
+	-- ===== الميزة 9: الإحصائيات (Statistics) =====
+	local StatsLabel = Instance.new("TextLabel")
+	StatsLabel.Size = UDim2.new(1, -20, 0, 25)
+	StatsLabel.Position = UDim2.new(0, 10, 0, 275)
+	StatsLabel.BackgroundTransparency = 1
+	StatsLabel.Text = "📊 Statistics"
+	StatsLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+	StatsLabel.TextSize = 14
+	StatsLabel.Font = Enum.Font.GothamBold
+	StatsLabel.TextXAlignment = Enum.TextXAlignment.Left
+	StatsLabel.Parent = SettingsFrame
+	
+	-- عرض الإحصائيات
+	local StatsText = Instance.new("TextLabel")
+	StatsText.Size = UDim2.new(1, -20, 0, 80)
+	StatsText.Position = UDim2.new(0, 10, 0, 305)
+	StatsText.BackgroundTransparency = 1
+	StatsText.Text = "Loading..."
+	StatsText.TextColor3 = Color3.fromRGB(200, 200, 200)
+	StatsText.TextSize = 11
+	StatsText.Font = Enum.Font.Gotham
+	StatsText.TextXAlignment = Enum.TextXAlignment.Left
+	StatsText.TextYAlignment = Enum.TextYAlignment.Top
+	StatsText.TextWrapped = true
+	StatsText.Parent = SettingsFrame
+	
+	-- تحديث الإحصائيات
+	local function updateStatisticsDisplay()
+		local stats = getStatistics()
+		StatsText.Text = string.format(
+			"📝 Scripts Executed: %d\n🔄 Total Executions: %d\n⏱️ Uptime: %s\n⭐ Favorites: %d\n📌 Last Script: %s",
+			stats.scriptsExecuted,
+			stats.totalExecutions,
+			stats.uptime,
+			stats.favorites,
+			stats.lastExecuted
+		)
+	end
+	
+	updateStatisticsDisplay()
+	
+	task.spawn(function()
+		while SettingsFrame and SettingsFrame.Parent do
+			task.wait(3)
+			updateStatisticsDisplay()
+		end
+	end)
+	
+	-- زر إعادة تعيين الإحصائيات
+	local ResetStatsButton = Instance.new("TextButton")
+	ResetStatsButton.Size = UDim2.new(0, 150, 0, 25)
+	ResetStatsButton.Position = UDim2.new(0.5, -75, 0, 390)
+	ResetStatsButton.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	ResetStatsButton.BorderSizePixel = 0
+	ResetStatsButton.Text = "🔄 Reset Statistics"
+	ResetStatsButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+	ResetStatsButton.TextSize = 12
+	ResetStatsButton.Font = Enum.Font.GothamBold
+	ResetStatsButton.Parent = SettingsFrame
+	local ResetCorner = Instance.new("UICorner")
+	ResetCorner.CornerRadius = UDim.new(0, 6)
+	ResetCorner.Parent = ResetStatsButton
+	
+	ResetStatsButton.MouseButton1Click:Connect(function()
+		statistics.scriptsExecuted = 0
+		statistics.totalExecutions = 0
+		statistics.lastExecuted = "None"
+		updateStatisticsDisplay()
+		showSideNotification("✅ Statistics reset!", true)
+	end)
+	
+	return SettingsFrame
 end
 
 -- ========== دالة إنشاء الأزرار ==========
@@ -590,7 +888,7 @@ local function createBigButton(parent, data, index)
 	local BorderFrame = Instance.new("Frame")
 	BorderFrame.Size = UDim2.new(0, 350, 0, 130)
 	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
-	BorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	BorderFrame.BackgroundColor3 = settings.colors.main
 	BorderFrame.BackgroundTransparency = 0.3
 	BorderFrame.BorderSizePixel = 0
 	BorderFrame.Parent = parent
@@ -683,6 +981,7 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
+				updateStatistics(data.title)
 				showSideNotification("✅ Script executed successfully!", true)
 			else
 				error("Failed to load script")
@@ -700,6 +999,7 @@ local function createBigButton(parent, data, index)
 			local scriptFunc = loadstring(data.script)
 			if scriptFunc then
 				scriptFunc()
+				updateStatistics(data.title .. " (AUTO)")
 				showSideNotification("✅ Script executed successfully (AUTO)!", true)
 			else
 				error("Failed to load script")
@@ -715,7 +1015,7 @@ local function createBigButton(parent, data, index)
 	return BorderFrame, ExecuteButton, AutoButton, BorderGradientBtn, TitleLabel, DescLabel
 end
 
--- ========== إنشاء الأزرار العشرة ==========
+-- ========== إنشاء الأزرار ==========
 for i, data in ipairs(buttonsData) do
 	local border, exec, auto, grad, title, desc = createBigButton(Container, data, i)
 	table.insert(buttonFrames, border)
@@ -748,7 +1048,7 @@ SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
 	end
 end)
 
--- 12. نظام تشغيل حركة الدوران
+-- ========== تشغيل الحركات ==========
 local function animate(targetGradient, speed)
 	if targetGradient then
 		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -764,7 +1064,7 @@ animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
 
--- 13. نظام سحب وتحريك الواجهة الرئيسية
+-- ========== نظام سحب الواجهة ==========
 local mainDragging, mainDragInput, mainDragStart, mainStartPos
 
 local function updateMain(input)
@@ -794,30 +1094,32 @@ UserInputService.InputChanged:Connect(function(input)
 	if input == mainDragInput and mainDragging then updateMain(input) end
 end)
 
--- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
 
--- ========== تنفيذ إعادة الترتيب حسب اللعبة ==========
-task.spawn(function()
-    task.wait(1.5)
-    reorderByGame()
+-- ========== فتح الإعدادات ==========
+SettingsButton.MouseButton1Click:Connect(function()
+	createSettingsWindow()
 end)
 
--- ========== وظيفة زر الدخول/الخروج ==========
+-- ========== إعادة الترتيب حسب اللعبة ==========
+task.spawn(function()
+	task.wait(1.5)
+	reorderByGame()
+end)
+
+-- ========== زر الدخول/الخروج ==========
 local isScriptVisible = false
 
 ToggleButton.MouseButton1Click:Connect(function()
 	isScriptVisible = not isScriptVisible
 	
 	if isScriptVisible then
-		-- دخول: إظهار الواجهة
 		MainFrame.Visible = true
 		GlowFrame.Visible = true
 		ToggleLabel.Text = "🔒 EXIT"
 		ToggleLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
 		showSideNotification("🔓 Entered LYNEX Script!", true)
 	else
-		-- خروج: إخفاء الواجهة
 		MainFrame.Visible = false
 		GlowFrame.Visible = false
 		ToggleLabel.Text = "🔓 ENTER"
