@@ -18,6 +18,105 @@ else
 	ScreenGui.Parent = CoreGui 
 end
 
+-- ========== زر الدخول/الخروج المنفصل ==========
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Size = UDim2.new(0, 120, 0, 45)
+ToggleButton.Position = UDim2.new(0.5, -60, 0.5, -22)  -- في منتصف الشاشة
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+ToggleButton.BackgroundTransparency = 0.3
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Text = ""
+ToggleButton.Parent = ScreenGui
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 12)
+ToggleCorner.Parent = ToggleButton
+
+-- تدرج أحمر متحرك للإطار
+local ToggleBorderGradient = Instance.new("UIGradient")
+ToggleBorderGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+})
+ToggleBorderGradient.Parent = ToggleButton
+
+-- الإطار الداخلي الأسود
+local ToggleInner = Instance.new("Frame")
+ToggleInner.Size = UDim2.new(1, -4, 1, -4)
+ToggleInner.Position = UDim2.new(0, 2, 0, 2)
+ToggleInner.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+ToggleInner.BorderSizePixel = 0
+ToggleInner.Parent = ToggleButton
+
+local ToggleInnerCorner = Instance.new("UICorner")
+ToggleInnerCorner.CornerRadius = UDim.new(0, 10)
+ToggleInnerCorner.Parent = ToggleInner
+
+-- النص داخل الزر
+local ToggleLabel = Instance.new("TextLabel")
+ToggleLabel.Size = UDim2.new(1, 0, 1, 0)
+ToggleLabel.Position = UDim2.new(0, 0, 0, 0)
+ToggleLabel.BackgroundTransparency = 1
+ToggleLabel.Text = "🔓 ENTER"
+ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleLabel.TextSize = 16
+ToggleLabel.Font = Enum.Font.GothamBold
+ToggleLabel.TextXAlignment = Enum.TextXAlignment.Center
+ToggleLabel.Parent = ToggleInner
+
+-- تدرج أحمر متحرك للنص
+local ToggleTextGradient = Instance.new("UIGradient")
+ToggleTextGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+	ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 90, 90)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(130, 0, 0)),
+	ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 90, 90)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+})
+ToggleTextGradient.Parent = ToggleLabel
+
+-- تأثير الدوران للزر
+local function animateToggle()
+	local tween1 = TweenService:Create(ToggleBorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	tween1:Play()
+	
+	local tween2 = TweenService:Create(ToggleTextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	tween2:Play()
+end
+animateToggle()
+
+-- ========== نظام سحب الزر المنفصل ==========
+local dragging, dragInput, dragStart, startPos
+
+ToggleButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = ToggleButton.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+
+ToggleButton.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		ToggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- ========== الواجهة الرئيسية (المخفية في البداية) ==========
+
 -- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
@@ -27,6 +126,7 @@ GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
 GlowFrame.Parent = ScreenGui
+GlowFrame.Visible = false  -- مخفي في البداية
 
 local GlowCorner = Instance.new("UICorner")
 GlowCorner.CornerRadius = UDim.new(0, 18)
@@ -42,6 +142,7 @@ MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
 MainFrame.ClipsDescendants = true
+MainFrame.Visible = false  -- مخفي في البداية
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
@@ -85,7 +186,7 @@ ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
 ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)
 
--- 6. الحاوية الداخلية للأزرار (المحتوى)
+-- 6. الحاوية الداخلية للأزرار
 local Container = Instance.new("Frame")
 Container.Size = UDim2.new(1, 0, 0, 1550)
 Container.Position = UDim2.new(0, 0, 0, 0)
@@ -226,7 +327,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 9. زر الإغلاق (X) - يخفي المحتوى فقط (يخرج من السكربت)
+-- 9. زر الإغلاق (X)
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -244,89 +345,7 @@ CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
 CloseButton.MouseButton1Click:Connect(function()
-	-- إخفاء المحتوى (الخروج من السكربت)
-	Container.Visible = false
-	LYNEXLabel.Text = "🔓 ENTER"
-	LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	isInside = false
-	showSideNotification("🔒 Exited LYNEX Script!", true)
-end)
-
--- ========== زر LYNEX (دخول/خروج من السكربت) ==========
-local LYNEXButton = Instance.new("TextButton")
-LYNEXButton.Name = "LYNEXButton"
-LYNEXButton.Size = UDim2.new(0, 80, 0, 30)
-LYNEXButton.Position = UDim2.new(0.5, -40, 0, 5)
-LYNEXButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-LYNEXButton.BackgroundTransparency = 0.3
-LYNEXButton.BorderSizePixel = 0
-LYNEXButton.Text = ""
-LYNEXButton.Parent = InsideFrame
-
-local LYNEXCorner = Instance.new("UICorner")
-LYNEXCorner.CornerRadius = UDim.new(0, 10)
-LYNEXCorner.Parent = LYNEXButton
-
--- تدرج أحمر متحرك للزر
-local LYNEXGradient = createRedTextGradient(LYNEXButton)
-
--- الإطار الداخلي الأسود
-local LYNEXInner = Instance.new("Frame")
-LYNEXInner.Size = UDim2.new(1, -4, 1, -4)
-LYNEXInner.Position = UDim2.new(0, 2, 0, 2)
-LYNEXInner.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
-LYNEXInner.BorderSizePixel = 0
-LYNEXInner.Parent = LYNEXButton
-
-local LYNEXInnerCorner = Instance.new("UICorner")
-LYNEXInnerCorner.CornerRadius = UDim.new(0, 8)
-LYNEXInnerCorner.Parent = LYNEXInner
-
--- نص LYNEX داخل الزر
-local LYNEXLabel = Instance.new("TextLabel")
-LYNEXLabel.Size = UDim2.new(1, 0, 1, 0)
-LYNEXLabel.Position = UDim2.new(0, 0, 0, 0)
-LYNEXLabel.BackgroundTransparency = 1
-LYNEXLabel.Text = "🔓 ENTER"
-LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-LYNEXLabel.TextSize = 13
-LYNEXLabel.Font = Enum.Font.GothamBold
-LYNEXLabel.TextXAlignment = Enum.TextXAlignment.Center
-LYNEXLabel.Parent = LYNEXInner
-
--- تدرج أحمر متحرك للنص
-local LYNEXTextGradient = createRedTextGradient(LYNEXLabel)
-
--- تأثير الدوران للزر
-local function animateLYNEX()
-	local tween1 = TweenService:Create(LYNEXGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	tween1:Play()
-	
-	local tween2 = TweenService:Create(LYNEXTextGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	tween2:Play()
-end
-animateLYNEX()
-
--- متغير لحالة الدخول/الخروج
-local isInside = false
-
--- الوظيفة: عند الضغط على زر LYNEX
-LYNEXButton.MouseButton1Click:Connect(function()
-	isInside = not isInside
-	
-	if isInside then
-		-- دخول إلى السكربت (إظهار المحتوى)
-		Container.Visible = true
-		LYNEXLabel.Text = "🔒 EXIT"
-		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-		showSideNotification("🔓 Entered LYNEX Script!", true)
-	else
-		-- خروج من السكربت (إخفاء المحتوى)
-		Container.Visible = false
-		LYNEXLabel.Text = "🔓 ENTER"
-		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		showSideNotification("🔒 Exited LYNEX Script!", true)
-	end
+	ScreenGui:Destroy()
 end)
 
 -- 10. الأزرار العلوية
@@ -670,36 +689,58 @@ animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
 
--- 13. نظام سحب وتحريك الواجهة
-local dragging, dragInput, dragStart, startPos
+-- 13. نظام سحب وتحريك الواجهة الرئيسية
+local mainDragging, mainDragInput, mainDragStart, mainStartPos
 
-local function update(input)
-	local delta = input.Position - dragStart
-	local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+local function updateMain(input)
+	local delta = input.Position - mainDragStart
+	local targetPos = UDim2.new(mainStartPos.X.Scale, mainStartPos.X.Offset + delta.X, mainStartPos.Y.Scale, mainStartPos.Y.Offset + delta.Y)
 	
 	MainFrame.Position = targetPos
 	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
-endMainFrame.InputBegan:Connect(function(input)
+end
+
+MainFrame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = MainFrame.Position
+		mainDragging = true
+		mainDragStart = input.Position
+		mainStartPos = MainFrame.Position
 		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			if input.UserInputState == Enum.UserInputState.End then mainDragging = false end
 		end)
 	end
 end)
 
 MainFrame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then mainDragInput = input end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then update(input) end
+	if input == mainDragInput and mainDragging then updateMain(input) end
 end)
 
 -- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
 
--- ========== بداية السكربت: المحتوى مخفي ==========
-Container.Visible = false
+-- ========== وظيفة زر الدخول/الخروج ==========
+local isScriptVisible = false
+
+ToggleButton.MouseButton1Click:Connect(function()
+	isScriptVisible = not isScriptVisible
+	
+	if isScriptVisible then
+		-- دخول: إظهار الواجهة
+		MainFrame.Visible = true
+		GlowFrame.Visible = true
+		ToggleLabel.Text = "🔒 EXIT"
+		ToggleLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+		showSideNotification("🔓 Entered LYNEX Script!", true)
+	else
+		-- خروج: إخفاء الواجهة
+		MainFrame.Visible = false
+		GlowFrame.Visible = false
+		ToggleLabel.Text = "🔓 ENTER"
+		ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		showSideNotification("🔒 Exited LYNEX Script!", true)
+	end
+end)
