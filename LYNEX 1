@@ -237,7 +237,6 @@ local function toggleInfiniteJump()
 end
 
 -- 7. انخفاض الجاذبية (Low Gravity)
-local gravityConnection
 local function toggleLowGravity()
 	playerSettings.lowGravity = not playerSettings.lowGravity
 	
@@ -1262,11 +1261,11 @@ local function createSettingsWindow()
 	return SettingsFrame
 end
 
--- ========== نافذة Player ==========
+-- ========== نافذة Player (مصغرة) ==========
 local function createPlayerWindow()
 	local PlayerFrame = Instance.new("Frame")
-	PlayerFrame.Size = UDim2.new(0, 340, 0, 420)
-	PlayerFrame.Position = UDim2.new(0.5, -170, 0.5, -210)
+	PlayerFrame.Size = UDim2.new(0, 280, 0, 380)
+	PlayerFrame.Position = UDim2.new(0.5, -140, 0.5, -190)
 	PlayerFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	PlayerFrame.BorderSizePixel = 0
 	PlayerFrame.Parent = ScreenGui
@@ -1301,12 +1300,12 @@ local function createPlayerWindow()
 	PlayerInsideCorner.Parent = PlayerInside
 	
 	local PlayerTitle = Instance.new("TextLabel")
-	PlayerTitle.Size = UDim2.new(1, -50, 0, 35)
+	PlayerTitle.Size = UDim2.new(1, -50, 0, 30)
 	PlayerTitle.Position = UDim2.new(0, 12, 0, 4)
 	PlayerTitle.BackgroundTransparency = 1
 	PlayerTitle.Text = "👤 PLAYER"
 	PlayerTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	PlayerTitle.TextSize = 17
+	PlayerTitle.TextSize = 15
 	PlayerTitle.Font = Enum.Font.GothamBold
 	PlayerTitle.TextXAlignment = Enum.TextXAlignment.Left
 	PlayerTitle.Parent = PlayerInside
@@ -1326,13 +1325,13 @@ local function createPlayerWindow()
 	titleTween2:Play()
 	
 	local PlayerClose = Instance.new("TextButton")
-	PlayerClose.Size = UDim2.new(0, 26, 0, 26)
-	PlayerClose.Position = UDim2.new(1, -33, 0, 6)
+	PlayerClose.Size = UDim2.new(0, 24, 0, 24)
+	PlayerClose.Position = UDim2.new(1, -30, 0, 5)
 	PlayerClose.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
 	PlayerClose.BorderSizePixel = 0
 	PlayerClose.Text = "✕"
 	PlayerClose.TextColor3 = Color3.fromRGB(255, 80, 80)
-	PlayerClose.TextSize = 16
+	PlayerClose.TextSize = 14
 	PlayerClose.Font = Enum.Font.GothamBold
 	PlayerClose.Parent = PlayerInside
 	PlayerClose.ZIndex = 12
@@ -1349,7 +1348,7 @@ local function createPlayerWindow()
 	
 	local topLine2 = Instance.new("Frame")
 	topLine2.Size = UDim2.new(1, -20, 0, 2)
-	topLine2.Position = UDim2.new(0, 10, 0, 42)
+	topLine2.Position = UDim2.new(0, 10, 0, 38)
 	topLine2.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	topLine2.BackgroundTransparency = 0.5
 	topLine2.BorderSizePixel = 0
@@ -1357,8 +1356,8 @@ local function createPlayerWindow()
 	topLine2.ZIndex = 12
 	
 	local PlayerScroll = Instance.new("ScrollingFrame")
-	PlayerScroll.Size = UDim2.new(1, -8, 1, -48)
-	PlayerScroll.Position = UDim2.new(0, 4, 0, 46)
+	PlayerScroll.Size = UDim2.new(1, -8, 1, -44)
+	PlayerScroll.Position = UDim2.new(0, 4, 0, 42)
 	PlayerScroll.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 	PlayerScroll.BackgroundTransparency = 1
 	PlayerScroll.BorderSizePixel = 0
@@ -1366,10 +1365,10 @@ local function createPlayerWindow()
 	PlayerScroll.ZIndex = 12
 	PlayerScroll.ScrollBarThickness = 3
 	PlayerScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
-	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 750)
+	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 700)
 	
 	local PlayerContainer = Instance.new("Frame")
-	PlayerContainer.Size = UDim2.new(1, 0, 0, 750)
+	PlayerContainer.Size = UDim2.new(1, 0, 0, 700)
 	PlayerContainer.BackgroundTransparency = 1
 	PlayerContainer.Parent = PlayerScroll
 	PlayerContainer.ZIndex = 12
@@ -1378,12 +1377,12 @@ local function createPlayerWindow()
 	
 	-- ===== 1. SPEED =====
 	local SpeedLabel = Instance.new("TextLabel")
-	SpeedLabel.Size = UDim2.new(1, -20, 0, 22)
+	SpeedLabel.Size = UDim2.new(1, -20, 0, 18)
 	SpeedLabel.Position = UDim2.new(0, 10, 0, pY)
 	SpeedLabel.BackgroundTransparency = 1
 	SpeedLabel.Text = "⚡ Speed"
 	SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedLabel.TextSize = 12
+	SpeedLabel.TextSize = 11
 	SpeedLabel.Font = Enum.Font.GothamBold
 	SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
 	SpeedLabel.Parent = PlayerContainer
@@ -1392,16 +1391,16 @@ local function createPlayerWindow()
 	local speedTween = TweenService:Create(speedGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	speedTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local SpeedBox = Instance.new("TextBox")
-	SpeedBox.Size = UDim2.new(0, 80, 0, 24)
+	SpeedBox.Size = UDim2.new(0, 70, 0, 22)
 	SpeedBox.Position = UDim2.new(0, 10, 0, pY)
 	SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	SpeedBox.BorderSizePixel = 0
 	SpeedBox.Text = "16"
 	SpeedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedBox.TextSize = 12
+	SpeedBox.TextSize = 11
 	SpeedBox.Font = Enum.Font.GothamBold
 	SpeedBox.TextXAlignment = Enum.TextXAlignment.Center
 	SpeedBox.Parent = PlayerContainer
@@ -1411,13 +1410,13 @@ local function createPlayerWindow()
 	SpeedBoxCorner.Parent = SpeedBox
 	
 	local SpeedBtn = Instance.new("TextButton")
-	SpeedBtn.Size = UDim2.new(0, 80, 0, 24)
-	SpeedBtn.Position = UDim2.new(0, 100, 0, pY)
+	SpeedBtn.Size = UDim2.new(0, 70, 0, 22)
+	SpeedBtn.Position = UDim2.new(0, 90, 0, pY)
 	SpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	SpeedBtn.BorderSizePixel = 0
 	SpeedBtn.Text = "Apply"
 	SpeedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedBtn.TextSize = 11
+	SpeedBtn.TextSize = 10
 	SpeedBtn.Font = Enum.Font.GothamBold
 	SpeedBtn.Parent = PlayerContainer
 	SpeedBtn.ZIndex = 12
@@ -1429,16 +1428,16 @@ local function createPlayerWindow()
 		setSpeed(tonumber(SpeedBox.Text) or 16)
 	end)
 	
-	pY = pY + 32
+	pY = pY + 28
 	
 	-- ===== 2. JUMP =====
 	local JumpLabel = Instance.new("TextLabel")
-	JumpLabel.Size = UDim2.new(1, -20, 0, 22)
+	JumpLabel.Size = UDim2.new(1, -20, 0, 18)
 	JumpLabel.Position = UDim2.new(0, 10, 0, pY)
 	JumpLabel.BackgroundTransparency = 1
 	JumpLabel.Text = "🦘 Jump Power"
 	JumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpLabel.TextSize = 12
+	JumpLabel.TextSize = 11
 	JumpLabel.Font = Enum.Font.GothamBold
 	JumpLabel.TextXAlignment = Enum.TextXAlignment.Left
 	JumpLabel.Parent = PlayerContainer
@@ -1447,16 +1446,16 @@ local function createPlayerWindow()
 	local jumpTween = TweenService:Create(jumpGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	jumpTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local JumpBox = Instance.new("TextBox")
-	JumpBox.Size = UDim2.new(0, 80, 0, 24)
+	JumpBox.Size = UDim2.new(0, 70, 0, 22)
 	JumpBox.Position = UDim2.new(0, 10, 0, pY)
 	JumpBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	JumpBox.BorderSizePixel = 0
 	JumpBox.Text = "50"
 	JumpBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpBox.TextSize = 12
+	JumpBox.TextSize = 11
 	JumpBox.Font = Enum.Font.GothamBold
 	JumpBox.TextXAlignment = Enum.TextXAlignment.Center
 	JumpBox.Parent = PlayerContainer
@@ -1466,13 +1465,13 @@ local function createPlayerWindow()
 	JumpBoxCorner.Parent = JumpBox
 	
 	local JumpBtn = Instance.new("TextButton")
-	JumpBtn.Size = UDim2.new(0, 80, 0, 24)
-	JumpBtn.Position = UDim2.new(0, 100, 0, pY)
+	JumpBtn.Size = UDim2.new(0, 70, 0, 22)
+	JumpBtn.Position = UDim2.new(0, 90, 0, pY)
 	JumpBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	JumpBtn.BorderSizePixel = 0
 	JumpBtn.Text = "Apply"
 	JumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpBtn.TextSize = 11
+	JumpBtn.TextSize = 10
 	JumpBtn.Font = Enum.Font.GothamBold
 	JumpBtn.Parent = PlayerContainer
 	JumpBtn.ZIndex = 12
@@ -1484,7 +1483,7 @@ local function createPlayerWindow()
 		setJumpPower(tonumber(JumpBox.Text) or 50)
 	end)
 	
-	pY = pY + 32
+	pY = pY + 28
 	
 	-- خط فاصل
 	local lineP1 = Instance.new("Frame")
@@ -1495,16 +1494,16 @@ local function createPlayerWindow()
 	lineP1.Parent = PlayerContainer
 	lineP1.ZIndex = 12
 	
-	pY = pY + 12
+	pY = pY + 10
 	
 	-- ===== 3. NOCLIP =====
 	local NoclipLabel = Instance.new("TextLabel")
-	NoclipLabel.Size = UDim2.new(1, -20, 0, 22)
+	NoclipLabel.Size = UDim2.new(1, -20, 0, 18)
 	NoclipLabel.Position = UDim2.new(0, 10, 0, pY)
 	NoclipLabel.BackgroundTransparency = 1
 	NoclipLabel.Text = "🚪 Noclip"
 	NoclipLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	NoclipLabel.TextSize = 12
+	NoclipLabel.TextSize = 11
 	NoclipLabel.Font = Enum.Font.GothamBold
 	NoclipLabel.TextXAlignment = Enum.TextXAlignment.Left
 	NoclipLabel.Parent = PlayerContainer
@@ -1513,16 +1512,16 @@ local function createPlayerWindow()
 	local noclipTween = TweenService:Create(noclipGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	noclipTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local NoclipBtn = Instance.new("TextButton")
-	NoclipBtn.Size = UDim2.new(0, 120, 0, 26)
-	NoclipBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	NoclipBtn.Size = UDim2.new(0, 100, 0, 24)
+	NoclipBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	NoclipBtn.BorderSizePixel = 0
 	NoclipBtn.Text = "🔴 OFF"
 	NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	NoclipBtn.TextSize = 12
+	NoclipBtn.TextSize = 11
 	NoclipBtn.Font = Enum.Font.GothamBold
 	NoclipBtn.Parent = PlayerContainer
 	NoclipBtn.ZIndex = 12
@@ -1541,16 +1540,16 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	-- ===== 4. SPIN =====
 	local SpinLabel = Instance.new("TextLabel")
-	SpinLabel.Size = UDim2.new(1, -20, 0, 22)
+	SpinLabel.Size = UDim2.new(1, -20, 0, 18)
 	SpinLabel.Position = UDim2.new(0, 10, 0, pY)
 	SpinLabel.BackgroundTransparency = 1
 	SpinLabel.Text = "🔄 Spin"
 	SpinLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpinLabel.TextSize = 12
+	SpinLabel.TextSize = 11
 	SpinLabel.Font = Enum.Font.GothamBold
 	SpinLabel.TextXAlignment = Enum.TextXAlignment.Left
 	SpinLabel.Parent = PlayerContainer
@@ -1559,16 +1558,16 @@ local function createPlayerWindow()
 	local spinTween = TweenService:Create(spinGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	spinTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local SpinBtn = Instance.new("TextButton")
-	SpinBtn.Size = UDim2.new(0, 120, 0, 26)
-	SpinBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	SpinBtn.Size = UDim2.new(0, 100, 0, 24)
+	SpinBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	SpinBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	SpinBtn.BorderSizePixel = 0
 	SpinBtn.Text = "🔴 OFF"
 	SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpinBtn.TextSize = 12
+	SpinBtn.TextSize = 11
 	SpinBtn.Font = Enum.Font.GothamBold
 	SpinBtn.Parent = PlayerContainer
 	SpinBtn.ZIndex = 12
@@ -1587,16 +1586,16 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	-- ===== 5. FLY =====
 	local FlyLabel = Instance.new("TextLabel")
-	FlyLabel.Size = UDim2.new(1, -20, 0, 22)
+	FlyLabel.Size = UDim2.new(1, -20, 0, 18)
 	FlyLabel.Position = UDim2.new(0, 10, 0, pY)
 	FlyLabel.BackgroundTransparency = 1
 	FlyLabel.Text = "✈️ Fly"
 	FlyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FlyLabel.TextSize = 12
+	FlyLabel.TextSize = 11
 	FlyLabel.Font = Enum.Font.GothamBold
 	FlyLabel.TextXAlignment = Enum.TextXAlignment.Left
 	FlyLabel.Parent = PlayerContainer
@@ -1605,16 +1604,16 @@ local function createPlayerWindow()
 	local flyTween = TweenService:Create(flyGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	flyTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local FlyBtn = Instance.new("TextButton")
-	FlyBtn.Size = UDim2.new(0, 120, 0, 26)
-	FlyBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	FlyBtn.Size = UDim2.new(0, 100, 0, 24)
+	FlyBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	FlyBtn.BorderSizePixel = 0
 	FlyBtn.Text = "🔴 OFF"
 	FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FlyBtn.TextSize = 12
+	FlyBtn.TextSize = 11
 	FlyBtn.Font = Enum.Font.GothamBold
 	FlyBtn.Parent = PlayerContainer
 	FlyBtn.ZIndex = 12
@@ -1633,16 +1632,16 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	-- ===== 6. INFINITE JUMP =====
 	local InfJumpLabel = Instance.new("TextLabel")
-	InfJumpLabel.Size = UDim2.new(1, -20, 0, 22)
+	InfJumpLabel.Size = UDim2.new(1, -20, 0, 18)
 	InfJumpLabel.Position = UDim2.new(0, 10, 0, pY)
 	InfJumpLabel.BackgroundTransparency = 1
 	InfJumpLabel.Text = "♾️ Infinite Jump"
 	InfJumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	InfJumpLabel.TextSize = 12
+	InfJumpLabel.TextSize = 11
 	InfJumpLabel.Font = Enum.Font.GothamBold
 	InfJumpLabel.TextXAlignment = Enum.TextXAlignment.Left
 	InfJumpLabel.Parent = PlayerContainer
@@ -1651,16 +1650,16 @@ local function createPlayerWindow()
 	local infTween = TweenService:Create(infGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	infTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local InfJumpBtn = Instance.new("TextButton")
-	InfJumpBtn.Size = UDim2.new(0, 120, 0, 26)
-	InfJumpBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	InfJumpBtn.Size = UDim2.new(0, 100, 0, 24)
+	InfJumpBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	InfJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	InfJumpBtn.BorderSizePixel = 0
 	InfJumpBtn.Text = "🔴 OFF"
 	InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	InfJumpBtn.TextSize = 12
+	InfJumpBtn.TextSize = 11
 	InfJumpBtn.Font = Enum.Font.GothamBold
 	InfJumpBtn.Parent = PlayerContainer
 	InfJumpBtn.ZIndex = 12
@@ -1679,16 +1678,16 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	-- ===== 7. LOW GRAVITY =====
 	local LowGravLabel = Instance.new("TextLabel")
-	LowGravLabel.Size = UDim2.new(1, -20, 0, 22)
+	LowGravLabel.Size = UDim2.new(1, -20, 0, 18)
 	LowGravLabel.Position = UDim2.new(0, 10, 0, pY)
 	LowGravLabel.BackgroundTransparency = 1
 	LowGravLabel.Text = "🌕 Low Gravity"
 	LowGravLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	LowGravLabel.TextSize = 12
+	LowGravLabel.TextSize = 11
 	LowGravLabel.Font = Enum.Font.GothamBold
 	LowGravLabel.TextXAlignment = Enum.TextXAlignment.Left
 	LowGravLabel.Parent = PlayerContainer
@@ -1697,16 +1696,16 @@ local function createPlayerWindow()
 	local gravTween = TweenService:Create(gravGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	gravTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local LowGravBtn = Instance.new("TextButton")
-	LowGravBtn.Size = UDim2.new(0, 120, 0, 26)
-	LowGravBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	LowGravBtn.Size = UDim2.new(0, 100, 0, 24)
+	LowGravBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	LowGravBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	LowGravBtn.BorderSizePixel = 0
 	LowGravBtn.Text = "🔴 OFF"
 	LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	LowGravBtn.TextSize = 12
+	LowGravBtn.TextSize = 11
 	LowGravBtn.Font = Enum.Font.GothamBold
 	LowGravBtn.Parent = PlayerContainer
 	LowGravBtn.ZIndex = 12
@@ -1725,16 +1724,16 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	-- ===== 8. FOV 120 =====
 	local FOVLabel = Instance.new("TextLabel")
-	FOVLabel.Size = UDim2.new(1, -20, 0, 22)
+	FOVLabel.Size = UDim2.new(1, -20, 0, 18)
 	FOVLabel.Position = UDim2.new(0, 10, 0, pY)
 	FOVLabel.BackgroundTransparency = 1
 	FOVLabel.Text = "👁️ FOV 120"
 	FOVLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FOVLabel.TextSize = 12
+	FOVLabel.TextSize = 11
 	FOVLabel.Font = Enum.Font.GothamBold
 	FOVLabel.TextXAlignment = Enum.TextXAlignment.Left
 	FOVLabel.Parent = PlayerContainer
@@ -1743,16 +1742,16 @@ local function createPlayerWindow()
 	local fovTween = TweenService:Create(fovGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	fovTween:Play()
 	
-	pY = pY + 24
+	pY = pY + 20
 	
 	local FOVBtn = Instance.new("TextButton")
-	FOVBtn.Size = UDim2.new(0, 120, 0, 26)
-	FOVBtn.Position = UDim2.new(0.5, -60, 0, pY)
+	FOVBtn.Size = UDim2.new(0, 100, 0, 24)
+	FOVBtn.Position = UDim2.new(0.5, -50, 0, pY)
 	FOVBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
 	FOVBtn.BorderSizePixel = 0
 	FOVBtn.Text = "🔴 OFF"
 	FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FOVBtn.TextSize = 12
+	FOVBtn.TextSize = 11
 	FOVBtn.Font = Enum.Font.GothamBold
 	FOVBtn.Parent = PlayerContainer
 	FOVBtn.ZIndex = 12
@@ -1771,7 +1770,7 @@ local function createPlayerWindow()
 		end
 	end)
 	
-	pY = pY + 34
+	pY = pY + 30
 	
 	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, pY + 20)
 	
@@ -2024,7 +2023,6 @@ player.CharacterAdded:Connect(function(newChar)
 	humanoid = character:WaitForChild("Humanoid")
 	rootPart = character:WaitForChild("HumanoidRootPart")
 	
-	-- إعادة تطبيق الإعدادات
 	if playerSettings.speed then
 		humanoid.WalkSpeed = playerSettings.speed
 	end
