@@ -93,7 +93,6 @@ Container.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 Container.BackgroundTransparency = 1
 Container.BorderSizePixel = 0
 Container.Parent = ScrollFrame
-Container.Visible = false  -- مخفي في البداية
 
 -- 7. خط حماية علوي رفيع
 local Line = Instance.new("Frame")
@@ -227,7 +226,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- ========== زر الإغلاق (X) - يخفي الواجهة فقط ==========
+-- 9. زر الإغلاق (X) - يخفي المحتوى فقط (يخرج من السكربت)
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -244,13 +243,12 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
--- زر الإغلاق: يخفي الواجهة بالكامل
 CloseButton.MouseButton1Click:Connect(function()
-	MainFrame.Visible = false
-	GlowFrame.Visible = false
-	isInside = false
+	-- إخفاء المحتوى (الخروج من السكربت)
+	Container.Visible = false
 	LYNEXLabel.Text = "🔓 ENTER"
 	LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	isInside = false
 	showSideNotification("🔒 Exited LYNEX Script!", true)
 end)
 
@@ -269,8 +267,10 @@ local LYNEXCorner = Instance.new("UICorner")
 LYNEXCorner.CornerRadius = UDim.new(0, 10)
 LYNEXCorner.Parent = LYNEXButton
 
+-- تدرج أحمر متحرك للزر
 local LYNEXGradient = createRedTextGradient(LYNEXButton)
 
+-- الإطار الداخلي الأسود
 local LYNEXInner = Instance.new("Frame")
 LYNEXInner.Size = UDim2.new(1, -4, 1, -4)
 LYNEXInner.Position = UDim2.new(0, 2, 0, 2)
@@ -282,6 +282,7 @@ local LYNEXInnerCorner = Instance.new("UICorner")
 LYNEXInnerCorner.CornerRadius = UDim.new(0, 8)
 LYNEXInnerCorner.Parent = LYNEXInner
 
+-- نص LYNEX داخل الزر
 local LYNEXLabel = Instance.new("TextLabel")
 LYNEXLabel.Size = UDim2.new(1, 0, 1, 0)
 LYNEXLabel.Position = UDim2.new(0, 0, 0, 0)
@@ -293,8 +294,10 @@ LYNEXLabel.Font = Enum.Font.GothamBold
 LYNEXLabel.TextXAlignment = Enum.TextXAlignment.Center
 LYNEXLabel.Parent = LYNEXInner
 
+-- تدرج أحمر متحرك للنص
 local LYNEXTextGradient = createRedTextGradient(LYNEXLabel)
 
+-- تأثير الدوران للزر
 local function animateLYNEX()
 	local tween1 = TweenService:Create(LYNEXGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 	tween1:Play()
@@ -304,21 +307,21 @@ local function animateLYNEX()
 end
 animateLYNEX()
 
+-- متغير لحالة الدخول/الخروج
 local isInside = false
 
+-- الوظيفة: عند الضغط على زر LYNEX
 LYNEXButton.MouseButton1Click:Connect(function()
 	isInside = not isInside
 	
 	if isInside then
-		-- إظهار الواجهة والمحتوى
-		MainFrame.Visible = true
-		GlowFrame.Visible = true
+		-- دخول إلى السكربت (إظهار المحتوى)
 		Container.Visible = true
 		LYNEXLabel.Text = "🔒 EXIT"
 		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
 		showSideNotification("🔓 Entered LYNEX Script!", true)
 	else
-		-- إخفاء المحتوى فقط (الواجهة تبقى ظاهرة)
+		-- خروج من السكربت (إخفاء المحتوى)
 		Container.Visible = false
 		LYNEXLabel.Text = "🔓 ENTER"
 		LYNEXLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -387,6 +390,7 @@ SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
+-- خانة البحث
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Size = UDim2.new(1, -4, 1, -4)
@@ -675,9 +679,7 @@ local function update(input)
 	
 	MainFrame.Position = targetPos
 	GlowFrame.Position = UDim2.new(targetPos.X.Scale, targetPos.X.Offset - 4, targetPos.Y.Scale, targetPos.Y.Offset - 4)
-end
-
-MainFrame.InputBegan:Connect(function(input)
+endMainFrame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
@@ -698,3 +700,6 @@ end)
 
 -- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
+
+-- ========== بداية السكربت: المحتوى مخفي ==========
+Container.Visible = false
