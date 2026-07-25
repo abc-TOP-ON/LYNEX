@@ -18,11 +18,11 @@ else
 	ScreenGui.Parent = CoreGui 
 end
 
--- ========== زر الدخول/الخروج المنفصل ==========
+-- ========== زر الدخول/الخروج المنفصل على الجانب الأيمن ==========
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Name = "ToggleButton"
 ToggleButton.Size = UDim2.new(0, 120, 0, 45)
-ToggleButton.Position = UDim2.new(0.5, -60, 0.5, -22)  -- في منتصف الشاشة
+ToggleButton.Position = UDim2.new(1, -140, 0.5, -22)  -- على الجانب الأيمن
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ToggleButton.BackgroundTransparency = 0.3
 ToggleButton.BorderSizePixel = 0
@@ -90,7 +90,7 @@ local function animateToggle()
 end
 animateToggle()
 
--- ========== نظام سحب الزر المنفصل ==========
+-- ========== نظام سحب الزر المنفصل (مع تعديل للجانب الأيمن) ==========
 local dragging, dragInput, dragStart, startPos
 
 ToggleButton.InputBegan:Connect(function(input)
@@ -99,7 +99,7 @@ ToggleButton.InputBegan:Connect(function(input)
 		dragStart = input.Position
 		startPos = ToggleButton.Position
 		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			if input.UserInputState == Enum.InputState.End then dragging = false end
 		end)
 	end
 end)
@@ -111,7 +111,10 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then
 		local delta = input.Position - dragStart
-		ToggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		-- الحفاظ على الموضع على الجانب الأيمن مع إمكانية السحب لأعلى/أسفل
+		local newXOffset = startPos.X.Offset + delta.X
+		-- نحدد أن الزر يبقى على الجانب الأيمن مع إمكانية تغيير ارتفاعه
+		ToggleButton.Position = UDim2.new(1, math.min(-70, math.max(-250, newXOffset)), startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	end
 end)
 
@@ -126,7 +129,7 @@ GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
 GlowFrame.Parent = ScreenGui
-GlowFrame.Visible = false  -- مخفي في البداية
+GlowFrame.Visible = false
 
 local GlowCorner = Instance.new("UICorner")
 GlowCorner.CornerRadius = UDim.new(0, 18)
@@ -142,7 +145,7 @@ MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
 MainFrame.ClipsDescendants = true
-MainFrame.Visible = false  -- مخفي في البداية
+MainFrame.Visible = false
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
