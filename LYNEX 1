@@ -21,8 +21,8 @@ end
 -- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 368, 0, 520)
-GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -260)
+GlowFrame.Size = UDim2.new(0, 368, 0, 680)
+GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -340)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
@@ -35,8 +35,8 @@ GlowCorner.Parent = GlowFrame
 -- 2. الإطار الرئيسي (MainFrame)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 360, 0, 512)
-MainFrame.Position = UDim2.new(0.5, -180, 0.5, -256)
+MainFrame.Size = UDim2.new(0, 360, 0, 672)
+MainFrame.Position = UDim2.new(0.5, -180, 0.5, -336)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -210,63 +210,109 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== الأزرار الجديدة تحت البحث ==========
--- 10. الأزرار الثلاثة الجديدة (SPAM CMD, ANTI SPAM, SPEED)
+-- ========== دالة لإنشاء الأزرار الكبيرة بنفس شكل الصورة ==========
+local function createBigButton(parent, title, description, yPos)
+	local ButtonFrame = Instance.new("Frame")
+	ButtonFrame.Size = UDim2.new(0, 330, 0, 110)
+	ButtonFrame.Position = UDim2.new(0.5, -165, 0, yPos)
+	ButtonFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	ButtonFrame.BorderSizePixel = 0
+	ButtonFrame.Parent = parent
+	
+	local ButtonCorner = Instance.new("UICorner")
+	ButtonCorner.CornerRadius = UDim.new(0, 10)
+	ButtonCorner.Parent = ButtonFrame
+	
+	-- Border Glow للزر
+	local ButtonGlow = Instance.new("Frame")
+	ButtonGlow.Size = UDim2.new(1, 0, 1, 0)
+	ButtonGlow.Position = UDim2.new(0, 0, 0, 0)
+	ButtonGlow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	ButtonGlow.BackgroundTransparency = 0.8
+	ButtonGlow.BorderSizePixel = 0
+	ButtonGlow.Parent = ButtonFrame
+	local GlowCorner2 = Instance.new("UICorner")
+	GlowCorner2.CornerRadius = UDim.new(0, 10)
+	GlowCorner2.Parent = ButtonGlow
+	
+	-- العنوان الكبير (★★★ LOR LORLN SPAM CMD)
+	local TitleLabel = Instance.new("TextLabel")
+	TitleLabel.Size = UDim2.new(1, -20, 0, 30)
+	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
+	TitleLabel.BackgroundTransparency = 1
+	TitleLabel.Text = title
+	TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TitleLabel.TextSize = 14
+	TitleLabel.Font = Enum.Font.GothamBold
+	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	TitleLabel.Parent = ButtonFrame
+	createRedTextGradient(TitleLabel)
+	
+	-- زر EXECUTE
+	local ExecuteButton = Instance.new("TextButton")
+	ExecuteButton.Size = UDim2.new(0, 80, 0, 28)
+	ExecuteButton.Position = UDim2.new(1, -90, 0, 10)
+	ExecuteButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	ExecuteButton.BorderSizePixel = 0
+	ExecuteButton.Text = "EXECUTE"
+	ExecuteButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+	ExecuteButton.TextSize = 12
+	ExecuteButton.Font = Enum.Font.GothamBold
+	ExecuteButton.Parent = ButtonFrame
+	local ExecCorner = Instance.new("UICorner")
+	ExecCorner.CornerRadius = UDim.new(0, 6)
+	ExecCorner.Parent = ExecuteButton
+	createRedTextGradient(ExecuteButton)
+	
+	-- الوصف الصغير (HD Admin | CMD Bar | Full Control)
+	local DescLabel = Instance.new("TextLabel")
+	DescLabel.Size = UDim2.new(1, -20, 0, 20)
+	DescLabel.Position = UDim2.new(0, 10, 0, 42)
+	DescLabel.BackgroundTransparency = 1
+	DescLabel.Text = description
+	DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+	DescLabel.TextSize = 11
+	DescLabel.Font = Enum.Font.Gotham
+	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
+	DescLabel.Parent = ButtonFrame
+	
+	-- كلمة AUTO في الأسفل
+	local AutoLabel = Instance.new("TextLabel")
+	AutoLabel.Size = UDim2.new(1, -20, 0, 20)
+	AutoLabel.Position = UDim2.new(0, 10, 0, 70)
+	AutoLabel.BackgroundTransparency = 1
+	AutoLabel.Text = "AUTO"
+	AutoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
+	AutoLabel.TextSize = 11
+	AutoLabel.Font = Enum.Font.GothamBold
+	AutoLabel.TextXAlignment = Enum.TextXAlignment.Left
+	AutoLabel.Parent = ButtonFrame
+	
+	return ButtonFrame, ExecuteButton
+end
 
--- زر SPAM CMD
-local SpamCmdButton = Instance.new("TextButton")
-SpamCmdButton.Name = "SpamCmdButton"
-SpamCmdButton.Size = UDim2.new(0, 88, 0, 32)
-SpamCmdButton.Position = UDim2.new(0.5, -140, 0, 162)
-SpamCmdButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-SpamCmdButton.BorderSizePixel = 0
-SpamCmdButton.Text = "SPAM CMD"
-SpamCmdButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpamCmdButton.TextSize = 12
-SpamCmdButton.Font = Enum.Font.GothamBold
-SpamCmdButton.Parent = InsideFrame
-local SpamCmdCorner = Instance.new("UICorner")
-SpamCmdCorner.CornerRadius = UDim.new(0, 8)
-SpamCmdCorner.Parent = SpamCmdButton
-createRedTextGradient(SpamCmdButton)
+-- ========== الأزرار الثلاثة الجديدة ==========
+local button1, exec1 = createBigButton(InsideFrame, "★★★ LOR LORLN SPAM CMD", "HD Admin | CMD Bar | Full Control", 165)
+local button2, exec2 = createBigButton(InsideFrame, "★★★ LOR LORLN ANTI SPAM", "Anti Spam Protection System", 285)
+local button3, exec3 = createBigButton(InsideFrame, "★★★ LOR LORLN SPEED", "Speed hack for all games", 405)
 
--- زر ANTI SPAM
-local AntiSpamButton = Instance.new("TextButton")
-AntiSpamButton.Name = "AntiSpamButton"
-AntiSpamButton.Size = UDim2.new(0, 88, 0, 32)
-AntiSpamButton.Position = UDim2.new(0.5, -44, 0, 162)
-AntiSpamButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-AntiSpamButton.BorderSizePixel = 0
-AntiSpamButton.Text = "ANTI SPAM"
-AntiSpamButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-AntiSpamButton.TextSize = 12
-AntiSpamButton.Font = Enum.Font.GothamBold
-AntiSpamButton.Parent = InsideFrame
-local AntiSpamCorner = Instance.new("UICorner")
-AntiSpamCorner.CornerRadius = UDim.new(0, 8)
-AntiSpamCorner.Parent = AntiSpamButton
-createRedTextGradient(AntiSpamButton)
+-- ========== أكشن للأزرار ==========
+exec1.MouseButton1Click:Connect(function()
+	print("SPAM CMD Activated!")
+	-- ضع كود التشغيل هنا
+end)
 
--- زر SPEED
-local SpeedButton = Instance.new("TextButton")
-SpeedButton.Name = "SpeedButton"
-SpeedButton.Size = UDim2.new(0, 88, 0, 32)
-SpeedButton.Position = UDim2.new(0.5, 52, 0, 162)
-SpeedButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-SpeedButton.BorderSizePixel = 0
-SpeedButton.Text = "SPEED"
-SpeedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpeedButton.TextSize = 12
-SpeedButton.Font = Enum.Font.GothamBold
-SpeedButton.Parent = InsideFrame
-local SpeedCorner = Instance.new("UICorner")
-SpeedCorner.CornerRadius = UDim.new(0, 8)
-SpeedCorner.Parent = SpeedButton
-createRedTextGradient(SpeedButton)
+exec2.MouseButton1Click:Connect(function()
+	print("ANTI SPAM Activated!")
+	-- ضع كود التشغيل هنا
+end)
 
--- ========== نهاية الأزرار الجديدة ==========
+exec3.MouseButton1Click:Connect(function()
+	print("SPEED Activated!")
+	-- ضع كود التشغيل هنا
+end)
 
--- 11. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
+-- 10. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
 local function animate(targetGradient, speed)
 	if targetGradient then
 		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -281,11 +327,8 @@ animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
-animate(SpamCmdButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(AntiSpamButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(SpeedButton:FindFirstChildOfClass("UIGradient"), 1.8)
 
--- 12. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
+-- 11. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
