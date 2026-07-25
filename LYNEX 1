@@ -3,6 +3,7 @@ local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "LynexProSearchMenu"
@@ -19,95 +20,126 @@ else
 	ScreenGui.Parent = CoreGui 
 end
 
--- 1. الظل الخارجي المضيء
+-- =============================================
+-- 🎨 تصميم احترافي: ظل نيون أحمر متحرك
+-- =============================================
+
+-- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 380, 0, 560)
-GlowFrame.Position = UDim2.new(0.5, -190, 0.5, -280)
+GlowFrame.Size = UDim2.new(0, 400, 0, 600)
+GlowFrame.Position = UDim2.new(0.5, -200, 0.5, -300)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-GlowFrame.BackgroundTransparency = 0.65
+GlowFrame.BackgroundTransparency = 0.4
 GlowFrame.BorderSizePixel = 0
 GlowFrame.Parent = ScreenGui
 
 local GlowCorner = Instance.new("UICorner")
-GlowCorner.CornerRadius = UDim.new(0, 18)
+GlowCorner.CornerRadius = UDim.new(0, 20)
 GlowCorner.Parent = GlowFrame
 
 -- 2. الإطار الرئيسي
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 370, 0, 550)
-MainFrame.Position = UDim2.new(0.5, -185, 0.5, -275)
+MainFrame.Size = UDim2.new(0, 390, 0, 590)
+MainFrame.Position = UDim2.new(0.5, -195, 0.5, -295)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
 
 local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 16)
+MainCorner.CornerRadius = UDim.new(0, 18)
 MainCorner.Parent = MainFrame
 
--- 3. تأثير الإطار الأحمر النيون
+-- 3. تأثير الإطار الأحمر النيون المتحرك (Laser Border)
 local BorderGradient = Instance.new("UIGradient")
 BorderGradient.Color = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
-	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
-	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
-	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.15, Color3.fromRGB(200, 0, 0)),
+	ColorSequenceKeypoint.new(0.3, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 0, 0)),
+	ColorSequenceKeypoint.new(0.7, Color3.fromRGB(100, 0, 0)),
+	ColorSequenceKeypoint.new(0.85, Color3.fromRGB(200, 0, 0)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
 })
+BorderGradient.Rotation = 0
 BorderGradient.Parent = MainFrame
 
 -- 4. الواجهة الداخلية
 local InsideFrame = Instance.new("Frame")
-InsideFrame.Size = UDim2.new(1, -6, 1, -6)
-InsideFrame.Position = UDim2.new(0, 3, 0, 3)
-InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+InsideFrame.Size = UDim2.new(1, -8, 1, -8)
+InsideFrame.Position = UDim2.new(0, 4, 0, 4)
+InsideFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 InsideFrame.BorderSizePixel = 0
 InsideFrame.Parent = MainFrame
 
 local InsideCorner = Instance.new("UICorner")
-InsideCorner.CornerRadius = UDim.new(0, 14)
+InsideCorner.CornerRadius = UDim.new(0, 16)
 InsideCorner.Parent = InsideFrame
 
--- دالة التدرج الأحمر
+-- 5. خطوط زخرفية إضافية (أطراف داخلية حمراء)
+local function createGlowLine(parent, yPos, width)
+	local line = Instance.new("Frame")
+	line.Size = UDim2.new(width, 0, 0, 2)
+	line.Position = UDim2.new(0.5, -(width * 390)/2, 0, yPos)
+	line.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	line.BackgroundTransparency = 0.6
+	line.BorderSizePixel = 0
+	line.Parent = parent
+	
+	local lineGrad = Instance.new("UIGradient")
+	lineGrad.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 50, 50)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	lineGrad.Parent = line
+	
+	return line
+end
+
+-- خطوط زخرفية
+createGlowLine(InsideFrame, 55, 0.8)
+createGlowLine(InsideFrame, 58, 0.8)
+
+-- دالة التدرج الأحمر المتحرك
 local function createRedTextGradient(parentFrame)
 	local Gradient = Instance.new("UIGradient")
 	Gradient.Color = ColorSequence.new({
 		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 90, 90)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(130, 0, 0)),
-		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 90, 90)),
+		ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 0)),
+		ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 80, 80)),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
 	})
 	Gradient.Parent = parentFrame
 	return Gradient
 end
 
--- 5. العنوان
+-- 6. العنوان LYNEX مع توهج
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
 Title.Text = "LYNEX"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 26
+Title.TextSize = 28
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
 Title.Parent = InsideFrame
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 6. زر الإغلاق
+-- 7. زر الإغلاق
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
-CloseButton.Size = UDim2.new(0, 30, 0, 30)
-CloseButton.Position = UDim2.new(1, -40, 0, 10)
+CloseButton.Size = UDim2.new(0, 32, 0, 32)
+CloseButton.Position = UDim2.new(1, -42, 0, 10)
 CloseButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
 CloseButton.BorderSizePixel = 0
-CloseButton.Text = "X"
+CloseButton.Text = "✕"
 CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-CloseButton.TextSize = 16
+CloseButton.TextSize = 18
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Parent = InsideFrame
 
@@ -123,12 +155,11 @@ end)
 -- 🔥 الأزرار العلوية: Settings - Player - News
 -- =============================================
 
--- 7. أزرار Settings, Player, News
 local function createTopButton(parent, xPos, text)
 	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0, 102, 0, 35)
-	btn.Position = UDim2.new(0, xPos, 0, 60)
-	btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	btn.Size = UDim2.new(0, 110, 0, 38)
+	btn.Position = UDim2.new(0, xPos, 0, 62)
+	btn.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	btn.BorderSizePixel = 0
 	btn.Text = text
 	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -137,47 +168,69 @@ local function createTopButton(parent, xPos, text)
 	btn.Parent = parent
 	
 	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 8)
+	corner.CornerRadius = UDim.new(0, 10)
 	corner.Parent = btn
+	
+	-- حد أحمر متحرك حول الأزرار
+	local border = Instance.new("Frame")
+	border.Size = UDim2.new(1, 0, 1, 0)
+	border.Position = UDim2.new(0, 0, 0, 0)
+	border.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	border.BackgroundTransparency = 0.5
+	border.BorderSizePixel = 0
+	border.ZIndex = 0
+	border.Parent = btn
+	
+	local borderCorner = Instance.new("UICorner")
+	borderCorner.CornerRadius = UDim.new(0, 10)
+	borderCorner.Parent = border
+	
+	local borderGrad = Instance.new("UIGradient")
+	borderGrad.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 0, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	borderGrad.Parent = border
 	
 	createRedTextGradient(btn)
 	
-	-- وظيفة الزر (تعديل حسب رغبتك)
 	btn.MouseButton1Click:Connect(function()
 		print(text .. " button clicked!")
-		-- هنا تقدر تضيف وظيفة لكل زر
 	end)
 	
-	return btn
+	return btn, borderGrad
 end
 
-local SettingsButton = createTopButton(InsideFrame, 15, "Settings")
-local PlayerButton = createTopButton(InsideFrame, 129, "Player")
-local NewsButton = createTopButton(InsideFrame, 243, "News")
+local SettingsButton, SettingsBorder = createTopButton(InsideFrame, 12, "Settings")
+local PlayerButton, PlayerBorder = createTopButton(InsideFrame, 131, "Player")
+local NewsButton, NewsBorder = createTopButton(InsideFrame, 250, "News")
 
--- 8. البحث
+-- 8. البحث بتصميم احترافي
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
-SearchBorderFrame.Size = UDim2.new(0, 290, 0, 32)
-SearchBorderFrame.Position = UDim2.new(0.5, -145, 0, 105)
-SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SearchBorderFrame.Size = UDim2.new(0, 310, 0, 35)
+SearchBorderFrame.Position = UDim2.new(0.5, -155, 0, 110)
+SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+SearchBorderFrame.BackgroundTransparency = 0.3
 SearchBorderFrame.BorderSizePixel = 0
 SearchBorderFrame.Parent = InsideFrame
 
 local SearchBorderCorner = Instance.new("UICorner")
-SearchBorderCorner.CornerRadius = UDim.new(0, 8)
+SearchBorderCorner.CornerRadius = UDim.new(0, 12)
 SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
+-- خانة البحث الداخلية
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
-SearchBar.Size = UDim2.new(1, -4, 1, -4)
-SearchBar.Position = UDim2.new(0, 2, 0, 2)
-SearchBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+SearchBar.Size = UDim2.new(1, -6, 1, -6)
+SearchBar.Position = UDim2.new(0, 3, 0, 3)
+SearchBar.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
 SearchBar.BorderSizePixel = 0
 SearchBar.ClearTextOnFocus = false
-SearchBar.PlaceholderText = "Search scripts..."
+SearchBar.PlaceholderText = "🔍 Search scripts..."
 SearchBar.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 SearchBar.Text = ""
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -187,89 +240,158 @@ SearchBar.TextXAlignment = Enum.TextXAlignment.Center
 SearchBar.Parent = SearchBorderFrame
 
 local SearchCorner = Instance.new("UICorner")
-SearchCorner.CornerRadius = UDim.new(0, 7)
+SearchCorner.CornerRadius = UDim.new(0, 10)
 SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
 -- =============================================
--- 🔥 قائمة الأزرار تحت البحث (السكربتات)
+-- 🎯 نظام إضافة سكربتات لا نهائي
 -- =============================================
 
--- دالة إنشاء زر سكربت
-local function createScriptButton(parent, yPos, scriptName, description, scriptUrl)
-	local buttonContainer = Instance.new("Frame")
-	buttonContainer.Size = UDim2.new(1, -20, 0, 70)
-	buttonContainer.Position = UDim2.new(0, 10, 0, yPos)
-	buttonContainer.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-	buttonContainer.BorderSizePixel = 0
-	buttonContainer.Parent = parent
+-- قائمة السكربتات (تخزينها هنا)
+local scriptList = {}
+
+-- دالة إضافة سكربت جديد
+local function addScript(name, description, url)
+	table.insert(scriptList, {
+		name = name,
+		desc = description,
+		url = url
+	})
+	refreshScripts()
+end
+
+-- دالة حذف سكربت
+local function removeScript(index)
+	table.remove(scriptList, index)
+	refreshScripts()
+end
+
+-- =============================================
+-- 🔥 أزرار السكربتات بتصميم أحمر متحرك احترافي
+-- =============================================
+
+-- متغير لتخزين الـ ScrollingFrame
+local scrollContainer
+local buttonHolder
+
+-- دالة إنشاء زر سكربت بتصميم أحمر متحرك
+local function createScriptButton(parent, yPos, scriptName, description, scriptUrl, index)
+	local container = Instance.new("Frame")
+	container.Size = UDim2.new(1, -20, 0, 78)
+	container.Position = UDim2.new(0, 10, 0, yPos)
+	container.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	container.BorderSizePixel = 0
+	container.Parent = parent
 	
 	local containerCorner = Instance.new("UICorner")
-	containerCorner.CornerRadius = UDim.new(0, 10)
-	containerCorner.Parent = buttonContainer
+	containerCorner.CornerRadius = UDim.new(0, 12)
+	containerCorner.Parent = container
 	
-	-- اسم السكربت
+	-- الإطار الأحمر المتحرك الخارجي
+	local redBorder = Instance.new("Frame")
+	redBorder.Size = UDim2.new(1, 2, 1, 2)
+	redBorder.Position = UDim2.new(0, -1, 0, -1)
+	redBorder.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	redBorder.BackgroundTransparency = 0.4
+	redBorder.BorderSizePixel = 0
+	redBorder.ZIndex = 0
+	redBorder.Parent = container
+	
+	local redBorderCorner = Instance.new("UICorner")
+	redBorderCorner.CornerRadius = UDim.new(0, 13)
+	redBorderCorner.Parent = redBorder
+	
+	local redBorderGrad = Instance.new("UIGradient")
+	redBorderGrad.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	redBorderGrad.Parent = redBorder
+	
+	-- اسم السكربت (مع تدرج أحمر متحرك)
 	local nameLabel = Instance.new("TextLabel")
-	nameLabel.Size = UDim2.new(0.7, 0, 0, 22)
-	nameLabel.Position = UDim2.new(0, 10, 0, 5)
+	nameLabel.Size = UDim2.new(0.7, 0, 0, 24)
+	nameLabel.Position = UDim2.new(0, 12, 0, 5)
 	nameLabel.BackgroundTransparency = 1
 	nameLabel.Text = scriptName
 	nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	nameLabel.TextSize = 14
+	nameLabel.TextSize = 15
 	nameLabel.Font = Enum.Font.GothamBold
 	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-	nameLabel.Parent = buttonContainer
+	nameLabel.Parent = container
+	
+	local nameGrad = createRedTextGradient(nameLabel)
 	
 	-- الوصف
 	local descLabel = Instance.new("TextLabel")
 	descLabel.Size = UDim2.new(0.7, 0, 0, 20)
-	descLabel.Position = UDim2.new(0, 10, 0, 28)
+	descLabel.Position = UDim2.new(0, 12, 0, 32)
 	descLabel.BackgroundTransparency = 1
 	descLabel.Text = description
 	descLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
 	descLabel.TextSize = 12
 	descLabel.Font = Enum.Font.Gotham
 	descLabel.TextXAlignment = Enum.TextXAlignment.Left
-	descLabel.Parent = buttonContainer
+	descLabel.Parent = container
 	
-	-- زر EXECUTE
+	-- زر EXECUTE (أحمر متحرك)
 	local execBtn = Instance.new("TextButton")
-	execBtn.Size = UDim2.new(0, 75, 0, 30)
-	execBtn.Position = UDim2.new(1, -85, 0, 20)
+	execBtn.Size = UDim2.new(0, 85, 0, 34)
+	execBtn.Position = UDim2.new(1, -95, 0, 22)
 	execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 	execBtn.BorderSizePixel = 0
 	execBtn.Text = "EXECUTE"
 	execBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 	execBtn.TextSize = 12
 	execBtn.Font = Enum.Font.GothamBold
-	execBtn.Parent = buttonContainer
+	execBtn.Parent = container
 	
 	local execCorner = Instance.new("UICorner")
-	execCorner.CornerRadius = UDim.new(0, 6)
+	execCorner.CornerRadius = UDim.new(0, 8)
 	execCorner.Parent = execBtn
 	
-	createRedTextGradient(execBtn)
+	local execGrad = createRedTextGradient(execBtn)
 	
-	-- زر AUTO (ثابت)
+	-- زر AUTO
 	local autoBtn = Instance.new("TextButton")
-	autoBtn.Size = UDim2.new(0, 45, 0, 20)
-	autoBtn.Position = UDim2.new(1, -85, 0, 52)
-	autoBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	autoBtn.Size = UDim2.new(0, 50, 0, 22)
+	autoBtn.Position = UDim2.new(1, -95, 0, 58)
+	autoBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 	autoBtn.BorderSizePixel = 0
 	autoBtn.Text = "AUTO"
 	autoBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
 	autoBtn.TextSize = 10
 	autoBtn.Font = Enum.Font.GothamBold
-	autoBtn.Parent = buttonContainer
+	autoBtn.Parent = container
 	
 	local autoCorner = Instance.new("UICorner")
-	autoCorner.CornerRadius = UDim.new(0, 4)
+	autoCorner.CornerRadius = UDim.new(0, 5)
 	autoCorner.Parent = autoBtn
 	
-	-- دالة تنفيذ السكربت
+	-- زر حذف (X صغير)
+	local deleteBtn = Instance.new("TextButton")
+	deleteBtn.Size = UDim2.new(0, 20, 0, 20)
+	deleteBtn.Position = UDim2.new(1, -22, 0, 4)
+	deleteBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+	deleteBtn.BorderSizePixel = 0
+	deleteBtn.Text = "✕"
+	deleteBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+	deleteBtn.TextSize = 12
+	deleteBtn.Font = Enum.Font.GothamBold
+	deleteBtn.Visible = false -- مخفي حالياً
+	deleteBtn.Parent = container
+	
+	local deleteCorner = Instance.new("UICorner")
+	deleteCorner.CornerRadius = UDim.new(0, 4)
+	deleteCorner.Parent = deleteBtn
+	
+	-- دالة التنفيذ مع نظام التنبيهات
 	local function executeScript()
-		execBtn.Text = "⏳"
+		-- حالة: جار التشغيل
+		execBtn.Text = "⏳ LOADING"
 		execBtn.BackgroundColor3 = Color3.fromRGB(200, 150, 0)
 		
 		local success, result = pcall(function()
@@ -288,20 +410,24 @@ local function createScriptButton(parent, yPos, scriptName, description, scriptU
 			end)
 			
 			if loadSuccess then
-				execBtn.Text = "✅"
+				-- ✅ تم التفعيل بنجاح
+				execBtn.Text = "✅ SUCCESS"
 				execBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
-				task.wait(1.5)
+				task.wait(2)
 			else
-				execBtn.Text = "❌"
+				-- ❌ السكربت فيه مشكلة
+				execBtn.Text = "❌ SCRIPT ERROR"
 				execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-				task.wait(1.5)
+				task.wait(2)
 			end
 		else
-			execBtn.Text = "❌"
+			-- ❌ فشل التحميل
+			execBtn.Text = "❌ NETWORK FAIL"
 			execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-			task.wait(1.5)
+			task.wait(2)
 		end
 		
+		-- إعادة تعيين الزر
 		execBtn.Text = "EXECUTE"
 		execBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
 	end
@@ -309,57 +435,58 @@ local function createScriptButton(parent, yPos, scriptName, description, scriptU
 	execBtn.MouseButton1Click:Connect(executeScript)
 	execBtn.TouchTap:Connect(executeScript)
 	
-	return buttonContainer
-end
-
--- قائمة السكربتات (عدل الروابط حسب سكربتاتك)
-local scripts = {
-	{
-		name = "★★★ LOR LORLN SPAM CMD",
-		desc = "HD Admin | CMD Bar | Full Control",
-		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201"
-	},
-	{
-		name = "★★ LOR LORLN ANTI SPAM",
-		desc = "Anti Spam Protection System",
-		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%202"
-	},
-	{
-		name = "★ LOR LORLN SPEED",
-		desc = "Speed hack for all games",
-		url = "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%203"
+	-- تخزين التدرجات للتحريك
+	return {
+		container = container,
+		nameGrad = nameGrad,
+		execGrad = execGrad,
+		redBorderGrad = redBorderGrad,
+		execBtn = execBtn,
+		deleteBtn = deleteBtn,
+		autoBtn = autoBtn
 	}
-}
-
--- حاوية السكرول
-local scrollContainer = Instance.new("ScrollingFrame")
-scrollContainer.Size = UDim2.new(1, 0, 0, 320)
-scrollContainer.Position = UDim2.new(0, 0, 0, 150)
-scrollContainer.BackgroundTransparency = 1
-scrollContainer.BorderSizePixel = 0
-scrollContainer.ScrollBarThickness = 4
-scrollContainer.ScrollBarImageColor3 = Color3.fromRGB(180, 0, 0)
-scrollContainer.Parent = InsideFrame
-
-local buttonHolder = Instance.new("Frame")
-buttonHolder.Size = UDim2.new(1, 0, 0, #scripts * 80 + 20)
-buttonHolder.Position = UDim2.new(0, 0, 0, 0)
-buttonHolder.BackgroundTransparency = 1
-buttonHolder.Parent = scrollContainer
-
-scrollContainer.CanvasSize = UDim2.new(0, 0, 0, #scripts * 80 + 20)
-
--- إنشاء الأزرار
-for i, scriptData in ipairs(scripts) do
-	local yPos = (i - 1) * 80 + 5
-	createScriptButton(buttonHolder, yPos, scriptData.name, scriptData.desc, scriptData.url)
 end
 
--- =============================================
--- نهاية الكود
--- =============================================
+-- دالة تحديث قائمة السكربتات
+function refreshScripts()
+	if scrollContainer then
+		scrollContainer:Destroy()
+	end
+	
+	scrollContainer = Instance.new("ScrollingFrame")
+	scrollContainer.Size = UDim2.new(1, 0, 0, 340)
+	scrollContainer.Position = UDim2.new(0, 0, 0, 158)
+	scrollContainer.BackgroundTransparency = 1
+	scrollContainer.BorderSizePixel = 0
+	scrollContainer.ScrollBarThickness = 4
+	scrollContainer.ScrollBarImageColor3 = Color3.fromRGB(180, 0, 0)
+	scrollContainer.Parent = InsideFrame
+	
+	buttonHolder = Instance.new("Frame")
+	buttonHolder.Size = UDim2.new(1, 0, 0, #scriptList * 90 + 20)
+	buttonHolder.Position = UDim2.new(0, 0, 0, 0)
+	buttonHolder.BackgroundTransparency = 1
+	buttonHolder.Parent = scrollContainer
+	
+	scrollContainer.CanvasSize = UDim2.new(0, 0, 0, #scriptList * 90 + 20)
+	
+	-- إنشاء الأزرار
+	local allGrads = {}
+	for i, scriptData in ipairs(scriptList) do
+		local yPos = (i - 1) * 90 + 5
+		local grads = createScriptButton(buttonHolder, yPos, scriptData.name, scriptData.desc, scriptData.url, i)
+		table.insert(allGrads, grads)
+	end
+	
+	-- تحريك التدرجات
+	for _, grads in ipairs(allGrads) do
+		if grads.nameGrad then animate(grads.nameGrad, 2) end
+		if grads.execGrad then animate(grads.execGrad, 1.5) end
+		if grads.redBorderGrad then animate(grads.redBorderGrad, 3) end
+	end
+end
 
--- نظام الدوران
+-- دالة التحريك العالمية
 local function animate(targetGradient, speed)
 	if targetGradient then
 		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -367,15 +494,41 @@ local function animate(targetGradient, speed)
 	end
 end
 
+-- =============================================
+-- 📦 إضافة السكربتات الافتراضية
+-- =============================================
+
+-- أضف سكربتاتك هنا (غير الروابط حسب سكربتاتك)
+addScript("★★★ LOR LORLN SPAM CMD", "HD Admin | CMD Bar | Full Control", "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201")
+addScript("★★ LOR LORLN ANTI SPAM", "Anti Spam Protection System", "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%202")
+addScript("★ LOR LORLN SPEED", "Speed hack for all games", "https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%203")
+
+-- =============================================
+-- 🎯 نظام إضافة سكربتات جديد (من داخل السكربت)
+-- =============================================
+
+-- مثال: كيفية إضافة سكربت جديد (افتح الكومنت عشان تفعل)
+-- addScript("اسم السكربت", "وصف السكربت", "رابط السكربت")
+
+-- مثال:
+-- addScript("AIMBOT V2", "Best aimbot for FPS games", "https://example.com/aimbot.lua")
+
+-- =============================================
+-- 🎨 تحريك جميع التدرجات
+-- =============================================
+
 animate(BorderGradient, 2)
 animate(TitleGradient, 1.5)
-animate(SettingsButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(PlayerButton:FindFirstChildOfClass("UIGradient"), 1.8)
-animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
+animate(SettingsBorder, 2.5)
+animate(PlayerBorder, 2.5)
+animate(NewsBorder, 2.5)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
 
--- نظام السحب
+-- =============================================
+-- 🖱️ نظام السحب
+-- =============================================
+
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -405,4 +558,6 @@ UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then update(input) end
 end)
 
-print("LYNEX UI Loaded Successfully!")
+print("🔥 LYNEX PRO UI Loaded Successfully!")
+print("📦 Scripts loaded: " .. #scriptList)
+print("💡 Use addScript('Name', 'Desc', 'URL') to add more scripts!")
