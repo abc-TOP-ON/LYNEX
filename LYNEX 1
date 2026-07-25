@@ -21,8 +21,8 @@ end
 -- 1. الظل الخارجي المضيء (Glow Effect)
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 368, 0, 680)
-GlowFrame.Position = UDim2.new(0.5, -184, 0.5, -340)
+GlowFrame.Size = UDim2.new(0, 388, 0, 950)
+GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -475)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
@@ -35,8 +35,8 @@ GlowCorner.Parent = GlowFrame
 -- 2. الإطار الرئيسي (MainFrame)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 360, 0, 672)
-MainFrame.Position = UDim2.new(0.5, -180, 0.5, -336)
+MainFrame.Size = UDim2.new(0, 380, 0, 942)
+MainFrame.Position = UDim2.new(0.5, -190, 0.5, -471)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -210,30 +210,35 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== دالة لإنشاء الأزرار الكبيرة بنفس شكل الصورة ==========
+-- ========== دالة لإنشاء الأزرار الكبيرة مع إطار أحمر متحرك ==========
 local function createBigButton(parent, title, description, yPos)
+	-- الإطار الخارجي الأحمر المتحرك (Border Frame)
+	local BorderFrame = Instance.new("Frame")
+	BorderFrame.Size = UDim2.new(0, 350, 0, 118)
+	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
+	BorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	BorderFrame.BackgroundTransparency = 0.3
+	BorderFrame.BorderSizePixel = 0
+	BorderFrame.Parent = parent
+	
+	local BorderCorner = Instance.new("UICorner")
+	BorderCorner.CornerRadius = UDim.new(0, 12)
+	BorderCorner.Parent = BorderFrame
+	
+	-- تدرج أحمر متحرك للإطار
+	local BorderGradientBtn = createRedTextGradient(BorderFrame)
+	
+	-- الزر الداخلي (الأسود)
 	local ButtonFrame = Instance.new("Frame")
-	ButtonFrame.Size = UDim2.new(0, 330, 0, 110)
-	ButtonFrame.Position = UDim2.new(0.5, -165, 0, yPos)
+	ButtonFrame.Size = UDim2.new(1, -4, 1, -4)
+	ButtonFrame.Position = UDim2.new(0, 2, 0, 2)
 	ButtonFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 	ButtonFrame.BorderSizePixel = 0
-	ButtonFrame.Parent = parent
+	ButtonFrame.Parent = BorderFrame
 	
 	local ButtonCorner = Instance.new("UICorner")
 	ButtonCorner.CornerRadius = UDim.new(0, 10)
 	ButtonCorner.Parent = ButtonFrame
-	
-	-- Border Glow للزر
-	local ButtonGlow = Instance.new("Frame")
-	ButtonGlow.Size = UDim2.new(1, 0, 1, 0)
-	ButtonGlow.Position = UDim2.new(0, 0, 0, 0)
-	ButtonGlow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	ButtonGlow.BackgroundTransparency = 0.8
-	ButtonGlow.BorderSizePixel = 0
-	ButtonGlow.Parent = ButtonFrame
-	local GlowCorner2 = Instance.new("UICorner")
-	GlowCorner2.CornerRadius = UDim.new(0, 10)
-	GlowCorner2.Parent = ButtonGlow
 	
 	-- العنوان الكبير (★★★ LOR LORLN SPAM CMD)
 	local TitleLabel = Instance.new("TextLabel")
@@ -242,11 +247,11 @@ local function createBigButton(parent, title, description, yPos)
 	TitleLabel.BackgroundTransparency = 1
 	TitleLabel.Text = title
 	TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TitleLabel.TextSize = 14
+	TitleLabel.TextSize = 13
 	TitleLabel.Font = Enum.Font.GothamBold
 	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	TitleLabel.Parent = ButtonFrame
-	createRedTextGradient(TitleLabel)
+	local TitleGradBtn = createRedTextGradient(TitleLabel)
 	
 	-- زر EXECUTE
 	local ExecuteButton = Instance.new("TextButton")
@@ -256,22 +261,22 @@ local function createBigButton(parent, title, description, yPos)
 	ExecuteButton.BorderSizePixel = 0
 	ExecuteButton.Text = "EXECUTE"
 	ExecuteButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-	ExecuteButton.TextSize = 12
+	ExecuteButton.TextSize = 11
 	ExecuteButton.Font = Enum.Font.GothamBold
 	ExecuteButton.Parent = ButtonFrame
 	local ExecCorner = Instance.new("UICorner")
 	ExecCorner.CornerRadius = UDim.new(0, 6)
 	ExecCorner.Parent = ExecuteButton
-	createRedTextGradient(ExecuteButton)
+	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
-	-- الوصف الصغير (HD Admin | CMD Bar | Full Control)
+	-- الوصف الصغير
 	local DescLabel = Instance.new("TextLabel")
 	DescLabel.Size = UDim2.new(1, -20, 0, 20)
 	DescLabel.Position = UDim2.new(0, 10, 0, 42)
 	DescLabel.BackgroundTransparency = 1
 	DescLabel.Text = description
 	DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-	DescLabel.TextSize = 11
+	DescLabel.TextSize = 10
 	DescLabel.Font = Enum.Font.Gotham
 	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
 	DescLabel.Parent = ButtonFrame
@@ -279,38 +284,52 @@ local function createBigButton(parent, title, description, yPos)
 	-- كلمة AUTO في الأسفل
 	local AutoLabel = Instance.new("TextLabel")
 	AutoLabel.Size = UDim2.new(1, -20, 0, 20)
-	AutoLabel.Position = UDim2.new(0, 10, 0, 70)
+	AutoLabel.Position = UDim2.new(0, 10, 0, 68)
 	AutoLabel.BackgroundTransparency = 1
 	AutoLabel.Text = "AUTO"
 	AutoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-	AutoLabel.TextSize = 11
+	AutoLabel.TextSize = 10
 	AutoLabel.Font = Enum.Font.GothamBold
 	AutoLabel.TextXAlignment = Enum.TextXAlignment.Left
 	AutoLabel.Parent = ButtonFrame
 	
-	return ButtonFrame, ExecuteButton
+	-- إضافة تأثير الدوران للإطار
+	local function animateBorder()
+		local tween = TweenService:Create(BorderGradientBtn, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateBorder()
+	
+	return ButtonFrame, ExecuteButton, BorderGradientBtn
 end
 
--- ========== الأزرار الثلاثة الجديدة ==========
-local button1, exec1 = createBigButton(InsideFrame, "★★★ LOR LORLN SPAM CMD", "HD Admin | CMD Bar | Full Control", 165)
-local button2, exec2 = createBigButton(InsideFrame, "★★★ LOR LORLN ANTI SPAM", "Anti Spam Protection System", 285)
-local button3, exec3 = createBigButton(InsideFrame, "★★★ LOR LORLN SPEED", "Speed hack for all games", 405)
+-- ========== بيانات الأزرار العشرة ==========
+local buttonsData = {
+	{title = "★★★ LOR LORLN SPAM CMD", desc = "HD Admin | CMD Bar | Full Control", y = 165},
+	{title = "★★★ LOR LORLN ANTI SPAM", desc = "Anti Spam Protection System", y = 293},
+	{title = "★★★ LOR LORLN SPEED", desc = "Speed hack for all games", y = 421},
+	{title = "★★★ LOR LORLN FLY", desc = "Fly hack for all games", y = 549},
+	{title = "★★★ LOR LORLN TP", desc = "Teleport to any player", y = 677},
+	{title = "★★★ LOR LORLN INF", desc = "Infinite Jump / Stamina", y = 805},
+	{title = "★★★ LOR LORLN AIM", desc = "Aimbot | Silent Aim", y = 933},
+	{title = "★★★ LOR LORLN ESP", desc = "Wallhack | Player ESP", y = 1061},
+	{title = "★★★ LOR LORLN GOD", desc = "God Mode | Anti Damage", y = 1189},
+	{title = "★★★ LOR LORLN KILL", desc = "Kill all players in server", y = 1317}
+}
 
--- ========== أكشن للأزرار ==========
-exec1.MouseButton1Click:Connect(function()
-	print("SPAM CMD Activated!")
-	-- ضع كود التشغيل هنا
-end)
+-- ========== إنشاء الأزرار العشرة ==========
+local execButtons = {}
 
-exec2.MouseButton1Click:Connect(function()
-	print("ANTI SPAM Activated!")
-	-- ضع كود التشغيل هنا
-end)
-
-exec3.MouseButton1Click:Connect(function()
-	print("SPEED Activated!")
-	-- ضع كود التشغيل هنا
-end)
+for i, data in ipairs(buttonsData) do
+	local btn, exec, grad = createBigButton(InsideFrame, data.title, data.desc, data.y)
+	execButtons[i] = exec
+	
+	-- أكشن لكل زر (مؤقت)
+	exec.MouseButton1Click:Connect(function()
+		print(data.title .. " Activated!")
+		-- ضع كود التشغيل هنا
+	end)
+end
 
 -- 10. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
 local function animate(targetGradient, speed)
