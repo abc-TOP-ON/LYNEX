@@ -1,10 +1,10 @@
--- ========== سكربت MOLYN REVAMP البسيط ==========
+-- ========== LYNEX REVAMP - النسخة البسيطة ==========
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MolyneRevamp"
+ScreenGui.Name = "LynexRevamp"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
 
@@ -20,8 +20,8 @@ end
 
 -- ========== الواجهة الرئيسية ==========
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 360, 0, 480)
-MainFrame.Position = UDim2.new(0.5, -180, 0.5, -240)
+MainFrame.Size = UDim2.new(0, 360, 0, 520)
+MainFrame.Position = UDim2.new(0.5, -180, 0.5, -260)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 MainFrame.BorderSizePixel = 0
 MainFrame.Parent = ScreenGui
@@ -48,9 +48,9 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 45)
 Title.Position = UDim2.new(0, 0, 0, 10)
 Title.BackgroundTransparency = 1
-Title.Text = "MOLYN REVAMP"
+Title.Text = "LYNEX"
 Title.TextColor3 = Color3.fromRGB(255, 50, 50)
-Title.TextSize = 22
+Title.TextSize = 24
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
 Title.Parent = MainFrame
@@ -60,7 +60,7 @@ local SubTitle = Instance.new("TextLabel")
 SubTitle.Size = UDim2.new(1, 0, 0, 25)
 SubTitle.Position = UDim2.new(0, 0, 0, 50)
 SubTitle.BackgroundTransparency = 1
-SubTitle.Text = "Premium Script Hub | v20.4"
+SubTitle.Text = "Premium Script Hub | v20.4 | LYNEX"
 SubTitle.TextColor3 = Color3.fromRGB(150, 150, 150)
 SubTitle.TextSize = 12
 SubTitle.Font = Enum.Font.Gotham
@@ -99,25 +99,43 @@ Container.Position = UDim2.new(0, 0, 0, 135)
 Container.BackgroundTransparency = 1
 Container.Parent = MainFrame
 
--- ========== بيانات السكربتات ==========
+-- ========== بيانات السكربتات (سكربتات LYNEX) ==========
 local scriptsData = {
 	{
-		title = "⭐ AURA FARMING EMOTE",
-		desc = "AURA FARMING TREND DANCE",
-		tag = "TOOL",
-		script = "loadstring(game:HttpGet('https://example.com/aura'))()"
+		title = "★★★ LOR LORLN SPAM CMD",
+		desc = "HD Admin | CMD Bar | Full Control",
+		tag = "ADMIN",
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "⭐ AUTO BLOCK (MOLYN)",
-		desc = "AUTO BLOCK PLAYERS (KICK THEM FROM UR PS)",
+		title = "★★★ LOR LORLN ANTI SPAM",
+		desc = "Anti Spam Protection System",
 		tag = "ANTI",
-		script = "loadstring(game:HttpGet('https://example.com/autoblock'))()"
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
-		title = "⚡ AUTO EXEC",
-		desc = "Execute scripts automatically",
-		tag = "AUTO",
-		script = "loadstring(game:HttpGet('https://example.com/autoexec'))()"
+		title = "★★★ LOR LORLN SPEED",
+		desc = "Speed hack for all games",
+		tag = "MOVEMENT",
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN FLY",
+		desc = "Fly hack for all games",
+		tag = "MOVEMENT",
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN TP",
+		desc = "Teleport to any player",
+		tag = "TELEPORT",
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN INF",
+		desc = "Infinite Jump / Stamina",
+		tag = "JUMP",
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	}
 }
 
@@ -141,7 +159,7 @@ local function createScriptButton(parent, data, yPos)
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.Text = data.title
 	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	titleLabel.TextSize = 14
+	titleLabel.TextSize = 13
 	titleLabel.Font = Enum.Font.GothamBold
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	titleLabel.Parent = btn
@@ -161,8 +179,8 @@ local function createScriptButton(parent, data, yPos)
 	-- علامة (TAG)
 	if data.tag then
 		local tagLabel = Instance.new("TextLabel")
-		tagLabel.Size = UDim2.new(0, 45, 0, 18)
-		tagLabel.Position = UDim2.new(1, -55, 0, 8)
+		tagLabel.Size = UDim2.new(0, 60, 0, 18)
+		tagLabel.Position = UDim2.new(1, -70, 0, 8)
 		tagLabel.BackgroundColor3 = Color3.fromRGB(40, 30, 30)
 		tagLabel.Text = data.tag
 		tagLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
@@ -196,7 +214,7 @@ local function createScriptButton(parent, data, yPos)
 			local func = loadstring(data.script)
 			if func then
 				func()
-				showNotification("✅ Script executed!", true)
+				showNotification("✅ Script executed successfully!", true)
 			else
 				error("Failed to load script")
 			end
