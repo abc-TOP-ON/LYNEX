@@ -41,7 +41,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
-MainFrame.ClipsDescendants = true  -- مهم عشان يخفي الأزرار اللي خارج الإطار
+MainFrame.ClipsDescendants = true
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 16)
@@ -66,7 +66,7 @@ InsideFrame.Position = UDim2.new(0, 3, 0, 3)
 InsideFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 InsideFrame.BorderSizePixel = 0
 InsideFrame.Parent = MainFrame
-InsideFrame.ClipsDescendants = true  -- مهم عشان يخفي الأزرار اللي خارج الإطار
+InsideFrame.ClipsDescendants = true
 
 local InsideCorner = Instance.new("UICorner")
 InsideCorner.CornerRadius = UDim.new(0, 14)
@@ -83,9 +83,9 @@ ScrollFrame.Parent = InsideFrame
 ScrollFrame.ScrollBarThickness = 6
 ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
-ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)  -- حجم كبير عشان يتسع لكل الأزرار
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 1550)
 
--- 6. الحاوية الداخلية للأزرار (بتتحرك مع السكرول)
+-- 6. الحاوية الداخلية للأزرار
 local Container = Instance.new("Frame")
 Container.Size = UDim2.new(1, 0, 0, 1550)
 Container.Position = UDim2.new(0, 0, 0, 0)
@@ -94,7 +94,7 @@ Container.BackgroundTransparency = 1
 Container.BorderSizePixel = 0
 Container.Parent = ScrollFrame
 
--- 7. خط حماية علوي رفيع (Divider Line) - داخل الـ Container
+-- 7. خط حماية علوي رفيع
 local Line = Instance.new("Frame")
 Line.Size = UDim2.new(1, -30, 0, 2)
 Line.Position = UDim2.new(0, 15, 0, 52)
@@ -102,7 +102,7 @@ Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Line.BorderSizePixel = 0
 Line.Parent = Container
 
--- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك للنصوص والإطارات
+-- دالة مشتركة لإنشاء تدرج لوني أحمر متحرك
 local function createRedTextGradient(parentFrame)
 	local Gradient = Instance.new("UIGradient")
 	Gradient.Color = ColorSequence.new({
@@ -116,7 +116,113 @@ local function createRedTextGradient(parentFrame)
 	return Gradient
 end
 
--- 8. اسم السكربت الاحترافي LYNEX مع التدرج اللوني الخاص به
+-- دالة لإنشاء تدرج ذهبي
+local function createGoldGradient(parentFrame)
+	local Gradient = Instance.new("UIGradient")
+	Gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 215, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 200, 50)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 150, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 200, 50)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 215, 0))
+	})
+	Gradient.Parent = parentFrame
+	return Gradient
+end
+
+-- ========== نظام الإشعارات الجانبية مع إطار أحمر متحرك وخلفية سوداء ==========
+local function showSideNotification(message, isSuccess)
+	-- الإطار الخارجي الأحمر المتحرك
+	local notifBorder = Instance.new("Frame")
+	notifBorder.Size = UDim2.new(0, 300, 0, 54)
+	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
+	notifBorder.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	notifBorder.BackgroundTransparency = 0.3
+	notifBorder.BorderSizePixel = 0
+	notifBorder.Parent = ScreenGui
+	
+	local notifBorderCorner = Instance.new("UICorner")
+	notifBorderCorner.CornerRadius = UDim.new(0, 12)
+	notifBorderCorner.Parent = notifBorder
+	
+	-- تدرج أحمر متحرك للإطار الخارجي
+	local notifBorderGradient = createRedTextGradient(notifBorder)
+	
+	-- الإطار الداخلي (الأسود)
+	local notifFrame = Instance.new("Frame")
+	notifFrame.Size = UDim2.new(1, -4, 1, -4)
+	notifFrame.Position = UDim2.new(0, 2, 0, 2)
+	notifFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+	notifFrame.BackgroundTransparency = 1
+	notifFrame.BorderSizePixel = 0
+	notifFrame.Parent = notifBorder
+	
+	local notifFrameCorner = Instance.new("UICorner")
+	notifFrameCorner.CornerRadius = UDim.new(0, 10)
+	notifFrameCorner.Parent = notifFrame
+	
+	-- Border داخلي (لون النجاح/الخطأ)
+	local innerBorder = Instance.new("Frame")
+	innerBorder.Size = UDim2.new(1, 0, 1, 0)
+	innerBorder.Position = UDim2.new(0, 0, 0, 0)
+	innerBorder.BackgroundColor3 = isSuccess and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+	innerBorder.BackgroundTransparency = 0.5
+	innerBorder.BorderSizePixel = 0
+	innerBorder.Parent = notifFrame
+	local innerCorner = Instance.new("UICorner")
+	innerCorner.CornerRadius = UDim.new(0, 10)
+	innerCorner.Parent = innerBorder
+	
+	-- أيقونة النجاح/الخطأ
+	local iconLabel = Instance.new("TextLabel")
+	iconLabel.Size = UDim2.new(0, 30, 1, 0)
+	iconLabel.Position = UDim2.new(0, 10, 0, 0)
+	iconLabel.BackgroundTransparency = 1
+	iconLabel.Text = isSuccess and "✅" or "❌"
+	iconLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	iconLabel.TextSize = 22
+	iconLabel.Font = Enum.Font.GothamBold
+	iconLabel.TextXAlignment = Enum.TextXAlignment.Center
+	iconLabel.Parent = notifFrame
+	
+	-- النص
+	local notifLabel = Instance.new("TextLabel")
+	notifLabel.Size = UDim2.new(1, -50, 1, 0)
+	notifLabel.Position = UDim2.new(0, 45, 0, 0)
+	notifLabel.BackgroundTransparency = 1
+	notifLabel.Text = message
+	notifLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	notifLabel.TextSize = 13
+	notifLabel.Font = Enum.Font.GothamBold
+	notifLabel.TextXAlignment = Enum.TextXAlignment.Left
+	notifLabel.TextWrapped = true
+	notifLabel.Parent = notifFrame
+	
+	-- تأثير الدوران للإطار الخارجي
+	local function animateNotifBorder()
+		local tween = TweenService:Create(notifBorderGradient, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateNotifBorder()
+	
+	-- تأثير الدخول (من اليمين)
+	notifBorder.Position = UDim2.new(1, 0, 0.5, -27)
+	local tweenIn = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Position = UDim2.new(1, -320, 0.5, -27)
+	})
+	tweenIn:Play()
+	
+	-- تأثير الخروج بعد 3 ثواني
+	task.wait(3)
+	local tweenOut = TweenService:Create(notifBorder, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		Position = UDim2.new(1, 0, 0.5, -27)
+	})
+	tweenOut:Play()
+	task.wait(0.4)
+	notifBorder:Destroy()
+end
+
+-- 8. اسم السكربت الاحترافي LYNEX
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
@@ -129,7 +235,7 @@ Title.Parent = Container
 
 local TitleGradient = createRedTextGradient(Title)
 
--- 9. إضافة زر الإغلاق الصغير (Close Button X)
+-- 9. زر الإغلاق
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -150,7 +256,7 @@ CloseButton.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
 end)
 
--- 10. إنشاء الأزرار الثلاثة مصطفة بدقة مع نصوص حمراء متحركة ومضيئة
+-- 10. الأزرار العلوية
 local SettingsButton = Instance.new("TextButton")
 SettingsButton.Size = UDim2.new(0, 102, 0, 35)
 SettingsButton.Position = UDim2.new(0, 15, 0, 65)
@@ -196,7 +302,7 @@ NewsCorner.CornerRadius = UDim.new(0, 8)
 NewsCorner.Parent = NewsButton
 createRedTextGradient(NewsButton)
 
--- 11. إطار البحث الخارجي (الذي سيحمل تأثير الأطراف الحمراء المتحركة)
+-- 11. إطار البحث
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
 SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32)
@@ -211,7 +317,7 @@ SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
 
--- خانة البحث الداخلية (التي يكتب بداخلها المستخدم)
+-- خانة البحث
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Size = UDim2.new(1, -4, 1, -4)
@@ -219,7 +325,7 @@ SearchBar.Position = UDim2.new(0, 2, 0, 2)
 SearchBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
 SearchBar.BorderSizePixel = 0
 SearchBar.ClearTextOnFocus = false
-SearchBar.PlaceholderText = "Search..."
+SearchBar.PlaceholderText = "Search scripts..."
 SearchBar.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 SearchBar.Text = ""
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -234,25 +340,103 @@ SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== دالة لإنشاء الأزرار الكبيرة مع إطار أحمر متحرك ==========
-local function createBigButton(parent, title, description, yPos)
-	-- الإطار الخارجي الأحمر المتحرك (Border Frame)
+-- ========== بيانات الأزرار العشرة ==========
+local buttonsData = {
+	{
+		title = "★★★ LOR LORLN SPAM CMD", 
+		desc = "HD Admin | CMD Bar | Full Control", 
+		y = 165,
+		keywords = {"spam", "cmd", "admin", "command"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN ANTI SPAM", 
+		desc = "Anti Spam Protection System", 
+		y = 293,
+		keywords = {"anti", "spam", "protection", "antispam"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN SPEED", 
+		desc = "Speed hack for all games", 
+		y = 421,
+		keywords = {"speed", "fast", "run", "walkspeed"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN FLY", 
+		desc = "Fly hack for all games", 
+		y = 549,
+		keywords = {"fly", "flight", "fly"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN TP", 
+		desc = "Teleport to any player", 
+		y = 677,
+		keywords = {"tp", "teleport", "goto", "move"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN INF", 
+		desc = "Infinite Jump / Stamina", 
+		y = 805,
+		keywords = {"inf", "infinite", "jump", "stamina", "infjump"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN AIM", 
+		desc = "Aimbot | Silent Aim", 
+		y = 933,
+		keywords = {"aim", "aimbot", "silent", "silentaim"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN ESP", 
+		desc = "Wallhack | Player ESP", 
+		y = 1061,
+		keywords = {"esp", "wallhack", "wall", "player", "boxesp"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN GOD", 
+		desc = "God Mode | Anti Damage", 
+		y = 1189,
+		keywords = {"god", "godmode", "anti", "damage", "health"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN KILL", 
+		desc = "Kill all players in server", 
+		y = 1317,
+		keywords = {"kill", "killall", "all", "players", "server"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	}
+}
+
+-- ========== دالة لإنشاء الأزرار ==========
+local buttonFrames = {}
+
+local function createBigButton(parent, data, index)
+	local yPos = data.y
+	
+	-- الإطار الخارجي الأحمر
 	local BorderFrame = Instance.new("Frame")
-	BorderFrame.Size = UDim2.new(0, 350, 0, 118)
+	BorderFrame.Size = UDim2.new(0, 350, 0, 130)
 	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
 	BorderFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	BorderFrame.BackgroundTransparency = 0.3
 	BorderFrame.BorderSizePixel = 0
 	BorderFrame.Parent = parent
+	BorderFrame.Visible = true
 	
 	local BorderCorner = Instance.new("UICorner")
 	BorderCorner.CornerRadius = UDim.new(0, 12)
 	BorderCorner.Parent = BorderFrame
 	
-	-- تدرج أحمر متحرك للإطار
 	local BorderGradientBtn = createRedTextGradient(BorderFrame)
 	
-	-- الزر الداخلي (الأسود)
+	-- الزر الداخلي
 	local ButtonFrame = Instance.new("Frame")
 	ButtonFrame.Size = UDim2.new(1, -4, 1, -4)
 	ButtonFrame.Position = UDim2.new(0, 2, 0, 2)
@@ -264,12 +448,12 @@ local function createBigButton(parent, title, description, yPos)
 	ButtonCorner.CornerRadius = UDim.new(0, 10)
 	ButtonCorner.Parent = ButtonFrame
 	
-	-- العنوان الكبير
+	-- العنوان
 	local TitleLabel = Instance.new("TextLabel")
 	TitleLabel.Size = UDim2.new(1, -20, 0, 30)
 	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
 	TitleLabel.BackgroundTransparency = 1
-	TitleLabel.Text = title
+	TitleLabel.Text = data.title
 	TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	TitleLabel.TextSize = 13
 	TitleLabel.Font = Enum.Font.GothamBold
@@ -293,69 +477,121 @@ local function createBigButton(parent, title, description, yPos)
 	ExecCorner.Parent = ExecuteButton
 	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
-	-- الوصف الصغير
+	-- زر AUTO باللون الذهبي
+	local AutoButton = Instance.new("TextButton")
+	AutoButton.Size = UDim2.new(0, 80, 0, 22)
+	AutoButton.Position = UDim2.new(1, -90, 0, 42)
+	AutoButton.BackgroundColor3 = Color3.fromRGB(30, 25, 10)
+	AutoButton.BorderSizePixel = 0
+	AutoButton.Text = "AUTO"
+	AutoButton.TextColor3 = Color3.fromRGB(255, 215, 0)
+	AutoButton.TextSize = 10
+	AutoButton.Font = Enum.Font.GothamBold
+	AutoButton.Parent = ButtonFrame
+	local AutoCorner = Instance.new("UICorner")
+	AutoCorner.CornerRadius = UDim.new(0, 5)
+	AutoCorner.Parent = AutoButton
+	local AutoGrad = createGoldGradient(AutoButton)
+	
+	-- تأثير الدوران للـ AUTO
+	local function animateAuto()
+		local tween = TweenService:Create(AutoGrad, TweenInfo.new(1.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+		tween:Play()
+	end
+	animateAuto()
+	
+	-- الوصف
 	local DescLabel = Instance.new("TextLabel")
 	DescLabel.Size = UDim2.new(1, -20, 0, 20)
 	DescLabel.Position = UDim2.new(0, 10, 0, 42)
 	DescLabel.BackgroundTransparency = 1
-	DescLabel.Text = description
+	DescLabel.Text = data.desc
 	DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
 	DescLabel.TextSize = 10
 	DescLabel.Font = Enum.Font.Gotham
 	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
 	DescLabel.Parent = ButtonFrame
 	
-	-- كلمة AUTO في الأسفل
-	local AutoLabel = Instance.new("TextLabel")
-	AutoLabel.Size = UDim2.new(1, -20, 0, 20)
-	AutoLabel.Position = UDim2.new(0, 10, 0, 68)
-	AutoLabel.BackgroundTransparency = 1
-	AutoLabel.Text = "AUTO"
-	AutoLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-	AutoLabel.TextSize = 10
-	AutoLabel.Font = Enum.Font.GothamBold
-	AutoLabel.TextXAlignment = Enum.TextXAlignment.Left
-	AutoLabel.Parent = ButtonFrame
-	
-	-- إضافة تأثير الدوران للإطار
+	-- تأثير الدوران للإطار
 	local function animateBorder()
 		local tween = TweenService:Create(BorderGradientBtn, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
 		tween:Play()
 	end
 	animateBorder()
 	
-	return ButtonFrame, ExecuteButton, BorderGradientBtn
+	-- أكشن عند الضغط على Execute
+	ExecuteButton.MouseButton1Click:Connect(function()
+		local success, err = pcall(function()
+			local scriptFunc = loadstring(data.script)
+			if scriptFunc then
+				scriptFunc()
+				showSideNotification("Script executed successfully!", true)
+			else
+				error("Failed to load script")
+			end
+		end)
+		
+		if not success then
+			showSideNotification("Error: " .. tostring(err), false)
+			warn("Error executing script: " .. tostring(err))
+		end
+	end)
+	
+	-- أكشن عند الضغط على AUTO
+	AutoButton.MouseButton1Click:Connect(function()
+		local success, err = pcall(function()
+			local scriptFunc = loadstring(data.script)
+			if scriptFunc then
+				scriptFunc()
+				showSideNotification("Script executed successfully (AUTO)!", true)
+			else
+				error("Failed to load script")
+			end
+		end)
+		
+		if not success then
+			showSideNotification("Error: " .. tostring(err), false)
+			warn("Error executing script: " .. tostring(err))
+		end
+	end)
+	
+	return BorderFrame, ExecuteButton, AutoButton, BorderGradientBtn, TitleLabel, DescLabel
 end
-
--- ========== بيانات الأزرار العشرة ==========
-local buttonsData = {
-	{title = "★★★ LOR LORLN SPAM CMD", desc = "HD Admin | CMD Bar | Full Control", y = 165},
-	{title = "★★★ LOR LORLN ANTI SPAM", desc = "Anti Spam Protection System", y = 293},
-	{title = "★★★ LOR LORLN SPEED", desc = "Speed hack for all games", y = 421},
-	{title = "★★★ LOR LORLN FLY", desc = "Fly hack for all games", y = 549},
-	{title = "★★★ LOR LORLN TP", desc = "Teleport to any player", y = 677},
-	{title = "★★★ LOR LORLN INF", desc = "Infinite Jump / Stamina", y = 805},
-	{title = "★★★ LOR LORLN AIM", desc = "Aimbot | Silent Aim", y = 933},
-	{title = "★★★ LOR LORLN ESP", desc = "Wallhack | Player ESP", y = 1061},
-	{title = "★★★ LOR LORLN GOD", desc = "God Mode | Anti Damage", y = 1189},
-	{title = "★★★ LOR LORLN KILL", desc = "Kill all players in server", y = 1317}
-}
 
 -- ========== إنشاء الأزرار العشرة ==========
-local execButtons = {}
-
 for i, data in ipairs(buttonsData) do
-	local btn, exec, grad = createBigButton(Container, data.title, data.desc, data.y)
-	execButtons[i] = exec
-	
-	-- أكشن لكل زر (مؤقت)
-	exec.MouseButton1Click:Connect(function()
-		print(data.title .. " Activated!")
-		-- ضع كود التشغيل هنا
-	end)
+	local border, exec, auto, grad, title, desc = createBigButton(Container, data, i)
+	table.insert(buttonFrames, border)
 end
 
--- 12. نظام تشغيل حركة الدوران اللانهائية لجميع التدرجات الحمراء المتوهجة
+-- ========== نظام البحث ==========
+SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+	local searchText = string.lower(SearchBar.Text)
+	
+	for i, data in ipairs(buttonsData) do
+		local frame = buttonFrames[i]
+		if frame then
+			local found = false
+			if string.find(string.lower(data.title), searchText) then
+				found = true
+			end
+			if not found and string.find(string.lower(data.desc), searchText) then
+				found = true
+			end
+			if not found then
+				for _, keyword in ipairs(data.keywords) do
+					if string.find(searchText, keyword) or string.find(keyword, searchText) then
+						found = true
+						break
+					end
+				end
+			end
+			frame.Visible = found or searchText == ""
+		end
+	end
+end)
+
+-- 12. نظام تشغيل حركة الدوران
 local function animate(targetGradient, speed)
 	if targetGradient then
 		local Tween = TweenService:Create(targetGradient, TweenInfo.new(speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
@@ -371,7 +607,7 @@ animate(NewsButton:FindFirstChildOfClass("UIGradient"), 1.8)
 animate(SearchBorderGradient, 2)
 animate(SearchTextGradient, 2.2)
 
--- 13. نظام سحب وتحريك الواجهة باللمس للموبايل ذكي وسلس
+-- 13. نظام سحب وتحريك الواجهة
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -401,5 +637,5 @@ UserInputService.InputChanged:Connect(function(input)
 	if input == dragInput and dragging then update(input) end
 end)
 
--- 14. جعل السكرول يعمل باللمس بشكل أفضل
+-- 14. تفعيل السكرول
 ScrollFrame.ScrollingEnabled = true
