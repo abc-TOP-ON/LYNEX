@@ -57,8 +57,7 @@ local playerSettings = {
 	fly = false,
 	infiniteJump = false,
 	lowGravity = false,
-	fov120 = false,
-	isSmall = false -- وضع التصغير
+	fov120 = false
 }
 
 local player = Players.LocalPlayer
@@ -115,7 +114,7 @@ end
 
 -- 3. اختراق الجدران (Noclip)
 local noclipConnection
-local function toggleNoclip()
+local function toggleNoclip(btn)
 	playerSettings.noclip = not playerSettings.noclip
 	
 	if playerSettings.noclip then
@@ -131,6 +130,10 @@ local function toggleNoclip()
 			end
 		end)
 		showSideNotification("🚪 Noclip: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if noclipConnection then
 			noclipConnection:Disconnect()
@@ -144,12 +147,16 @@ local function toggleNoclip()
 			end
 		end
 		showSideNotification("🚪 Noclip: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 4. الدوران (Spin)
 local spinConnection
-local function toggleSpin()
+local function toggleSpin(btn)
 	playerSettings.spin = not playerSettings.spin
 	
 	if playerSettings.spin then
@@ -160,18 +167,26 @@ local function toggleSpin()
 			end
 		end)
 		showSideNotification("🔄 Spin: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if spinConnection then
 			spinConnection:Disconnect()
 			spinConnection = nil
 		end
 		showSideNotification("🔄 Spin: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 5. الطيران (Fly)
 local flyConnection, flyBodyVelocity, flyGyro
-local function toggleFly()
+local function toggleFly(btn)
 	playerSettings.fly = not playerSettings.fly
 	
 	if playerSettings.fly then
@@ -207,17 +222,25 @@ local function toggleFly()
 		end)
 		
 		showSideNotification("✈️ Fly: ON (WASD + Space/Shift)", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if flyConnection then flyConnection:Disconnect() flyConnection = nil end
 		if flyBodyVelocity then flyBodyVelocity:Destroy() flyBodyVelocity = nil end
 		if flyGyro then flyGyro:Destroy() flyGyro = nil end
 		showSideNotification("✈️ Fly: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 6. قفز لا نهائي (Infinite Jump)
 local infiniteJumpConnection
-local function toggleInfiniteJump()
+local function toggleInfiniteJump(btn)
 	playerSettings.infiniteJump = not playerSettings.infiniteJump
 	
 	if playerSettings.infiniteJump then
@@ -228,38 +251,62 @@ local function toggleInfiniteJump()
 			end
 		end)
 		showSideNotification("♾️ Infinite Jump: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		if infiniteJumpConnection then
 			infiniteJumpConnection:Disconnect()
 			infiniteJumpConnection = nil
 		end
 		showSideNotification("♾️ Infinite Jump: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 7. انخفاض الجاذبية (Low Gravity)
-local function toggleLowGravity()
+local function toggleLowGravity(btn)
 	playerSettings.lowGravity = not playerSettings.lowGravity
 	
 	if playerSettings.lowGravity then
 		Workspace.Gravity = 50
 		showSideNotification("🌕 Low Gravity: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		Workspace.Gravity = 196.2
 		showSideNotification("🌕 Low Gravity: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
 -- 8. زاوية الرؤية 120 (FOV 120)
-local function toggleFOV120()
+local function toggleFOV120(btn)
 	playerSettings.fov120 = not playerSettings.fov120
 	
 	if playerSettings.fov120 then
 		Camera.FieldOfView = 120
 		showSideNotification("👁️ FOV 120: ON", true)
+		if btn then
+			btn.Text = "🟢 ON"
+			btn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+		end
 	else
 		Camera.FieldOfView = 70
 		showSideNotification("👁️ FOV 120: OFF", true)
+		if btn then
+			btn.Text = "🔴 OFF"
+			btn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+		end
 	end
 end
 
@@ -445,8 +492,8 @@ end
 -- الظل الخارجي
 local GlowFrame = Instance.new("Frame")
 GlowFrame.Name = "GlowFrame"
-GlowFrame.Size = UDim2.new(0, 388, 0, 270)  -- تم التعديل للطول 6.95 سم
-GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -135)
+GlowFrame.Size = UDim2.new(0, 388, 0, 550)
+GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -275)
 GlowFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 GlowFrame.BackgroundTransparency = 0.65
 GlowFrame.BorderSizePixel = 0
@@ -460,8 +507,8 @@ GlowCorner.Parent = GlowFrame
 -- الإطار الرئيسي
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 380, 0, 262)  -- تم التعديل للطول 6.95 سم
-MainFrame.Position = UDim2.new(0.5, -190, 0.5, -131)
+MainFrame.Size = UDim2.new(0, 380, 0, 542)
+MainFrame.Position = UDim2.new(0.5, -190, 0.5, -271)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -509,24 +556,32 @@ ScrollFrame.Parent = InsideFrame
 ScrollFrame.ScrollBarThickness = 6
 ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
 ScrollFrame.ScrollBarImageTransparency = 0.3
-ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 800)  -- تم التعديل
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 2500)
 
 -- الحاوية
 local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, 0, 0, 800)  -- تم التعديل
+Container.Size = UDim2.new(1, 0, 0, 2500)
 Container.Position = UDim2.new(0, 0, 0, 0)
 Container.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
 Container.BackgroundTransparency = 1
 Container.BorderSizePixel = 0
 Container.Parent = ScrollFrame
 
+-- خط فاصل
+local Line = Instance.new("Frame")
+Line.Size = UDim2.new(1, -30, 0, 2)
+Line.Position = UDim2.new(0, 15, 0, 52)
+Line.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Line.BorderSizePixel = 0
+Line.Parent = Container
+
 -- ========== عنوان LYNEX ==========
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Size = UDim2.new(1, 0, 0, 50)
 Title.BackgroundTransparency = 1
 Title.Text = "LYNEX"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 20
+Title.TextSize = 26
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Center
 Title.Parent = Container
@@ -535,12 +590,12 @@ local TitleGradient = createRedTextGradient(Title)
 
 -- ===== Current Game Label =====
 local CurrentGameLabel = Instance.new("TextLabel")
-CurrentGameLabel.Size = UDim2.new(1, 0, 0, 16)
-CurrentGameLabel.Position = UDim2.new(0, 0, 0, 34)
+CurrentGameLabel.Size = UDim2.new(1, 0, 0, 20)
+CurrentGameLabel.Position = UDim2.new(0, 0, 0, 55)
 CurrentGameLabel.BackgroundTransparency = 1
 CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
 CurrentGameLabel.TextColor3 = Color3.fromRGB(255, 200, 0)
-CurrentGameLabel.TextSize = 9
+CurrentGameLabel.TextSize = 11
 CurrentGameLabel.Font = Enum.Font.GothamBold
 CurrentGameLabel.TextXAlignment = Enum.TextXAlignment.Center
 CurrentGameLabel.Parent = Container
@@ -548,18 +603,18 @@ CurrentGameLabel.Parent = Container
 -- ========== زر الإغلاق ==========
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
-CloseButton.Size = UDim2.new(0, 22, 0, 22)
-CloseButton.Position = UDim2.new(1, -30, 0, 5)
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -40, 0, 10)
 CloseButton.BackgroundColor3 = Color3.fromRGB(25, 20, 20)
 CloseButton.BorderSizePixel = 0
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-CloseButton.TextSize = 12
+CloseButton.TextSize = 16
 CloseButton.Font = Enum.Font.GothamBold
 CloseButton.Parent = Container
 
 local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.CornerRadius = UDim.new(0, 8)
 CloseCorner.Parent = CloseButton
 
 CloseButton.MouseButton1Click:Connect(function()
@@ -571,80 +626,63 @@ CloseButton.MouseButton1Click:Connect(function()
 	showSideNotification("🔒 Exited LYNEX Script!", true)
 end)
 
--- ========== زر التصغير/التكبير (المضاف) ==========
-local ResizeButton = Instance.new("TextButton")
-ResizeButton.Name = "ResizeButton"
-ResizeButton.Size = UDim2.new(0, 22, 0, 22)
-ResizeButton.Position = UDim2.new(1, -58, 0, 5)
-ResizeButton.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-ResizeButton.BorderSizePixel = 0
-ResizeButton.Text = "⤡"
-ResizeButton.TextColor3 = Color3.fromRGB(255, 215, 0)
-ResizeButton.TextSize = 14
-ResizeButton.Font = Enum.Font.GothamBold
-ResizeButton.Parent = Container
-
-local ResizeCorner = Instance.new("UICorner")
-ResizeCorner.CornerRadius = UDim.new(0, 6)
-ResizeCorner.Parent = ResizeButton
-
 -- ========== الأزرار العلوية ==========
 local SettingsButton = Instance.new("TextButton")
-SettingsButton.Size = UDim2.new(0, 85, 0, 28)
-SettingsButton.Position = UDim2.new(0, 5, 0, 55)
+SettingsButton.Size = UDim2.new(0, 102, 0, 35)
+SettingsButton.Position = UDim2.new(0, 15, 0, 80)
 SettingsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 SettingsButton.BorderSizePixel = 0
 SettingsButton.Text = "Settings"
 SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SettingsButton.TextSize = 11
+SettingsButton.TextSize = 14
 SettingsButton.Font = Enum.Font.GothamBold
 SettingsButton.Parent = Container
 local SettingsCorner = Instance.new("UICorner")
-SettingsCorner.CornerRadius = UDim.new(0, 6)
+SettingsCorner.CornerRadius = UDim.new(0, 8)
 SettingsCorner.Parent = SettingsButton
 createRedTextGradient(SettingsButton)
 
 local PlayerBtn = Instance.new("TextButton")
-PlayerBtn.Size = UDim2.new(0, 85, 0, 28)
-PlayerBtn.Position = UDim2.new(0, 98, 0, 55)
+PlayerBtn.Size = UDim2.new(0, 102, 0, 35)
+PlayerBtn.Position = UDim2.new(0, 129, 0, 80)
 PlayerBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 PlayerBtn.BorderSizePixel = 0
 PlayerBtn.Text = "Player"
 PlayerBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-PlayerBtn.TextSize = 11
+PlayerBtn.TextSize = 14
 PlayerBtn.Font = Enum.Font.GothamBold
 PlayerBtn.Parent = Container
 local PlayerCorner = Instance.new("UICorner")
-PlayerCorner.CornerRadius = UDim.new(0, 6)
+PlayerCorner.CornerRadius = UDim.new(0, 8)
 PlayerCorner.Parent = PlayerBtn
 createRedTextGradient(PlayerBtn)
 
 local NewsButton = Instance.new("TextButton")
-NewsButton.Size = UDim2.new(0, 85, 0, 28)
-NewsButton.Position = UDim2.new(0, 191, 0, 55)
+NewsButton.Size = UDim2.new(0, 102, 0, 35)
+NewsButton.Position = UDim2.new(0, 243, 0, 80)
 NewsButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 NewsButton.BorderSizePixel = 0
 NewsButton.Text = "News"
 NewsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-NewsButton.TextSize = 11
+NewsButton.TextSize = 14
 NewsButton.Font = Enum.Font.GothamBold
 NewsButton.Parent = Container
 local NewsCorner = Instance.new("UICorner")
-NewsCorner.CornerRadius = UDim.new(0, 6)
+NewsCorner.CornerRadius = UDim.new(0, 8)
 NewsCorner.Parent = NewsButton
 createRedTextGradient(NewsButton)
 
 -- ========== إطار البحث ==========
 local SearchBorderFrame = Instance.new("Frame")
 SearchBorderFrame.Name = "SearchBorderFrame"
-SearchBorderFrame.Size = UDim2.new(0, 280, 0, 26)
-SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 88)
+SearchBorderFrame.Size = UDim2.new(0, 280, 0, 32)
+SearchBorderFrame.Position = UDim2.new(0.5, -140, 0, 130)
 SearchBorderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SearchBorderFrame.BorderSizePixel = 0
 SearchBorderFrame.Parent = Container
 
 local SearchBorderCorner = Instance.new("UICorner")
-SearchBorderCorner.CornerRadius = UDim.new(0, 6)
+SearchBorderCorner.CornerRadius = UDim.new(0, 8)
 SearchBorderCorner.Parent = SearchBorderFrame
 
 local SearchBorderGradient = createRedTextGradient(SearchBorderFrame)
@@ -660,73 +698,97 @@ SearchBar.PlaceholderText = "Search scripts..."
 SearchBar.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
 SearchBar.Text = ""
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
-SearchBar.TextSize = 11
+SearchBar.TextSize = 13
 SearchBar.Font = Enum.Font.GothamBold
 SearchBar.TextXAlignment = Enum.TextXAlignment.Center
 SearchBar.Parent = SearchBorderFrame
 
 local SearchCorner = Instance.new("UICorner")
-SearchCorner.CornerRadius = UDim.new(0, 5)
+SearchCorner.CornerRadius = UDim.new(0, 7)
 SearchCorner.Parent = SearchBar
 
 local SearchTextGradient = createRedTextGradient(SearchBar)
 
--- ========== بيانات الأزرار (مختصرة للطول الجديد) ==========
+-- ========== بيانات الأزرار ==========
 local buttonsData = {
 	{
-		title = "★★★ LOR LORLN SPAM", 
-		desc = "HD Admin | CMD Bar", 
-		y = 120,
+		title = "★★★ LOR LORLN SPAM CMD", 
+		desc = "HD Admin | CMD Bar | Full Control", 
+		y = 165,
 		game = "admin",
-		keywords = {"spam", "cmd", "admin"},
+		keywords = {"spam", "cmd", "admin", "command"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN ANTI SPAM", 
+		desc = "Anti Spam Protection System", 
+		y = 293,
+		game = "antispam",
+		keywords = {"anti", "spam", "protection", "antispam"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN SPEED", 
 		desc = "Speed hack for all games", 
-		y = 210,
+		y = 421,
 		game = "speed",
-		keywords = {"speed", "fast", "run"},
+		keywords = {"speed", "fast", "run", "walkspeed"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN FLY", 
 		desc = "Fly hack for all games", 
-		y = 300,
+		y = 549,
 		game = "fly",
-		keywords = {"fly", "flight"},
+		keywords = {"fly", "flight", "fly"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN TP", 
 		desc = "Teleport to any player", 
-		y = 390,
+		y = 677,
 		game = "teleport",
-		keywords = {"tp", "teleport", "goto"},
+		keywords = {"tp", "teleport", "goto", "move"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN INF", 
 		desc = "Infinite Jump / Stamina", 
-		y = 480,
+		y = 805,
 		game = "infinite",
-		keywords = {"inf", "infinite", "jump"},
+		keywords = {"inf", "infinite", "jump", "stamina", "infjump"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ BLOX FRUITS", 
 		desc = "Blox Fruits full script", 
-		y = 570,
+		y = 933,
 		game = "blox fruits",
-		keywords = {"blox", "fruits"},
+		keywords = {"blox", "fruits", "fruit"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ 99 NIGHT", 
+		desc = "99 Night full script", 
+		y = 1061,
+		game = "99 ليلة",
+		keywords = {"99", "night", "nine"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	},
 	{
 		title = "★★★ LOR LORLN GOD", 
 		desc = "God Mode | Anti Damage", 
-		y = 660,
+		y = 1189,
 		game = "god",
-		keywords = {"god", "godmode"},
+		keywords = {"god", "godmode", "anti", "damage", "health"},
+		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
+	},
+	{
+		title = "★★★ LOR LORLN KILL", 
+		desc = "Kill all players in server", 
+		y = 1317,
+		game = "kill",
+		keywords = {"kill", "killall", "all", "players", "server"},
 		script = "loadstring(game:HttpGet('https://raw.githubusercontent.com/abc-TOP-ON/LYNEX/refs/heads/main/LYNEX%201'))()"
 	}
 }
@@ -755,11 +817,13 @@ local function reorderByGame()
 		table.insert(buttonsData, 1, matchedData)
 		
 		for i, data in ipairs(buttonsData) do
-			data.y = 120 + (i - 1) * 90
+			data.y = 165 + (i - 1) * 128
 		end
 		
-		CurrentGameLabel.Text = "🎯 Showing: " .. matchedData.title
+		CurrentGameLabel.Text = "🎯 Showing script: " .. matchedData.title .. " (for: " .. currentGame .. ")"
 		showSideNotification("🎯 Showing: " .. matchedData.title, true)
+	else
+		CurrentGameLabel.Text = "🎮 Matching script will appear at the top"
 	end
 end
 
@@ -770,15 +834,971 @@ local function updateStatistics(scriptName)
 	statistics.lastExecuted = scriptName
 end
 
--- ========== دالة إنشاء الأزرار (مصغرة) ==========
+local function getStatistics()
+	local uptime = os.time() - statistics.startTime
+	local hours = math.floor(uptime / 3600)
+	local minutes = math.floor((uptime % 3600) / 60)
+	local seconds = uptime % 60
+	
+	return {
+		scriptsExecuted = statistics.scriptsExecuted,
+		lastExecuted = statistics.lastExecuted,
+		totalExecutions = statistics.totalExecutions,
+		uptime = string.format("%02d:%02d:%02d", hours, minutes, seconds),
+		favorites = #statistics.favoriteScripts
+	}
+end
+
+-- ========== معلومات السيرفر ==========
+local function getServerInfo()
+	local players = Players
+	local stats = getStatistics()
+	local gameInfo = MarketplaceService:GetProductInfo(game.PlaceId)
+	
+	return {
+		GameName = gameInfo.Name,
+		GameId = game.PlaceId,
+		Players = #players:GetPlayers(),
+		MaxPlayers = players.MaxPlayers,
+		ServerTime = os.date("%H:%M:%S"),
+		Uptime = stats.uptime,
+		ExecutedScripts = stats.scriptsExecuted,
+		LastScript = stats.lastExecuted
+	}
+end
+
+-- ========== نافذة الإعدادات ==========
+local function createSettingsWindow()
+	local SettingsFrame = Instance.new("Frame")
+	SettingsFrame.Size = UDim2.new(0, 300, 0, 380)
+	SettingsFrame.Position = UDim2.new(0.5, -150, 0.5, -190)
+	SettingsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SettingsFrame.BorderSizePixel = 0
+	SettingsFrame.Parent = ScreenGui
+	SettingsFrame.Visible = true
+	SettingsFrame.ZIndex = 10
+	
+	local SettingsBorderGradient = Instance.new("UIGradient")
+	SettingsBorderGradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	SettingsBorderGradient.Parent = SettingsFrame
+	
+	local SettingsCorner = Instance.new("UICorner")
+	SettingsCorner.CornerRadius = UDim.new(0, 14)
+	SettingsCorner.Parent = SettingsFrame
+	
+	local SettingsInside = Instance.new("Frame")
+	SettingsInside.Size = UDim2.new(1, -4, 1, -4)
+	SettingsInside.Position = UDim2.new(0, 2, 0, 2)
+	SettingsInside.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	SettingsInside.BorderSizePixel = 0
+	SettingsInside.Parent = SettingsFrame
+	SettingsInside.ZIndex = 11
+	
+	local SettingsInsideCorner = Instance.new("UICorner")
+	SettingsInsideCorner.CornerRadius = UDim.new(0, 12)
+	SettingsInsideCorner.Parent = SettingsInside
+	
+	local SettingsTitle = Instance.new("TextLabel")
+	SettingsTitle.Size = UDim2.new(1, -50, 0, 35)
+	SettingsTitle.Position = UDim2.new(0, 12, 0, 4)
+	SettingsTitle.BackgroundTransparency = 1
+	SettingsTitle.Text = "⚙️ SETTINGS"
+	SettingsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SettingsTitle.TextSize = 17
+	SettingsTitle.Font = Enum.Font.GothamBold
+	SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+	SettingsTitle.Parent = SettingsInside
+	SettingsTitle.ZIndex = 12
+	
+	local SettingsTitleGradient = Instance.new("UIGradient")
+	SettingsTitleGradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	SettingsTitleGradient.Parent = SettingsTitle
+	
+	local titleTween = TweenService:Create(SettingsTitleGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	titleTween:Play()
+	
+	local SettingsClose = Instance.new("TextButton")
+	SettingsClose.Size = UDim2.new(0, 26, 0, 26)
+	SettingsClose.Position = UDim2.new(1, -33, 0, 6)
+	SettingsClose.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+	SettingsClose.BorderSizePixel = 0
+	SettingsClose.Text = "✕"
+	SettingsClose.TextColor3 = Color3.fromRGB(255, 80, 80)
+	SettingsClose.TextSize = 16
+	SettingsClose.Font = Enum.Font.GothamBold
+	SettingsClose.Parent = SettingsInside
+	SettingsClose.ZIndex = 12
+	local SettingsCloseCorner = Instance.new("UICorner")
+	SettingsCloseCorner.CornerRadius = UDim.new(0, 7)
+	SettingsCloseCorner.Parent = SettingsClose
+	
+	SettingsClose.MouseButton1Click:Connect(function()
+		SettingsFrame:Destroy()
+		MainFrame.Visible = true
+		GlowFrame.Visible = true
+		showSideNotification("🔙 Returned to main menu", true)
+	end)
+	
+	local topLine = Instance.new("Frame")
+	topLine.Size = UDim2.new(1, -20, 0, 2)
+	topLine.Position = UDim2.new(0, 10, 0, 42)
+	topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	topLine.BackgroundTransparency = 0.5
+	topLine.BorderSizePixel = 0
+	topLine.Parent = SettingsInside
+	topLine.ZIndex = 12
+	
+	local SettingsScroll = Instance.new("ScrollingFrame")
+	SettingsScroll.Size = UDim2.new(1, -8, 1, -48)
+	SettingsScroll.Position = UDim2.new(0, 4, 0, 46)
+	SettingsScroll.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	SettingsScroll.BackgroundTransparency = 1
+	SettingsScroll.BorderSizePixel = 0
+	SettingsScroll.Parent = SettingsInside
+	SettingsScroll.ZIndex = 12
+	SettingsScroll.ScrollBarThickness = 3
+	SettingsScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
+	SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
+	
+	local SettingsContainer = Instance.new("Frame")
+	SettingsContainer.Size = UDim2.new(1, 0, 0, 600)
+	SettingsContainer.BackgroundTransparency = 1
+	SettingsContainer.Parent = SettingsScroll
+	SettingsContainer.ZIndex = 12
+	
+	local yPos = 2
+	
+	-- UI Customization
+	local UICustomLabel = Instance.new("TextLabel")
+	UICustomLabel.Size = UDim2.new(1, -20, 0, 22)
+	UICustomLabel.Position = UDim2.new(0, 10, 0, yPos)
+	UICustomLabel.BackgroundTransparency = 1
+	UICustomLabel.Text = "🎨 UI Customization"
+	UICustomLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	UICustomLabel.TextSize = 12
+	UICustomLabel.Font = Enum.Font.GothamBold
+	UICustomLabel.TextXAlignment = Enum.TextXAlignment.Left
+	UICustomLabel.Parent = SettingsContainer
+	UICustomLabel.ZIndex = 12
+	
+	local uiGrad = createRedTextGradient(UICustomLabel)
+	local uiTween = TweenService:Create(uiGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	uiTween:Play()
+	
+	yPos = yPos + 26
+	
+	local themes = {"Red", "Blue", "Green", "Gold", "Purple"}
+	local themeColors = {
+		Red = Color3.fromRGB(255, 0, 0),
+		Blue = Color3.fromRGB(0, 100, 255),
+		Green = Color3.fromRGB(0, 255, 100),
+		Gold = Color3.fromRGB(255, 215, 0),
+		Purple = Color3.fromRGB(150, 0, 255)
+	}
+	
+	for i, theme in ipairs(themes) do
+		local themeBtn = Instance.new("TextButton")
+		themeBtn.Size = UDim2.new(0, 48, 0, 20)
+		themeBtn.Position = UDim2.new(0, 10 + (i-1) * 52, 0, yPos)
+		themeBtn.BackgroundColor3 = themeColors[theme]
+		themeBtn.BorderSizePixel = 0
+		themeBtn.Text = theme
+		themeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		themeBtn.TextSize = 9
+		themeBtn.Font = Enum.Font.GothamBold
+		themeBtn.Parent = SettingsContainer
+		themeBtn.ZIndex = 12
+		local themeCorner = Instance.new("UICorner")
+		themeCorner.CornerRadius = UDim.new(0, 5)
+		themeCorner.Parent = themeBtn
+		
+		themeBtn.MouseButton1Click:Connect(function()
+			settings.theme = theme
+			settings.colors.main = themeColors[theme]
+			BorderGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, settings.colors.main),
+				ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(1, settings.colors.main)
+			})
+			SettingsBorderGradient.Color = BorderGradient.Color
+			GlowFrame.BackgroundColor3 = settings.colors.main
+			showSideNotification("🎨 Theme: " .. theme, true)
+		end)
+	end
+	
+	yPos = yPos + 28
+	
+	local line1 = Instance.new("Frame")
+	line1.Size = UDim2.new(1, -20, 0, 1)
+	line1.Position = UDim2.new(0, 10, 0, yPos)
+	line1.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	line1.BorderSizePixel = 0
+	line1.Parent = SettingsContainer
+	line1.ZIndex = 12
+	
+	yPos = yPos + 12
+	
+	-- Server Info
+	local ServerInfoLabel = Instance.new("TextLabel")
+	ServerInfoLabel.Size = UDim2.new(1, -20, 0, 22)
+	ServerInfoLabel.Position = UDim2.new(0, 10, 0, yPos)
+	ServerInfoLabel.BackgroundTransparency = 1
+	ServerInfoLabel.Text = "🖥️ Server Info"
+	ServerInfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ServerInfoLabel.TextSize = 12
+	ServerInfoLabel.Font = Enum.Font.GothamBold
+	ServerInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+	ServerInfoLabel.Parent = SettingsContainer
+	ServerInfoLabel.ZIndex = 12
+	
+	local serverGrad = createRedTextGradient(ServerInfoLabel)
+	local serverTween = TweenService:Create(serverGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	serverTween:Play()
+	
+	yPos = yPos + 24
+	
+	local ServerInfoText = Instance.new("TextLabel")
+	ServerInfoText.Size = UDim2.new(1, -20, 0, 60)
+	ServerInfoText.Position = UDim2.new(0, 10, 0, yPos)
+	ServerInfoText.BackgroundTransparency = 1
+	ServerInfoText.Text = "Loading..."
+	ServerInfoText.TextColor3 = Color3.fromRGB(180, 180, 180)
+	ServerInfoText.TextSize = 10
+	ServerInfoText.Font = Enum.Font.Gotham
+	ServerInfoText.TextXAlignment = Enum.TextXAlignment.Left
+	ServerInfoText.TextYAlignment = Enum.TextYAlignment.Top
+	ServerInfoText.TextWrapped = true
+	ServerInfoText.Parent = SettingsContainer
+	ServerInfoText.ZIndex = 12
+	
+	local function updateServerInfo()
+		local info = getServerInfo()
+		ServerInfoText.Text = string.format(
+			"📌 %s\n🆔 %s\n👥 %d/%d  ⏰ %s\n⏱️ %s  📊 %d\n📝 %s",
+			info.GameName,
+			info.GameId,
+			info.Players,
+			info.MaxPlayers,
+			info.ServerTime,
+			info.Uptime,
+			info.ExecutedScripts,
+			info.LastScript
+		)
+	end
+	
+	updateServerInfo()
+	
+	task.spawn(function()
+		while SettingsFrame and SettingsFrame.Parent do
+			task.wait(3)
+			updateServerInfo()
+		end
+	end)
+	
+	yPos = yPos + 64
+	
+	local RefreshButton = Instance.new("TextButton")
+	RefreshButton.Size = UDim2.new(0, 80, 0, 20)
+	RefreshButton.Position = UDim2.new(0.5, -40, 0, yPos)
+	RefreshButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	RefreshButton.BorderSizePixel = 0
+	RefreshButton.Text = "🔄 Refresh"
+	RefreshButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	RefreshButton.TextSize = 10
+	RefreshButton.Font = Enum.Font.GothamBold
+	RefreshButton.Parent = SettingsContainer
+	RefreshButton.ZIndex = 12
+	local RefreshCorner = Instance.new("UICorner")
+	RefreshCorner.CornerRadius = UDim.new(0, 5)
+	RefreshCorner.Parent = RefreshButton
+	
+	RefreshButton.MouseButton1Click:Connect(function()
+		updateServerInfo()
+		showSideNotification("✅ Server info refreshed!", true)
+	end)
+	
+	yPos = yPos + 28
+	
+	local line2 = Instance.new("Frame")
+	line2.Size = UDim2.new(1, -20, 0, 1)
+	line2.Position = UDim2.new(0, 10, 0, yPos)
+	line2.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	line2.BorderSizePixel = 0
+	line2.Parent = SettingsContainer
+	line2.ZIndex = 12
+	
+	yPos = yPos + 12
+	
+	-- Statistics
+	local StatsLabel = Instance.new("TextLabel")
+	StatsLabel.Size = UDim2.new(1, -20, 0, 22)
+	StatsLabel.Position = UDim2.new(0, 10, 0, yPos)
+	StatsLabel.BackgroundTransparency = 1
+	StatsLabel.Text = "📊 Statistics"
+	StatsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	StatsLabel.TextSize = 12
+	StatsLabel.Font = Enum.Font.GothamBold
+	StatsLabel.TextXAlignment = Enum.TextXAlignment.Left
+	StatsLabel.Parent = SettingsContainer
+	StatsLabel.ZIndex = 12
+	
+	local statsGrad = createRedTextGradient(StatsLabel)
+	local statsTween = TweenService:Create(statsGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	statsTween:Play()
+	
+	yPos = yPos + 24
+	
+	local StatsText = Instance.new("TextLabel")
+	StatsText.Size = UDim2.new(1, -20, 0, 50)
+	StatsText.Position = UDim2.new(0, 10, 0, yPos)
+	StatsText.BackgroundTransparency = 1
+	StatsText.Text = "Loading..."
+	StatsText.TextColor3 = Color3.fromRGB(180, 180, 180)
+	StatsText.TextSize = 10
+	StatsText.Font = Enum.Font.Gotham
+	StatsText.TextXAlignment = Enum.TextXAlignment.Left
+	StatsText.TextYAlignment = Enum.TextYAlignment.Top
+	StatsText.TextWrapped = true
+	StatsText.Parent = SettingsContainer
+	StatsText.ZIndex = 12
+	
+	local function updateStatisticsDisplay()
+		local stats = getStatistics()
+		StatsText.Text = string.format(
+			"📝 Executed: %d  🔄 Total: %d\n⏱️ Uptime: %s  ⭐ Fav: %d\n📌 Last: %s",
+			stats.scriptsExecuted,
+			stats.totalExecutions,
+			stats.uptime,
+			stats.favorites,
+			stats.lastExecuted
+		)
+	end
+	
+	updateStatisticsDisplay()
+	
+	task.spawn(function()
+		while SettingsFrame and SettingsFrame.Parent do
+			task.wait(2)
+			updateStatisticsDisplay()
+		end
+	end)
+	
+	yPos = yPos + 54
+	
+	local ResetStatsButton = Instance.new("TextButton")
+	ResetStatsButton.Size = UDim2.new(0, 120, 0, 20)
+	ResetStatsButton.Position = UDim2.new(0.5, -60, 0, yPos)
+	ResetStatsButton.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	ResetStatsButton.BorderSizePixel = 0
+	ResetStatsButton.Text = "🔄 Reset Stats"
+	ResetStatsButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+	ResetStatsButton.TextSize = 10
+	ResetStatsButton.Font = Enum.Font.GothamBold
+	ResetStatsButton.Parent = SettingsContainer
+	ResetStatsButton.ZIndex = 12
+	local ResetCorner = Instance.new("UICorner")
+	ResetCorner.CornerRadius = UDim.new(0, 5)
+	ResetCorner.Parent = ResetStatsButton
+	
+	ResetStatsButton.MouseButton1Click:Connect(function()
+		statistics.scriptsExecuted = 0
+		statistics.totalExecutions = 0
+		statistics.lastExecuted = "None"
+		updateStatisticsDisplay()
+		showSideNotification("✅ Statistics reset!", true)
+	end)
+	
+	yPos = yPos + 28
+	
+	local line3 = Instance.new("Frame")
+	line3.Size = UDim2.new(1, -20, 0, 1)
+	line3.Position = UDim2.new(0, 10, 0, yPos)
+	line3.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	line3.BorderSizePixel = 0
+	line3.Parent = SettingsContainer
+	line3.ZIndex = 12
+	
+	yPos = yPos + 12
+	
+	-- Colors
+	local ColorsLabel = Instance.new("TextLabel")
+	ColorsLabel.Size = UDim2.new(1, -20, 0, 22)
+	ColorsLabel.Position = UDim2.new(0, 10, 0, yPos)
+	ColorsLabel.BackgroundTransparency = 1
+	ColorsLabel.Text = "🎨 Colors"
+	ColorsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ColorsLabel.TextSize = 12
+	ColorsLabel.Font = Enum.Font.GothamBold
+	ColorsLabel.TextXAlignment = Enum.TextXAlignment.Left
+	ColorsLabel.Parent = SettingsContainer
+	ColorsLabel.ZIndex = 12
+	
+	local colorsGrad = createRedTextGradient(ColorsLabel)
+	local colorsTween = TweenService:Create(colorsGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	colorsTween:Play()
+	
+	yPos = yPos + 26
+	
+	local extraColors = {
+		{name = "Red", color = Color3.fromRGB(255, 0, 0)},
+		{name = "Blue", color = Color3.fromRGB(0, 100, 255)},
+		{name = "Green", color = Color3.fromRGB(0, 200, 50)},
+		{name = "Gold", color = Color3.fromRGB(255, 215, 0)},
+		{name = "Purple", color = Color3.fromRGB(150, 0, 255)},
+		{name = "Orange", color = Color3.fromRGB(255, 100, 0)},
+		{name = "Pink", color = Color3.fromRGB(255, 0, 150)},
+		{name = "White", color = Color3.fromRGB(200, 200, 200)}
+	}
+	
+	for i, colorData in ipairs(extraColors) do
+		local colBtn = Instance.new("TextButton")
+		colBtn.Size = UDim2.new(0, 64, 0, 20)
+		colBtn.Position = UDim2.new(0, 10 + ((i-1) % 3) * 70, 0, yPos + math.floor((i-1) / 3) * 24)
+		colBtn.BackgroundColor3 = colorData.color
+		colBtn.BackgroundTransparency = 0.3
+		colBtn.BorderSizePixel = 0
+		colBtn.Text = colorData.name
+		colBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		colBtn.TextSize = 9
+		colBtn.Font = Enum.Font.GothamBold
+		colBtn.Parent = SettingsContainer
+		colBtn.ZIndex = 12
+		local colCorner = Instance.new("UICorner")
+		colCorner.CornerRadius = UDim.new(0, 5)
+		colCorner.Parent = colBtn
+		
+		colBtn.MouseButton1Click:Connect(function()
+			settings.colors.main = colorData.color
+			BorderGradient.Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, settings.colors.main),
+				ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+				ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+				ColorSequenceKeypoint.new(1, settings.colors.main)
+			})
+			SettingsBorderGradient.Color = BorderGradient.Color
+			GlowFrame.BackgroundColor3 = settings.colors.main
+			showSideNotification("🎨 Color changed!", true)
+		end)
+	end
+	
+	yPos = yPos + 24 * 3 + 10
+	
+	SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 20)
+	
+	local settingsBorderTween = TweenService:Create(SettingsBorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	settingsBorderTween:Play()
+	
+	return SettingsFrame
+end
+
+-- ========== نافذة Player (مصغرة مع إصلاح نهائي) ==========
+local function createPlayerWindow()
+	local PlayerFrame = Instance.new("Frame")
+	PlayerFrame.Size = UDim2.new(0, 280, 0, 380)
+	PlayerFrame.Position = UDim2.new(0.5, -140, 0.5, -190)
+	PlayerFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	PlayerFrame.BorderSizePixel = 0
+	PlayerFrame.Parent = ScreenGui
+	PlayerFrame.Visible = true
+	PlayerFrame.ZIndex = 10
+	
+	local PlayerBorderGradient = Instance.new("UIGradient")
+	PlayerBorderGradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
+		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	PlayerBorderGradient.Parent = PlayerFrame
+	
+	local PlayerCorner = Instance.new("UICorner")
+	PlayerCorner.CornerRadius = UDim.new(0, 14)
+	PlayerCorner.Parent = PlayerFrame
+	
+	local PlayerInside = Instance.new("Frame")
+	PlayerInside.Size = UDim2.new(1, -4, 1, -4)
+	PlayerInside.Position = UDim2.new(0, 2, 0, 2)
+	PlayerInside.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	PlayerInside.BorderSizePixel = 0
+	PlayerInside.Parent = PlayerFrame
+	PlayerInside.ZIndex = 11
+	
+	local PlayerInsideCorner = Instance.new("UICorner")
+	PlayerInsideCorner.CornerRadius = UDim.new(0, 12)
+	PlayerInsideCorner.Parent = PlayerInside
+	
+	local PlayerTitle = Instance.new("TextLabel")
+	PlayerTitle.Size = UDim2.new(1, -50, 0, 30)
+	PlayerTitle.Position = UDim2.new(0, 12, 0, 4)
+	PlayerTitle.BackgroundTransparency = 1
+	PlayerTitle.Text = "👤 PLAYER"
+	PlayerTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	PlayerTitle.TextSize = 15
+	PlayerTitle.Font = Enum.Font.GothamBold
+	PlayerTitle.TextXAlignment = Enum.TextXAlignment.Left
+	PlayerTitle.Parent = PlayerInside
+	PlayerTitle.ZIndex = 12
+	
+	local PlayerTitleGradient = Instance.new("UIGradient")
+	PlayerTitleGradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
+		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+	})
+	PlayerTitleGradient.Parent = PlayerTitle
+	
+	local titleTween2 = TweenService:Create(PlayerTitleGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	titleTween2:Play()
+	
+	local PlayerClose = Instance.new("TextButton")
+	PlayerClose.Size = UDim2.new(0, 24, 0, 24)
+	PlayerClose.Position = UDim2.new(1, -30, 0, 5)
+	PlayerClose.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+	PlayerClose.BorderSizePixel = 0
+	PlayerClose.Text = "✕"
+	PlayerClose.TextColor3 = Color3.fromRGB(255, 80, 80)
+	PlayerClose.TextSize = 14
+	PlayerClose.Font = Enum.Font.GothamBold
+	PlayerClose.Parent = PlayerInside
+	PlayerClose.ZIndex = 12
+	local PlayerCloseCorner = Instance.new("UICorner")
+	PlayerCloseCorner.CornerRadius = UDim.new(0, 7)
+	PlayerCloseCorner.Parent = PlayerClose
+	
+	PlayerClose.MouseButton1Click:Connect(function()
+		PlayerFrame:Destroy()
+		MainFrame.Visible = true
+		GlowFrame.Visible = true
+		showSideNotification("🔙 Returned to main menu", true)
+	end)
+	
+	local topLine2 = Instance.new("Frame")
+	topLine2.Size = UDim2.new(1, -20, 0, 2)
+	topLine2.Position = UDim2.new(0, 10, 0, 38)
+	topLine2.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	topLine2.BackgroundTransparency = 0.5
+	topLine2.BorderSizePixel = 0
+	topLine2.Parent = PlayerInside
+	topLine2.ZIndex = 12
+	
+	local PlayerScroll = Instance.new("ScrollingFrame")
+	PlayerScroll.Size = UDim2.new(1, -8, 1, -44)
+	PlayerScroll.Position = UDim2.new(0, 4, 0, 42)
+	PlayerScroll.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	PlayerScroll.BackgroundTransparency = 1
+	PlayerScroll.BorderSizePixel = 0
+	PlayerScroll.Parent = PlayerInside
+	PlayerScroll.ZIndex = 12
+	PlayerScroll.ScrollBarThickness = 3
+	PlayerScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
+	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 750)
+	
+	local PlayerContainer = Instance.new("Frame")
+	PlayerContainer.Size = UDim2.new(1, 0, 0, 750)
+	PlayerContainer.BackgroundTransparency = 1
+	PlayerContainer.Parent = PlayerScroll
+	PlayerContainer.ZIndex = 12
+	
+	local pY = 5
+	
+	-- ===== 1. SPEED =====
+	local SpeedLabel = Instance.new("TextLabel")
+	SpeedLabel.Size = UDim2.new(1, -20, 0, 18)
+	SpeedLabel.Position = UDim2.new(0, 10, 0, pY)
+	SpeedLabel.BackgroundTransparency = 1
+	SpeedLabel.Text = "⚡ Speed"
+	SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SpeedLabel.TextSize = 11
+	SpeedLabel.Font = Enum.Font.GothamBold
+	SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+	SpeedLabel.Parent = PlayerContainer
+	SpeedLabel.ZIndex = 12
+	local speedGrad = createRedTextGradient(SpeedLabel)
+	local speedTween = TweenService:Create(speedGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	speedTween:Play()
+	
+	pY = pY + 20
+	
+	local SpeedBox = Instance.new("TextBox")
+	SpeedBox.Size = UDim2.new(0, 70, 0, 22)
+	SpeedBox.Position = UDim2.new(0, 10, 0, pY)
+	SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	SpeedBox.BorderSizePixel = 0
+	SpeedBox.Text = tostring(playerSettings.speed)
+	SpeedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SpeedBox.TextSize = 11
+	SpeedBox.Font = Enum.Font.GothamBold
+	SpeedBox.TextXAlignment = Enum.TextXAlignment.Center
+	SpeedBox.Parent = PlayerContainer
+	SpeedBox.ZIndex = 12
+	local SpeedBoxCorner = Instance.new("UICorner")
+	SpeedBoxCorner.CornerRadius = UDim.new(0, 5)
+	SpeedBoxCorner.Parent = SpeedBox
+	
+	local SpeedBtn = Instance.new("TextButton")
+	SpeedBtn.Size = UDim2.new(0, 70, 0, 22)
+	SpeedBtn.Position = UDim2.new(0, 90, 0, pY)
+	SpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	SpeedBtn.BorderSizePixel = 0
+	SpeedBtn.Text = "Apply"
+	SpeedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SpeedBtn.TextSize = 10
+	SpeedBtn.Font = Enum.Font.GothamBold
+	SpeedBtn.Parent = PlayerContainer
+	SpeedBtn.ZIndex = 12
+	local SpeedBtnCorner = Instance.new("UICorner")
+	SpeedBtnCorner.CornerRadius = UDim.new(0, 5)
+	SpeedBtnCorner.Parent = SpeedBtn
+	
+	SpeedBtn.MouseButton1Click:Connect(function()
+		local val = tonumber(SpeedBox.Text) or 16
+		setSpeed(val)
+		showSideNotification("⚡ Speed: " .. val, true)
+	end)
+	
+	pY = pY + 28
+	
+	-- ===== 2. JUMP =====
+	local JumpLabel = Instance.new("TextLabel")
+	JumpLabel.Size = UDim2.new(1, -20, 0, 18)
+	JumpLabel.Position = UDim2.new(0, 10, 0, pY)
+	JumpLabel.BackgroundTransparency = 1
+	JumpLabel.Text = "🦘 Jump Power"
+	JumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	JumpLabel.TextSize = 11
+	JumpLabel.Font = Enum.Font.GothamBold
+	JumpLabel.TextXAlignment = Enum.TextXAlignment.Left
+	JumpLabel.Parent = PlayerContainer
+	JumpLabel.ZIndex = 12
+	local jumpGrad = createRedTextGradient(JumpLabel)
+	local jumpTween = TweenService:Create(jumpGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	jumpTween:Play()
+	
+	pY = pY + 20
+	
+	local JumpBox = Instance.new("TextBox")
+	JumpBox.Size = UDim2.new(0, 70, 0, 22)
+	JumpBox.Position = UDim2.new(0, 10, 0, pY)
+	JumpBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	JumpBox.BorderSizePixel = 0
+	JumpBox.Text = tostring(playerSettings.jumpPower)
+	JumpBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	JumpBox.TextSize = 11
+	JumpBox.Font = Enum.Font.GothamBold
+	JumpBox.TextXAlignment = Enum.TextXAlignment.Center
+	JumpBox.Parent = PlayerContainer
+	JumpBox.ZIndex = 12
+	local JumpBoxCorner = Instance.new("UICorner")
+	JumpBoxCorner.CornerRadius = UDim.new(0, 5)
+	JumpBoxCorner.Parent = JumpBox
+	
+	local JumpBtn = Instance.new("TextButton")
+	JumpBtn.Size = UDim2.new(0, 70, 0, 22)
+	JumpBtn.Position = UDim2.new(0, 90, 0, pY)
+	JumpBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	JumpBtn.BorderSizePixel = 0
+	JumpBtn.Text = "Apply"
+	JumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	JumpBtn.TextSize = 10
+	JumpBtn.Font = Enum.Font.GothamBold
+	JumpBtn.Parent = PlayerContainer
+	JumpBtn.ZIndex = 12
+	local JumpBtnCorner = Instance.new("UICorner")
+	JumpBtnCorner.CornerRadius = UDim.new(0, 5)
+	JumpBtnCorner.Parent = JumpBtn
+	
+	JumpBtn.MouseButton1Click:Connect(function()
+		local val = tonumber(JumpBox.Text) or 50
+		setJumpPower(val)
+		showSideNotification("🦘 Jump: " .. val, true)
+	end)
+	
+	pY = pY + 28
+	
+	-- خط فاصل
+	local lineP1 = Instance.new("Frame")
+	lineP1.Size = UDim2.new(1, -20, 0, 1)
+	lineP1.Position = UDim2.new(0, 10, 0, pY)
+	lineP1.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	lineP1.BorderSizePixel = 0
+	lineP1.Parent = PlayerContainer
+	lineP1.ZIndex = 12
+	
+	pY = pY + 10
+	
+	-- ===== 3. NOCLIP =====
+	local NoclipLabel = Instance.new("TextLabel")
+	NoclipLabel.Size = UDim2.new(1, -20, 0, 18)
+	NoclipLabel.Position = UDim2.new(0, 10, 0, pY)
+	NoclipLabel.BackgroundTransparency = 1
+	NoclipLabel.Text = "🚪 Noclip"
+	NoclipLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NoclipLabel.TextSize = 11
+	NoclipLabel.Font = Enum.Font.GothamBold
+	NoclipLabel.TextXAlignment = Enum.TextXAlignment.Left
+	NoclipLabel.Parent = PlayerContainer
+	NoclipLabel.ZIndex = 12
+	local noclipGrad = createRedTextGradient(NoclipLabel)
+	local noclipTween = TweenService:Create(noclipGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	noclipTween:Play()
+	
+	pY = pY + 20
+	
+	local NoclipBtn = Instance.new("TextButton")
+	NoclipBtn.Size = UDim2.new(0, 100, 0, 24)
+	NoclipBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	NoclipBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	NoclipBtn.BorderSizePixel = 0
+	NoclipBtn.Text = "🔴 OFF"
+	NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NoclipBtn.TextSize = 11
+	NoclipBtn.Font = Enum.Font.GothamBold
+	NoclipBtn.Parent = PlayerContainer
+	NoclipBtn.ZIndex = 12
+	local NoclipCorner = Instance.new("UICorner")
+	NoclipCorner.CornerRadius = UDim.new(0, 6)
+	NoclipCorner.Parent = NoclipBtn
+	
+	NoclipBtn.MouseButton1Click:Connect(function()
+		toggleNoclip(NoclipBtn)
+	end)
+	
+	pY = pY + 30
+	
+	-- ===== 4. SPIN =====
+	local SpinLabel = Instance.new("TextLabel")
+	SpinLabel.Size = UDim2.new(1, -20, 0, 18)
+	SpinLabel.Position = UDim2.new(0, 10, 0, pY)
+	SpinLabel.BackgroundTransparency = 1
+	SpinLabel.Text = "🔄 Spin"
+	SpinLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SpinLabel.TextSize = 11
+	SpinLabel.Font = Enum.Font.GothamBold
+	SpinLabel.TextXAlignment = Enum.TextXAlignment.Left
+	SpinLabel.Parent = PlayerContainer
+	SpinLabel.ZIndex = 12
+	local spinGrad = createRedTextGradient(SpinLabel)
+	local spinTween = TweenService:Create(spinGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	spinTween:Play()
+	
+	pY = pY + 20
+	
+	local SpinBtn = Instance.new("TextButton")
+	SpinBtn.Size = UDim2.new(0, 100, 0, 24)
+	SpinBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	SpinBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	SpinBtn.BorderSizePixel = 0
+	SpinBtn.Text = "🔴 OFF"
+	SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SpinBtn.TextSize = 11
+	SpinBtn.Font = Enum.Font.GothamBold
+	SpinBtn.Parent = PlayerContainer
+	SpinBtn.ZIndex = 12
+	local SpinCorner = Instance.new("UICorner")
+	SpinCorner.CornerRadius = UDim.new(0, 6)
+	SpinCorner.Parent = SpinBtn
+	
+	SpinBtn.MouseButton1Click:Connect(function()
+		toggleSpin(SpinBtn)
+	end)
+	
+	pY = pY + 30
+	
+	-- ===== 5. FLY =====
+	local FlyLabel = Instance.new("TextLabel")
+	FlyLabel.Size = UDim2.new(1, -20, 0, 18)
+	FlyLabel.Position = UDim2.new(0, 10, 0, pY)
+	FlyLabel.BackgroundTransparency = 1
+	FlyLabel.Text = "✈️ Fly"
+	FlyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	FlyLabel.TextSize = 11
+	FlyLabel.Font = Enum.Font.GothamBold
+	FlyLabel.TextXAlignment = Enum.TextXAlignment.Left
+	FlyLabel.Parent = PlayerContainer
+	FlyLabel.ZIndex = 12
+	local flyGrad = createRedTextGradient(FlyLabel)
+	local flyTween = TweenService:Create(flyGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	flyTween:Play()
+	
+	pY = pY + 20
+	
+	local FlyBtn = Instance.new("TextButton")
+	FlyBtn.Size = UDim2.new(0, 100, 0, 24)
+	FlyBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	FlyBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	FlyBtn.BorderSizePixel = 0
+	FlyBtn.Text = "🔴 OFF"
+	FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	FlyBtn.TextSize = 11
+	FlyBtn.Font = Enum.Font.GothamBold
+	FlyBtn.Parent = PlayerContainer
+	FlyBtn.ZIndex = 12
+	local FlyCorner = Instance.new("UICorner")
+	FlyCorner.CornerRadius = UDim.new(0, 6)
+	FlyCorner.Parent = FlyBtn
+	
+	FlyBtn.MouseButton1Click:Connect(function()
+		toggleFly(FlyBtn)
+	end)
+	
+	pY = pY + 30
+	
+	-- ===== 6. INFINITE JUMP =====
+	local InfJumpLabel = Instance.new("TextLabel")
+	InfJumpLabel.Size = UDim2.new(1, -20, 0, 18)
+	InfJumpLabel.Position = UDim2.new(0, 10, 0, pY)
+	InfJumpLabel.BackgroundTransparency = 1
+	InfJumpLabel.Text = "♾️ Infinite Jump"
+	InfJumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	InfJumpLabel.TextSize = 11
+	InfJumpLabel.Font = Enum.Font.GothamBold
+	InfJumpLabel.TextXAlignment = Enum.TextXAlignment.Left
+	InfJumpLabel.Parent = PlayerContainer
+	InfJumpLabel.ZIndex = 12
+	local infGrad = createRedTextGradient(InfJumpLabel)
+	local infTween = TweenService:Create(infGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	infTween:Play()
+	
+	pY = pY + 20
+	
+	local InfJumpBtn = Instance.new("TextButton")
+	InfJumpBtn.Size = UDim2.new(0, 100, 0, 24)
+	InfJumpBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	InfJumpBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	InfJumpBtn.BorderSizePixel = 0
+	InfJumpBtn.Text = "🔴 OFF"
+	InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	InfJumpBtn.TextSize = 11
+	InfJumpBtn.Font = Enum.Font.GothamBold
+	InfJumpBtn.Parent = PlayerContainer
+	InfJumpBtn.ZIndex = 12
+	local InfCorner = Instance.new("UICorner")
+	InfCorner.CornerRadius = UDim.new(0, 6)
+	InfCorner.Parent = InfJumpBtn
+	
+	InfJumpBtn.MouseButton1Click:Connect(function()
+		toggleInfiniteJump(InfJumpBtn)
+	end)
+	
+	pY = pY + 30
+	
+	-- ===== 7. LOW GRAVITY =====
+	local LowGravLabel = Instance.new("TextLabel")
+	LowGravLabel.Size = UDim2.new(1, -20, 0, 18)
+	LowGravLabel.Position = UDim2.new(0, 10, 0, pY)
+	LowGravLabel.BackgroundTransparency = 1
+	LowGravLabel.Text = "🌕 Low Gravity"
+	LowGravLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	LowGravLabel.TextSize = 11
+	LowGravLabel.Font = Enum.Font.GothamBold
+	LowGravLabel.TextXAlignment = Enum.TextXAlignment.Left
+	LowGravLabel.Parent = PlayerContainer
+	LowGravLabel.ZIndex = 12
+	local gravGrad = createRedTextGradient(LowGravLabel)
+	local gravTween = TweenService:Create(gravGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	gravTween:Play()
+	
+	pY = pY + 20
+	
+	local LowGravBtn = Instance.new("TextButton")
+	LowGravBtn.Size = UDim2.new(0, 100, 0, 24)
+	LowGravBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	LowGravBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	LowGravBtn.BorderSizePixel = 0
+	LowGravBtn.Text = "🔴 OFF"
+	LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	LowGravBtn.TextSize = 11
+	LowGravBtn.Font = Enum.Font.GothamBold
+	LowGravBtn.Parent = PlayerContainer
+	LowGravBtn.ZIndex = 12
+	local LowGravCorner = Instance.new("UICorner")
+	LowGravCorner.CornerRadius = UDim.new(0, 6)
+	LowGravCorner.Parent = LowGravBtn
+	
+	LowGravBtn.MouseButton1Click:Connect(function()
+		toggleLowGravity(LowGravBtn)
+	end)
+	
+	pY = pY + 30
+	
+	-- ===== 8. FOV 120 =====
+	local FOVLabel = Instance.new("TextLabel")
+	FOVLabel.Size = UDim2.new(1, -20, 0, 18)
+	FOVLabel.Position = UDim2.new(0, 10, 0, pY)
+	FOVLabel.BackgroundTransparency = 1
+	FOVLabel.Text = "👁️ FOV 120"
+	FOVLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	FOVLabel.TextSize = 11
+	FOVLabel.Font = Enum.Font.GothamBold
+	FOVLabel.TextXAlignment = Enum.TextXAlignment.Left
+	FOVLabel.Parent = PlayerContainer
+	FOVLabel.ZIndex = 12
+	local fovGrad = createRedTextGradient(FOVLabel)
+	local fovTween = TweenService:Create(fovGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	fovTween:Play()
+	
+	pY = pY + 20
+	
+	local FOVBtn = Instance.new("TextButton")
+	FOVBtn.Size = UDim2.new(0, 100, 0, 24)
+	FOVBtn.Position = UDim2.new(0.5, -50, 0, pY)
+	FOVBtn.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	FOVBtn.BorderSizePixel = 0
+	FOVBtn.Text = "🔴 OFF"
+	FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	FOVBtn.TextSize = 11
+	FOVBtn.Font = Enum.Font.GothamBold
+	FOVBtn.Parent = PlayerContainer
+	FOVBtn.ZIndex = 12
+	local FOVCorner = Instance.new("UICorner")
+	FOVCorner.CornerRadius = UDim.new(0, 6)
+	FOVCorner.Parent = FOVBtn
+	
+	FOVBtn.MouseButton1Click:Connect(function()
+		toggleFOV120(FOVBtn)
+	end)
+	
+	pY = pY + 30
+	
+	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, pY + 20)
+	
+	local playerBorderTween = TweenService:Create(PlayerBorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
+	playerBorderTween:Play()
+	
+	return PlayerFrame
+end
+
+-- ========== دالة إنشاء الأزرار ==========
 local buttonFrames = {}
 
 local function createBigButton(parent, data, index)
 	local yPos = data.y
 	
 	local BorderFrame = Instance.new("Frame")
-	BorderFrame.Size = UDim2.new(0, 340, 0, 85)  -- تم التصغير
-	BorderFrame.Position = UDim2.new(0.5, -170, 0, yPos)
+	BorderFrame.Size = UDim2.new(0, 350, 0, 130)
+	BorderFrame.Position = UDim2.new(0.5, -175, 0, yPos)
 	BorderFrame.BackgroundColor3 = settings.colors.main
 	BorderFrame.BackgroundTransparency = 0.3
 	BorderFrame.BorderSizePixel = 0
@@ -786,7 +1806,7 @@ local function createBigButton(parent, data, index)
 	BorderFrame.Visible = true
 	
 	local BorderCorner = Instance.new("UICorner")
-	BorderCorner.CornerRadius = UDim.new(0, 10)
+	BorderCorner.CornerRadius = UDim.new(0, 12)
 	BorderCorner.Parent = BorderFrame
 	
 	local BorderGradientBtn = createRedTextGradient(BorderFrame)
@@ -799,48 +1819,48 @@ local function createBigButton(parent, data, index)
 	ButtonFrame.Parent = BorderFrame
 	
 	local ButtonCorner = Instance.new("UICorner")
-	ButtonCorner.CornerRadius = UDim.new(0, 8)
+	ButtonCorner.CornerRadius = UDim.new(0, 10)
 	ButtonCorner.Parent = ButtonFrame
 	
 	local TitleLabel = Instance.new("TextLabel")
-	TitleLabel.Size = UDim2.new(1, -20, 0, 20)
-	TitleLabel.Position = UDim2.new(0, 10, 0, 4)
+	TitleLabel.Size = UDim2.new(1, -20, 0, 30)
+	TitleLabel.Position = UDim2.new(0, 10, 0, 8)
 	TitleLabel.BackgroundTransparency = 1
 	TitleLabel.Text = data.title
 	TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TitleLabel.TextSize = 11
+	TitleLabel.TextSize = 13
 	TitleLabel.Font = Enum.Font.GothamBold
 	TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	TitleLabel.Parent = ButtonFrame
 	local TitleGradBtn = createRedTextGradient(TitleLabel)
 	
 	local ExecuteButton = Instance.new("TextButton")
-	ExecuteButton.Size = UDim2.new(0, 60, 0, 22)
-	ExecuteButton.Position = UDim2.new(1, -68, 0, 4)
+	ExecuteButton.Size = UDim2.new(0, 80, 0, 28)
+	ExecuteButton.Position = UDim2.new(1, -90, 0, 10)
 	ExecuteButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	ExecuteButton.BorderSizePixel = 0
-	ExecuteButton.Text = "EXEC"
+	ExecuteButton.Text = "EXECUTE"
 	ExecuteButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-	ExecuteButton.TextSize = 9
+	ExecuteButton.TextSize = 11
 	ExecuteButton.Font = Enum.Font.GothamBold
 	ExecuteButton.Parent = ButtonFrame
 	local ExecCorner = Instance.new("UICorner")
-	ExecCorner.CornerRadius = UDim.new(0, 5)
+	ExecCorner.CornerRadius = UDim.new(0, 6)
 	ExecCorner.Parent = ExecuteButton
 	local ExecGrad = createRedTextGradient(ExecuteButton)
 	
 	local AutoButton = Instance.new("TextButton")
-	AutoButton.Size = UDim2.new(0, 60, 0, 18)
-	AutoButton.Position = UDim2.new(1, -68, 0, 28)
+	AutoButton.Size = UDim2.new(0, 80, 0, 22)
+	AutoButton.Position = UDim2.new(1, -90, 0, 42)
 	AutoButton.BackgroundColor3 = Color3.fromRGB(30, 25, 10)
 	AutoButton.BorderSizePixel = 0
 	AutoButton.Text = "AUTO"
 	AutoButton.TextColor3 = Color3.fromRGB(255, 215, 0)
-	AutoButton.TextSize = 8
+	AutoButton.TextSize = 10
 	AutoButton.Font = Enum.Font.GothamBold
 	AutoButton.Parent = ButtonFrame
 	local AutoCorner = Instance.new("UICorner")
-	AutoCorner.CornerRadius = UDim.new(0, 4)
+	AutoCorner.CornerRadius = UDim.new(0, 5)
 	AutoCorner.Parent = AutoButton
 	local AutoGrad = createGoldGradient(AutoButton)
 	
@@ -851,12 +1871,12 @@ local function createBigButton(parent, data, index)
 	animateAuto()
 	
 	local DescLabel = Instance.new("TextLabel")
-	DescLabel.Size = UDim2.new(1, -90, 0, 16)
-	DescLabel.Position = UDim2.new(0, 10, 0, 28)
+	DescLabel.Size = UDim2.new(1, -20, 0, 20)
+	DescLabel.Position = UDim2.new(0, 10, 0, 42)
 	DescLabel.BackgroundTransparency = 1
 	DescLabel.Text = data.desc
 	DescLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-	DescLabel.TextSize = 9
+	DescLabel.TextSize = 10
 	DescLabel.Font = Enum.Font.Gotham
 	DescLabel.TextXAlignment = Enum.TextXAlignment.Left
 	DescLabel.Parent = ButtonFrame
@@ -873,7 +1893,7 @@ local function createBigButton(parent, data, index)
 			if scriptFunc then
 				scriptFunc()
 				updateStatistics(data.title)
-				showSideNotification("✅ Script executed!", true)
+				showSideNotification("✅ Script executed successfully!", true)
 			else
 				error("Failed to load script")
 			end
@@ -891,7 +1911,7 @@ local function createBigButton(parent, data, index)
 			if scriptFunc then
 				scriptFunc()
 				updateStatistics(data.title .. " (AUTO)")
-				showSideNotification("✅ Script executed (AUTO)!", true)
+				showSideNotification("✅ Script executed successfully (AUTO)!", true)
 			else
 				error("Failed to load script")
 			end
@@ -1001,29 +2021,6 @@ PlayerBtn.MouseButton1Click:Connect(function()
 	createPlayerWindow()
 end)
 
--- ========== زر التصغير/التكبير ==========
-ResizeButton.MouseButton1Click:Connect(function()
-	playerSettings.isSmall = not playerSettings.isSmall
-	
-	if playerSettings.isSmall then
-		-- وضع مصغر (6.95 سم)
-		MainFrame.Size = UDim2.new(0, 380, 0, 262)
-		MainFrame.Position = UDim2.new(0.5, -190, 0.5, -131)
-		GlowFrame.Size = UDim2.new(0, 388, 0, 270)
-		GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -135)
-		ResizeButton.Text = "⤢"
-		showSideNotification("📱 Small Mode ON (6.95cm)", true)
-	else
-		-- وضع كبير (الحجم الأصلي)
-		MainFrame.Size = UDim2.new(0, 380, 0, 542)
-		MainFrame.Position = UDim2.new(0.5, -190, 0.5, -271)
-		GlowFrame.Size = UDim2.new(0, 388, 0, 550)
-		GlowFrame.Position = UDim2.new(0.5, -194, 0.5, -275)
-		ResizeButton.Text = "⤡"
-		showSideNotification("📱 Large Mode ON", true)
-	end
-end)
-
 -- ========== إعادة الترتيب حسب اللعبة ==========
 task.spawn(function()
 	task.wait(1.5)
@@ -1064,773 +2061,3 @@ ToggleButton.MouseButton1Click:Connect(function()
 		showSideNotification("🔒 Exited LYNEX Script!", true)
 	end
 end)
-
--- ========== نافذة الإعدادات (مختصرة) ==========
-local function createSettingsWindow()
-	local SettingsFrame = Instance.new("Frame")
-	SettingsFrame.Size = UDim2.new(0, 280, 0, 350)
-	SettingsFrame.Position = UDim2.new(0.5, -140, 0.5, -175)
-	SettingsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SettingsFrame.BorderSizePixel = 0
-	SettingsFrame.Parent = ScreenGui
-	SettingsFrame.Visible = true
-	SettingsFrame.ZIndex = 10
-	
-	local SettingsBorderGradient = Instance.new("UIGradient")
-	SettingsBorderGradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
-		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
-		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
-		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-	})
-	SettingsBorderGradient.Parent = SettingsFrame
-	
-	local SettingsCorner = Instance.new("UICorner")
-	SettingsCorner.CornerRadius = UDim.new(0, 12)
-	SettingsCorner.Parent = SettingsFrame
-	
-	local SettingsInside = Instance.new("Frame")
-	SettingsInside.Size = UDim2.new(1, -4, 1, -4)
-	SettingsInside.Position = UDim2.new(0, 2, 0, 2)
-	SettingsInside.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	SettingsInside.BorderSizePixel = 0
-	SettingsInside.Parent = SettingsFrame
-	SettingsInside.ZIndex = 11
-	
-	local SettingsInsideCorner = Instance.new("UICorner")
-	SettingsInsideCorner.CornerRadius = UDim.new(0, 10)
-	SettingsInsideCorner.Parent = SettingsInside
-	
-	local SettingsTitle = Instance.new("TextLabel")
-	SettingsTitle.Size = UDim2.new(1, -50, 0, 30)
-	SettingsTitle.Position = UDim2.new(0, 10, 0, 4)
-	SettingsTitle.BackgroundTransparency = 1
-	SettingsTitle.Text = "⚙️ SETTINGS"
-	SettingsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SettingsTitle.TextSize = 14
-	SettingsTitle.Font = Enum.Font.GothamBold
-	SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
-	SettingsTitle.Parent = SettingsInside
-	SettingsTitle.ZIndex = 12
-	
-	local SettingsTitleGradient = Instance.new("UIGradient")
-	SettingsTitleGradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
-		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-	})
-	SettingsTitleGradient.Parent = SettingsTitle
-	
-	local titleTween = TweenService:Create(SettingsTitleGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	titleTween:Play()
-	
-	local SettingsClose = Instance.new("TextButton")
-	SettingsClose.Size = UDim2.new(0, 24, 0, 24)
-	SettingsClose.Position = UDim2.new(1, -30, 0, 5)
-	SettingsClose.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
-	SettingsClose.BorderSizePixel = 0
-	SettingsClose.Text = "✕"
-	SettingsClose.TextColor3 = Color3.fromRGB(255, 80, 80)
-	SettingsClose.TextSize = 14
-	SettingsClose.Font = Enum.Font.GothamBold
-	SettingsClose.Parent = SettingsInside
-	SettingsClose.ZIndex = 12
-	local SettingsCloseCorner = Instance.new("UICorner")
-	SettingsCloseCorner.CornerRadius = UDim.new(0, 6)
-	SettingsCloseCorner.Parent = SettingsClose
-	
-	SettingsClose.MouseButton1Click:Connect(function()
-		SettingsFrame:Destroy()
-		MainFrame.Visible = true
-		GlowFrame.Visible = true
-		showSideNotification("🔙 Returned to main menu", true)
-	end)
-	
-	local topLine = Instance.new("Frame")
-	topLine.Size = UDim2.new(1, -20, 0, 1)
-	topLine.Position = UDim2.new(0, 10, 0, 38)
-	topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	topLine.BackgroundTransparency = 0.5
-	topLine.BorderSizePixel = 0
-	topLine.Parent = SettingsInside
-	topLine.ZIndex = 12
-	
-	local SettingsScroll = Instance.new("ScrollingFrame")
-	SettingsScroll.Size = UDim2.new(1, -8, 1, -44)
-	SettingsScroll.Position = UDim2.new(0, 4, 0, 42)
-	SettingsScroll.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	SettingsScroll.BackgroundTransparency = 1
-	SettingsScroll.BorderSizePixel = 0
-	SettingsScroll.Parent = SettingsInside
-	SettingsScroll.ZIndex = 12
-	SettingsScroll.ScrollBarThickness = 3
-	SettingsScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
-	SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, 400)
-	
-	local SettingsContainer = Instance.new("Frame")
-	SettingsContainer.Size = UDim2.new(1, 0, 0, 400)
-	SettingsContainer.BackgroundTransparency = 1
-	SettingsContainer.Parent = SettingsScroll
-	SettingsContainer.ZIndex = 12
-	
-	local yPos = 2
-	
-	-- UI Customization
-	local UICustomLabel = Instance.new("TextLabel")
-	UICustomLabel.Size = UDim2.new(1, -20, 0, 18)
-	UICustomLabel.Position = UDim2.new(0, 10, 0, yPos)
-	UICustomLabel.BackgroundTransparency = 1
-	UICustomLabel.Text = "🎨 UI Customization"
-	UICustomLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	UICustomLabel.TextSize = 10
-	UICustomLabel.Font = Enum.Font.GothamBold
-	UICustomLabel.TextXAlignment = Enum.TextXAlignment.Left
-	UICustomLabel.Parent = SettingsContainer
-	UICustomLabel.ZIndex = 12
-	
-	local uiGrad = createRedTextGradient(UICustomLabel)
-	local uiTween = TweenService:Create(uiGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	uiTween:Play()
-	
-	yPos = yPos + 22
-	
-	local themes = {"Red", "Blue", "Green", "Gold", "Purple"}
-	local themeColors = {
-		Red = Color3.fromRGB(255, 0, 0),
-		Blue = Color3.fromRGB(0, 100, 255),
-		Green = Color3.fromRGB(0, 255, 100),
-		Gold = Color3.fromRGB(255, 215, 0),
-		Purple = Color3.fromRGB(150, 0, 255)
-	}
-	
-	for i, theme in ipairs(themes) do
-		local themeBtn = Instance.new("TextButton")
-		themeBtn.Size = UDim2.new(0, 42, 0, 18)
-		themeBtn.Position = UDim2.new(0, 10 + (i-1) * 46, 0, yPos)
-		themeBtn.BackgroundColor3 = themeColors[theme]
-		themeBtn.BorderSizePixel = 0
-		themeBtn.Text = theme
-		themeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		themeBtn.TextSize = 8
-		themeBtn.Font = Enum.Font.GothamBold
-		themeBtn.Parent = SettingsContainer
-		themeBtn.ZIndex = 12
-		local themeCorner = Instance.new("UICorner")
-		themeCorner.CornerRadius = UDim.new(0, 4)
-		themeCorner.Parent = themeBtn
-		
-		themeBtn.MouseButton1Click:Connect(function()
-			settings.theme = theme
-			settings.colors.main = themeColors[theme]
-			BorderGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, settings.colors.main),
-				ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
-				ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
-				ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
-				ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
-				ColorSequenceKeypoint.new(1, settings.colors.main)
-			})
-			SettingsBorderGradient.Color = BorderGradient.Color
-			GlowFrame.BackgroundColor3 = settings.colors.main
-			showSideNotification("🎨 Theme: " .. theme, true)
-		end)
-	end
-	
-	yPos = yPos + 24
-	
-	local line1 = Instance.new("Frame")
-	line1.Size = UDim2.new(1, -20, 0, 1)
-	line1.Position = UDim2.new(0, 10, 0, yPos)
-	line1.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	line1.BorderSizePixel = 0
-	line1.Parent = SettingsContainer
-	line1.ZIndex = 12
-	
-	yPos = yPos + 10
-	
-	-- Colors
-	local ColorsLabel = Instance.new("TextLabel")
-	ColorsLabel.Size = UDim2.new(1, -20, 0, 18)
-	ColorsLabel.Position = UDim2.new(0, 10, 0, yPos)
-	ColorsLabel.BackgroundTransparency = 1
-	ColorsLabel.Text = "🎨 Extra Colors"
-	ColorsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ColorsLabel.TextSize = 10
-	ColorsLabel.Font = Enum.Font.GothamBold
-	ColorsLabel.TextXAlignment = Enum.TextXAlignment.Left
-	ColorsLabel.Parent = SettingsContainer
-	ColorsLabel.ZIndex = 12
-	
-	local colorsGrad = createRedTextGradient(ColorsLabel)
-	local colorsTween = TweenService:Create(colorsGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	colorsTween:Play()
-	
-	yPos = yPos + 22
-	
-	local extraColors = {
-		{name = "Red", color = Color3.fromRGB(255, 0, 0)},
-		{name = "Blue", color = Color3.fromRGB(0, 100, 255)},
-		{name = "Green", color = Color3.fromRGB(0, 200, 50)},
-		{name = "Gold", color = Color3.fromRGB(255, 215, 0)},
-		{name = "Purple", color = Color3.fromRGB(150, 0, 255)},
-		{name = "Orange", color = Color3.fromRGB(255, 100, 0)}
-	}
-	
-	for i, colorData in ipairs(extraColors) do
-		local colBtn = Instance.new("TextButton")
-		colBtn.Size = UDim2.new(0, 56, 0, 18)
-		colBtn.Position = UDim2.new(0, 10 + ((i-1) % 2) * 62, 0, yPos + math.floor((i-1) / 2) * 22)
-		colBtn.BackgroundColor3 = colorData.color
-		colBtn.BackgroundTransparency = 0.3
-		colBtn.BorderSizePixel = 0
-		colBtn.Text = colorData.name
-		colBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-		colBtn.TextSize = 8
-		colBtn.Font = Enum.Font.GothamBold
-		colBtn.Parent = SettingsContainer
-		colBtn.ZIndex = 12
-		local colCorner = Instance.new("UICorner")
-		colCorner.CornerRadius = UDim.new(0, 4)
-		colCorner.Parent = colBtn
-		
-		colBtn.MouseButton1Click:Connect(function()
-			settings.colors.main = colorData.color
-			BorderGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, settings.colors.main),
-				ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
-				ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
-				ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
-				ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
-				ColorSequenceKeypoint.new(1, settings.colors.main)
-			})
-			SettingsBorderGradient.Color = BorderGradient.Color
-			GlowFrame.BackgroundColor3 = settings.colors.main
-			showSideNotification("🎨 Color changed!", true)
-		end)
-	end
-	
-	yPos = yPos + 22 * 3 + 10
-	
-	SettingsScroll.CanvasSize = UDim2.new(0, 0, 0, yPos + 20)
-	
-	local settingsBorderTween = TweenService:Create(SettingsBorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	settingsBorderTween:Play()
-	
-	return SettingsFrame
-end
-
--- ========== نافذة Player (مصغرة) ==========
-local function createPlayerWindow()
-	local PlayerFrame = Instance.new("Frame")
-	PlayerFrame.Size = UDim2.new(0, 260, 0, 350)
-	PlayerFrame.Position = UDim2.new(0.5, -130, 0.5, -175)
-	PlayerFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	PlayerFrame.BorderSizePixel = 0
-	PlayerFrame.Parent = ScreenGui
-	PlayerFrame.Visible = true
-	PlayerFrame.ZIndex = 10
-	
-	local PlayerBorderGradient = Instance.new("UIGradient")
-	PlayerBorderGradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.2, Color3.fromRGB(100, 0, 0)),
-		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(15, 15, 15)),
-		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(15, 15, 15)),
-		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(100, 0, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-	})
-	PlayerBorderGradient.Parent = PlayerFrame
-	
-	local PlayerCorner = Instance.new("UICorner")
-	PlayerCorner.CornerRadius = UDim.new(0, 12)
-	PlayerCorner.Parent = PlayerFrame
-	
-	local PlayerInside = Instance.new("Frame")
-	PlayerInside.Size = UDim2.new(1, -4, 1, -4)
-	PlayerInside.Position = UDim2.new(0, 2, 0, 2)
-	PlayerInside.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	PlayerInside.BorderSizePixel = 0
-	PlayerInside.Parent = PlayerFrame
-	PlayerInside.ZIndex = 11
-	
-	local PlayerInsideCorner = Instance.new("UICorner")
-	PlayerInsideCorner.CornerRadius = UDim.new(0, 10)
-	PlayerInsideCorner.Parent = PlayerInside
-	
-	local PlayerTitle = Instance.new("TextLabel")
-	PlayerTitle.Size = UDim2.new(1, -50, 0, 28)
-	PlayerTitle.Position = UDim2.new(0, 10, 0, 4)
-	PlayerTitle.BackgroundTransparency = 1
-	PlayerTitle.Text = "👤 PLAYER"
-	PlayerTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	PlayerTitle.TextSize = 13
-	PlayerTitle.Font = Enum.Font.GothamBold
-	PlayerTitle.TextXAlignment = Enum.TextXAlignment.Left
-	PlayerTitle.Parent = PlayerInside
-	PlayerTitle.ZIndex = 12
-	
-	local PlayerTitleGradient = Instance.new("UIGradient")
-	PlayerTitleGradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-		ColorSequenceKeypoint.new(0.3, Color3.fromRGB(255, 80, 80)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 0, 0)),
-		ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 80)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-	})
-	PlayerTitleGradient.Parent = PlayerTitle
-	
-	local titleTween2 = TweenService:Create(PlayerTitleGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	titleTween2:Play()
-	
-	local PlayerClose = Instance.new("TextButton")
-	PlayerClose.Size = UDim2.new(0, 22, 0, 22)
-	PlayerClose.Position = UDim2.new(1, -28, 0, 4)
-	PlayerClose.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
-	PlayerClose.BorderSizePixel = 0
-	PlayerClose.Text = "✕"
-	PlayerClose.TextColor3 = Color3.fromRGB(255, 80, 80)
-	PlayerClose.TextSize = 12
-	PlayerClose.Font = Enum.Font.GothamBold
-	PlayerClose.Parent = PlayerInside
-	PlayerClose.ZIndex = 12
-	local PlayerCloseCorner = Instance.new("UICorner")
-	PlayerCloseCorner.CornerRadius = UDim.new(0, 6)
-	PlayerCloseCorner.Parent = PlayerClose
-	
-	PlayerClose.MouseButton1Click:Connect(function()
-		PlayerFrame:Destroy()
-		MainFrame.Visible = true
-		GlowFrame.Visible = true
-		showSideNotification("🔙 Returned to main menu", true)
-	end)
-	
-	local topLine2 = Instance.new("Frame")
-	topLine2.Size = UDim2.new(1, -20, 0, 1)
-	topLine2.Position = UDim2.new(0, 10, 0, 36)
-	topLine2.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	topLine2.BackgroundTransparency = 0.5
-	topLine2.BorderSizePixel = 0
-	topLine2.Parent = PlayerInside
-	topLine2.ZIndex = 12
-	
-	local PlayerScroll = Instance.new("ScrollingFrame")
-	PlayerScroll.Size = UDim2.new(1, -8, 1, -42)
-	PlayerScroll.Position = UDim2.new(0, 4, 0, 40)
-	PlayerScroll.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	PlayerScroll.BackgroundTransparency = 1
-	PlayerScroll.BorderSizePixel = 0
-	PlayerScroll.Parent = PlayerInside
-	PlayerScroll.ZIndex = 12
-	PlayerScroll.ScrollBarThickness = 3
-	PlayerScroll.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
-	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, 600)
-	
-	local PlayerContainer = Instance.new("Frame")
-	PlayerContainer.Size = UDim2.new(1, 0, 0, 600)
-	PlayerContainer.BackgroundTransparency = 1
-	PlayerContainer.Parent = PlayerScroll
-	PlayerContainer.ZIndex = 12
-	
-	local pY = 5
-	
-	-- SPEED
-	local SpeedLabel = Instance.new("TextLabel")
-	SpeedLabel.Size = UDim2.new(1, -20, 0, 16)
-	SpeedLabel.Position = UDim2.new(0, 10, 0, pY)
-	SpeedLabel.BackgroundTransparency = 1
-	SpeedLabel.Text = "⚡ Speed"
-	SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedLabel.TextSize = 10
-	SpeedLabel.Font = Enum.Font.GothamBold
-	SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
-	SpeedLabel.Parent = PlayerContainer
-	SpeedLabel.ZIndex = 12
-	local speedGrad = createRedTextGradient(SpeedLabel)
-	local speedTween = TweenService:Create(speedGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	speedTween:Play()
-	
-	pY = pY + 18
-	
-	local SpeedBox = Instance.new("TextBox")
-	SpeedBox.Size = UDim2.new(0, 60, 0, 20)
-	SpeedBox.Position = UDim2.new(0, 10, 0, pY)
-	SpeedBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	SpeedBox.BorderSizePixel = 0
-	SpeedBox.Text = "16"
-	SpeedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedBox.TextSize = 10
-	SpeedBox.Font = Enum.Font.GothamBold
-	SpeedBox.TextXAlignment = Enum.TextXAlignment.Center
-	SpeedBox.Parent = PlayerContainer
-	SpeedBox.ZIndex = 12
-	local SpeedBoxCorner = Instance.new("UICorner")
-	SpeedBoxCorner.CornerRadius = UDim.new(0, 4)
-	SpeedBoxCorner.Parent = SpeedBox
-	
-	local SpeedBtn = Instance.new("TextButton")
-	SpeedBtn.Size = UDim2.new(0, 60, 0, 20)
-	SpeedBtn.Position = UDim2.new(0, 80, 0, pY)
-	SpeedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	SpeedBtn.BorderSizePixel = 0
-	SpeedBtn.Text = "Apply"
-	SpeedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpeedBtn.TextSize = 9
-	SpeedBtn.Font = Enum.Font.GothamBold
-	SpeedBtn.Parent = PlayerContainer
-	SpeedBtn.ZIndex = 12
-	local SpeedBtnCorner = Instance.new("UICorner")
-	SpeedBtnCorner.CornerRadius = UDim.new(0, 4)
-	SpeedBtnCorner.Parent = SpeedBtn
-	
-	SpeedBtn.MouseButton1Click:Connect(function()
-		setSpeed(tonumber(SpeedBox.Text) or 16)
-	end)
-	
-	pY = pY + 24
-	
-	-- JUMP
-	local JumpLabel = Instance.new("TextLabel")
-	JumpLabel.Size = UDim2.new(1, -20, 0, 16)
-	JumpLabel.Position = UDim2.new(0, 10, 0, pY)
-	JumpLabel.BackgroundTransparency = 1
-	JumpLabel.Text = "🦘 Jump Power"
-	JumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpLabel.TextSize = 10
-	JumpLabel.Font = Enum.Font.GothamBold
-	JumpLabel.TextXAlignment = Enum.TextXAlignment.Left
-	JumpLabel.Parent = PlayerContainer
-	JumpLabel.ZIndex = 12
-	local jumpGrad = createRedTextGradient(JumpLabel)
-	local jumpTween = TweenService:Create(jumpGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	jumpTween:Play()
-	
-	pY = pY + 18
-	
-	local JumpBox = Instance.new("TextBox")
-	JumpBox.Size = UDim2.new(0, 60, 0, 20)
-	JumpBox.Position = UDim2.new(0, 10, 0, pY)
-	JumpBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	JumpBox.BorderSizePixel = 0
-	JumpBox.Text = "50"
-	JumpBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpBox.TextSize = 10
-	JumpBox.Font = Enum.Font.GothamBold
-	JumpBox.TextXAlignment = Enum.TextXAlignment.Center
-	JumpBox.Parent = PlayerContainer
-	JumpBox.ZIndex = 12
-	local JumpBoxCorner = Instance.new("UICorner")
-	JumpBoxCorner.CornerRadius = UDim.new(0, 4)
-	JumpBoxCorner.Parent = JumpBox
-	
-	local JumpBtn = Instance.new("TextButton")
-	JumpBtn.Size = UDim2.new(0, 60, 0, 20)
-	JumpBtn.Position = UDim2.new(0, 80, 0, pY)
-	JumpBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	JumpBtn.BorderSizePixel = 0
-	JumpBtn.Text = "Apply"
-	JumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	JumpBtn.TextSize = 9
-	JumpBtn.Font = Enum.Font.GothamBold
-	JumpBtn.Parent = PlayerContainer
-	JumpBtn.ZIndex = 12
-	local JumpBtnCorner = Instance.new("UICorner")
-	JumpBtnCorner.CornerRadius = UDim.new(0, 4)
-	JumpBtnCorner.Parent = JumpBtn
-	
-	JumpBtn.MouseButton1Click:Connect(function()
-		setJumpPower(tonumber(JumpBox.Text) or 50)
-	end)
-	
-	pY = pY + 24
-	
-	-- NOCLIP
-	local NoclipLabel = Instance.new("TextLabel")
-	NoclipLabel.Size = UDim2.new(1, -20, 0, 16)
-	NoclipLabel.Position = UDim2.new(0, 10, 0, pY)
-	NoclipLabel.BackgroundTransparency = 1
-	NoclipLabel.Text = "🚪 Noclip"
-	NoclipLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	NoclipLabel.TextSize = 10
-	NoclipLabel.Font = Enum.Font.GothamBold
-	NoclipLabel.TextXAlignment = Enum.TextXAlignment.Left
-	NoclipLabel.Parent = PlayerContainer
-	NoclipLabel.ZIndex = 12
-	local noclipGrad = createRedTextGradient(NoclipLabel)
-	local noclipTween = TweenService:Create(noclipGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	noclipTween:Play()
-	
-	pY = pY + 18
-	
-	local NoclipBtn = Instance.new("TextButton")
-	NoclipBtn.Size = UDim2.new(0, 80, 0, 20)
-	NoclipBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	NoclipBtn.BorderSizePixel = 0
-	NoclipBtn.Text = "🔴 OFF"
-	NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	NoclipBtn.TextSize = 10
-	NoclipBtn.Font = Enum.Font.GothamBold
-	NoclipBtn.Parent = PlayerContainer
-	NoclipBtn.ZIndex = 12
-	local NoclipCorner = Instance.new("UICorner")
-	NoclipCorner.CornerRadius = UDim.new(0, 5)
-	NoclipCorner.Parent = NoclipBtn
-	
-	NoclipBtn.MouseButton1Click:Connect(function()
-		toggleNoclip()
-		if playerSettings.noclip then
-			NoclipBtn.Text = "🟢 ON"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			NoclipBtn.Text = "🔴 OFF"
-			NoclipBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	-- SPIN
-	local SpinLabel = Instance.new("TextLabel")
-	SpinLabel.Size = UDim2.new(1, -20, 0, 16)
-	SpinLabel.Position = UDim2.new(0, 10, 0, pY)
-	SpinLabel.BackgroundTransparency = 1
-	SpinLabel.Text = "🔄 Spin"
-	SpinLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpinLabel.TextSize = 10
-	SpinLabel.Font = Enum.Font.GothamBold
-	SpinLabel.TextXAlignment = Enum.TextXAlignment.Left
-	SpinLabel.Parent = PlayerContainer
-	SpinLabel.ZIndex = 12
-	local spinGrad = createRedTextGradient(SpinLabel)
-	local spinTween = TweenService:Create(spinGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	spinTween:Play()
-	
-	pY = pY + 18
-	
-	local SpinBtn = Instance.new("TextButton")
-	SpinBtn.Size = UDim2.new(0, 80, 0, 20)
-	SpinBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	SpinBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	SpinBtn.BorderSizePixel = 0
-	SpinBtn.Text = "🔴 OFF"
-	SpinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SpinBtn.TextSize = 10
-	SpinBtn.Font = Enum.Font.GothamBold
-	SpinBtn.Parent = PlayerContainer
-	SpinBtn.ZIndex = 12
-	local SpinCorner = Instance.new("UICorner")
-	SpinCorner.CornerRadius = UDim.new(0, 5)
-	SpinCorner.Parent = SpinBtn
-	
-	SpinBtn.MouseButton1Click:Connect(function()
-		toggleSpin()
-		if playerSettings.spin then
-			SpinBtn.Text = "🟢 ON"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			SpinBtn.Text = "🔴 OFF"
-			SpinBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	-- FLY
-	local FlyLabel = Instance.new("TextLabel")
-	FlyLabel.Size = UDim2.new(1, -20, 0, 16)
-	FlyLabel.Position = UDim2.new(0, 10, 0, pY)
-	FlyLabel.BackgroundTransparency = 1
-	FlyLabel.Text = "✈️ Fly"
-	FlyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FlyLabel.TextSize = 10
-	FlyLabel.Font = Enum.Font.GothamBold
-	FlyLabel.TextXAlignment = Enum.TextXAlignment.Left
-	FlyLabel.Parent = PlayerContainer
-	FlyLabel.ZIndex = 12
-	local flyGrad = createRedTextGradient(FlyLabel)
-	local flyTween = TweenService:Create(flyGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	flyTween:Play()
-	
-	pY = pY + 18
-	
-	local FlyBtn = Instance.new("TextButton")
-	FlyBtn.Size = UDim2.new(0, 80, 0, 20)
-	FlyBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	FlyBtn.BorderSizePixel = 0
-	FlyBtn.Text = "🔴 OFF"
-	FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FlyBtn.TextSize = 10
-	FlyBtn.Font = Enum.Font.GothamBold
-	FlyBtn.Parent = PlayerContainer
-	FlyBtn.ZIndex = 12
-	local FlyCorner = Instance.new("UICorner")
-	FlyCorner.CornerRadius = UDim.new(0, 5)
-	FlyCorner.Parent = FlyBtn
-	
-	FlyBtn.MouseButton1Click:Connect(function()
-		toggleFly()
-		if playerSettings.fly then
-			FlyBtn.Text = "🟢 ON"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			FlyBtn.Text = "🔴 OFF"
-			FlyBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	-- INFINITE JUMP
-	local InfJumpLabel = Instance.new("TextLabel")
-	InfJumpLabel.Size = UDim2.new(1, -20, 0, 16)
-	InfJumpLabel.Position = UDim2.new(0, 10, 0, pY)
-	InfJumpLabel.BackgroundTransparency = 1
-	InfJumpLabel.Text = "♾️ Infinite Jump"
-	InfJumpLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	InfJumpLabel.TextSize = 10
-	InfJumpLabel.Font = Enum.Font.GothamBold
-	InfJumpLabel.TextXAlignment = Enum.TextXAlignment.Left
-	InfJumpLabel.Parent = PlayerContainer
-	InfJumpLabel.ZIndex = 12
-	local infGrad = createRedTextGradient(InfJumpLabel)
-	local infTween = TweenService:Create(infGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	infTween:Play()
-	
-	pY = pY + 18
-	
-	local InfJumpBtn = Instance.new("TextButton")
-	InfJumpBtn.Size = UDim2.new(0, 80, 0, 20)
-	InfJumpBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	InfJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	InfJumpBtn.BorderSizePixel = 0
-	InfJumpBtn.Text = "🔴 OFF"
-	InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	InfJumpBtn.TextSize = 10
-	InfJumpBtn.Font = Enum.Font.GothamBold
-	InfJumpBtn.Parent = PlayerContainer
-	InfJumpBtn.ZIndex = 12
-	local InfCorner = Instance.new("UICorner")
-	InfCorner.CornerRadius = UDim.new(0, 5)
-	InfCorner.Parent = InfJumpBtn
-	
-	InfJumpBtn.MouseButton1Click:Connect(function()
-		toggleInfiniteJump()
-		if playerSettings.infiniteJump then
-			InfJumpBtn.Text = "🟢 ON"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			InfJumpBtn.Text = "🔴 OFF"
-			InfJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	-- LOW GRAVITY
-	local LowGravLabel = Instance.new("TextLabel")
-	LowGravLabel.Size = UDim2.new(1, -20, 0, 16)
-	LowGravLabel.Position = UDim2.new(0, 10, 0, pY)
-	LowGravLabel.BackgroundTransparency = 1
-	LowGravLabel.Text = "🌕 Low Gravity"
-	LowGravLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	LowGravLabel.TextSize = 10
-	LowGravLabel.Font = Enum.Font.GothamBold
-	LowGravLabel.TextXAlignment = Enum.TextXAlignment.Left
-	LowGravLabel.Parent = PlayerContainer
-	LowGravLabel.ZIndex = 12
-	local gravGrad = createRedTextGradient(LowGravLabel)
-	local gravTween = TweenService:Create(gravGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	gravTween:Play()
-	
-	pY = pY + 18
-	
-	local LowGravBtn = Instance.new("TextButton")
-	LowGravBtn.Size = UDim2.new(0, 80, 0, 20)
-	LowGravBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	LowGravBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	LowGravBtn.BorderSizePixel = 0
-	LowGravBtn.Text = "🔴 OFF"
-	LowGravBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	LowGravBtn.TextSize = 10
-	LowGravBtn.Font = Enum.Font.GothamBold
-	LowGravBtn.Parent = PlayerContainer
-	LowGravBtn.ZIndex = 12
-	local LowGravCorner = Instance.new("UICorner")
-	LowGravCorner.CornerRadius = UDim.new(0, 5)
-	LowGravCorner.Parent = LowGravBtn
-	
-	LowGravBtn.MouseButton1Click:Connect(function()
-		toggleLowGravity()
-		if playerSettings.lowGravity then
-			LowGravBtn.Text = "🟢 ON"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			LowGravBtn.Text = "🔴 OFF"
-			LowGravBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	-- FOV 120
-	local FOVLabel = Instance.new("TextLabel")
-	FOVLabel.Size = UDim2.new(1, -20, 0, 16)
-	FOVLabel.Position = UDim2.new(0, 10, 0, pY)
-	FOVLabel.BackgroundTransparency = 1
-	FOVLabel.Text = "👁️ FOV 120"
-	FOVLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FOVLabel.TextSize = 10
-	FOVLabel.Font = Enum.Font.GothamBold
-	FOVLabel.TextXAlignment = Enum.TextXAlignment.Left
-	FOVLabel.Parent = PlayerContainer
-	FOVLabel.ZIndex = 12
-	local fovGrad = createRedTextGradient(FOVLabel)
-	local fovTween = TweenService:Create(fovGrad, TweenInfo.new(1.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	fovTween:Play()
-	
-	pY = pY + 18
-	
-	local FOVBtn = Instance.new("TextButton")
-	FOVBtn.Size = UDim2.new(0, 80, 0, 20)
-	FOVBtn.Position = UDim2.new(0.5, -40, 0, pY)
-	FOVBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-	FOVBtn.BorderSizePixel = 0
-	FOVBtn.Text = "🔴 OFF"
-	FOVBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FOVBtn.TextSize = 10
-	FOVBtn.Font = Enum.Font.GothamBold
-	FOVBtn.Parent = PlayerContainer
-	FOVBtn.ZIndex = 12
-	local FOVCorner = Instance.new("UICorner")
-	FOVCorner.CornerRadius = UDim.new(0, 5)
-	FOVCorner.Parent = FOVBtn
-	
-	FOVBtn.MouseButton1Click:Connect(function()
-		toggleFOV120()
-		if playerSettings.fov120 then
-			FOVBtn.Text = "🟢 ON"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 0)
-		else
-			FOVBtn.Text = "🔴 OFF"
-			FOVBtn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-		end
-	end)
-	
-	pY = pY + 24
-	
-	PlayerScroll.CanvasSize = UDim2.new(0, 0, 0, pY + 20)
-	
-	local playerBorderTween = TweenService:Create(PlayerBorderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = 360})
-	playerBorderTween:Play()
-	
-	return PlayerFrame
-end
-
-print("✅ LYNEX Script Loaded Successfully!")
-print("📱 Size: 6.95cm (Small Mode)")
-print("🔄 Click ⤡ button to toggle size")
