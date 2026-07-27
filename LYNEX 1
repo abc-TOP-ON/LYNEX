@@ -2114,4 +2114,4 @@ ToggleButton.MouseButton1Click:Connect(function()
 		ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		showSideNotification("🔒 Exited LYNEX Script!", true)
 	end
-end)
+end)ص
